@@ -1,4 +1,4 @@
-# Game Name
+# Terminal Hacker
 
 ## Elevator Pitch
 
