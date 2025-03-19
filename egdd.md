@@ -108,7 +108,11 @@ Introduction to directory and file traversal and management
 
 # Objects/Entities
 
-*We would need to design the firewall, directories, the player, files within the directories, and a terminal display you can type into.*
+- There will be a player model that looks like a hacker
+- There will be a firewall progress bar (maybe an npc model)
+- There will be dungeon-like rooms acting as the directories
+- There will be rooms acting as files
+- There will be a terminal displayed with a keyboard on screen that you can type into
 
 ## Core Gameplay Mechanics (Detailed)
 
