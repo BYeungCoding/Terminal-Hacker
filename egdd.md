@@ -84,15 +84,13 @@ Introduction to directory and file traversal and management
     - Alignment: *This aligns with teachthe player to create new files/directories*
 - *Advance to the next level*:
     - Description: *Once the player reaches the end of the level, you will progress to the next level* 
-    - Alignment: *This will help them advance their knowledge of directory traversal and  
+    - Alignment: *This will help them advance their knowledge of directory traversal and file management*
 
 # Procedures/Actions
 
 *You can traverse the overworld with the WASD keys and interact with terminals by moving to them and pressing E. From there, you will have access to various bash commands, which can be freely typed into the terminal.*
 
 # Rules
-
-*What resources are available to the player that they make use of?  How does this affect gameplay? How are these resources finite?*
 
 - Players move their character with WASD
 - LS command will open the map and show you the layout of the dungeon
@@ -117,7 +115,7 @@ Introduction to directory and file traversal and management
 ## Core Gameplay Mechanics (Detailed)
 
 - *Editing Files and Directories*: *The player will be able to perform commands at terminals that allow them to edit and create files, including moving them between directories or eve removing them entirely.*
-- *Hazards*: At the top of the screen, players can monitor the alert meter—once it fills up, it will expose their location to the FIREwall, forcing them to evade detection. On certain floors, players may encounter trap files that weaken their abilities and accelerate the meter’s increase, raising the stakes even further.
+- *Hazards*: *At the top of the screen, players can monitor the alert meter—once it fills up, it will expose their location to the FIREwall, forcing them to evade detection. On certain floors, players may encounter trap files that weaken their abilities and accelerate the meter’s increase, raising the stakes even further.*
 - *Searching for Core Data*: *The player will have to manage their more limited commands to find the core data they are looking for.*
 
     
@@ -135,7 +133,7 @@ Introduction to directory and file traversal and management
 
 ## Presentation of Rules
 
-The player will learn each of their possible actions at terminals one at a time. The pressure of trap files and firewalls will be added slowly and only ramped up as the player learns better ways to deal with them. We will allow them a few calm levels to figure out the basics before the difficulty increases.
+*The player will learn each of their possible actions at terminals one at a time. The pressure of trap files and firewalls will be added slowly and only ramped up as the player learns better ways to deal with them. We will allow them a few calm levels to figure out the basics before the difficulty increases.*
 
 ## Presentation of Content
 
@@ -174,19 +172,16 @@ The player will learn each of their possible actions at terminals one at a time.
 
 ## Audio
 
-
-*Game region/phase/time are ways of designating a particularly important place in the game.*
-
 - Music List (Ambient sound)
   - *Title Screen*: *https://freesound.org/people/RICHERlandTV/sounds/351920/ (OPening the Game/Loading into a Level)*, *https://freesound.org/people/orginaljun/sounds/396960/ (Title Music)*
   - *General Gameplay*: *https://freesound.org/people/Timbre/sounds/406915/ (Background Music)*, *https://freesound.org/people/B_Lamerichs/sounds/262834/ (general)*
-  
-*Game Interactions are things that trigger SFX, like character movement, hitting a spiky enemy, or collecting a coin.*
 
 - Sound List (SFX)
-  - *Opening a terminal*:https://freesound.org/people/Debsound/sounds/256543/ (Opening the terminal)*, *https://freesound.org/people/unfa/sounds/543968/ (Running a Command)*, https://freesound.org/people/FoolBoyMedia/sounds/352661/ (extra)
-  - *Entering a Room*: *https://freesound.org/people/tim.kahn/sounds/91926/ (Elevator)*, *https://freesound.org/people/Pixeliota/sounds/678254/ (File Door Opening/Enterning)*
-  - *Death*: * https://freesound.org/people/AceOfSpadesProduc100/sounds/360871/ *
+  - *Opening a terminal*: https://freesound.org/people/Debsound/sounds/256543/ (Opening the terminal),       
+    https://freesound.org/people/unfa/sounds/543968/ (Running a Command), https://freesound.org/people/FoolBoyMedia/sounds/352661/ (extra)
+  - *Entering a Room*: https://freesound.org/people/tim.kahn/sounds/91926/ (Elevator),   
+    https://freesound.org/people/Pixeliota/sounds/678254/ (File Door Opening/Enterning)
+  - *Death*: https://freesound.org/people/AceOfSpadesProduc100/sounds/360871/
 
 
 # Metadata
