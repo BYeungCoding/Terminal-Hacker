@@ -147,6 +147,9 @@ The player will learn each of their possible actions at terminals one at a time.
 
 ## Storyboarding
 
+![image1](https://github.com/user-attachments/assets/d3674fe0-7d8e-4085-8d1e-33acfbc06f06)
+![image2](https://github.com/user-attachments/assets/edf6b0d1-e2e0-4270-b997-8690e9040a01)
+
 
 # Assets Needed
 
