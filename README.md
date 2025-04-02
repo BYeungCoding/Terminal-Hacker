@@ -15,4 +15,7 @@ You’re stuck in a dead-end CS job and decide to take on a hacking course. Your
 ## Education Game Design Document
 [EGDD](https://github.com/BYeungCoding/Terminal-Hacker/blob/main/docs/egdd.md)
 ## Credits and Acknowledgements
-<links here>
+- links
+- to
+- resources
+- here
