@@ -10,6 +10,7 @@ public class TerminalController : MonoBehaviour
     public ScrollRect outputScroll; // Reference to the ScrollRect component for scrolling output
     public TMP_Text outputText; // Reference to the Text component to display terminal output
     public TMP_InputField inputField; // Reference to the InputField component for user input
+    public AngerMeter angerMeter; // Reference to the AngerMeter component (optional, if you want to integrate with it)
     private List<string> commandHistory = new List<string>(); // Store command history for the terminal
     private int historyIndex = 0; // Track the current index in the command history for navigation
     private bool isTerminalVisible = false; // Track the visibility of the terminal panel
@@ -62,22 +63,23 @@ public class TerminalController : MonoBehaviour
         }
     }
 
-void SubmitCommand(string command)
+void SubmitCommand(string input)
     {
-        if (string.IsNullOrWhiteSpace(command))
+        if (string.IsNullOrWhiteSpace(input))
         {
             return; // Ignore empty commands
         }
 
         // Add the command to the history
-        if (commandHistory.Count == 0 || commandHistory[commandHistory.Count - 1] != command)
+        if (commandHistory.Count == 0 || commandHistory[commandHistory.Count - 1] != input)
         {
-            commandHistory.Add(command);
+            commandHistory.Add(input);
             historyIndex = commandHistory.Count; // Move to the end of the history for new input
         }
 
         // Process the command (for now, just echo it back)
-        outputText.text += "\n> " + command;
+        outputText.text += "\n> " + input;
+        ProcessCommand(input);
 
         // Clear the input field after submission
         inputField.text = "";
@@ -102,9 +104,49 @@ void LogToTerminal(string message)
         outputScroll.verticalNormalizedPosition = 0f;
     }
 
-    void ProcessCommand(string command)
+    void ProcessCommand(string input)
     {
+        string[] parts = input.ToLower().Split(' ');
+        string command = parts[0];
+
         //Processing commands 
-        LogToTerminal("Processed command: " + command);
+        switch (command)
+        {
+            case "help":
+                LogToTerminal("Available commands: help, clear, exit, debuff, cure");
+                break;
+            case "clear":
+                outputText.text = ""; // Clear the terminal output
+                break;
+            case "exit":
+                isTerminalVisible = false;
+                terminalPanel.SetActive(false); // Hide the terminal panel
+                break;
+            case "debuff":
+                if (angerMeter != null)
+                {
+                    angerMeter.AppyDebuff(true); // Apply debuff to increase anger level
+                    LogToTerminal("Debuff applied: Anger level will increase faster.");
+                }
+                else
+                {
+                    LogToTerminal("AngerMeter component not assigned.");
+                }
+                break;
+            case "cure":
+                if (angerMeter != null)
+                {
+                    angerMeter.AppyDebuff(false); // Remove debuff to return to normal anger level increase
+                    LogToTerminal("Cure applied: Anger level will now increase at a normal rate.");
+                }
+                else
+                {
+                    LogToTerminal("AngerMeter component not assigned.");
+                }
+                break;
+            default:
+                LogToTerminal("Unknown command: " + command);
+                break;
+        }
     }
 }
