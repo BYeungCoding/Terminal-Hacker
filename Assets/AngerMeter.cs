@@ -14,7 +14,14 @@ public class AngerMeter : MonoBehaviour
         _angerLevel += Time.deltaTime * 0.1f; // Simulate anger increase over time, adjust the rate as needed
         _angerLevel = Mathf.Clamp01(_angerLevel); // Ensure it stays between 0 and 1
 
-        progresssBarFill.fillAmount = _angerLevel; // Update the fill amount of the progress bar    
+        progresssBarFill.fillAmount = _angerLevel; // Update the fill amount of the progress bar  
+        progresssBarFill.color = Color.Lerp(Color.green, Color.red, _angerLevel); // Change color based on anger level
+        if (_angerLevel >= 1f)
+        {
+            Debug.Log("Character is fully angry!");
+            transform.position += new Vector3(Random.Range(-0.1f, 0.1f), 0, 0); // Example of a reaction when fully angry, like a small random movement
+            // You can add more reactions here, like playing a sound or triggering an animation
+        }
     }
 
     public void ResetAngerLevel()
