@@ -11,6 +11,7 @@ public class AngerMeter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //update
         _angerLevel += Time.deltaTime * 0.1f; // Simulate anger increase over time, adjust the rate as needed
         _angerLevel = Mathf.Clamp01(_angerLevel); // Ensure it stays between 0 and 1
 
