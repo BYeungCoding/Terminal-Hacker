@@ -16,23 +16,12 @@ public class AngerMeter : MonoBehaviour
          * This method updates the anger level over time. You can adjust the rate of increase by changing the multiplier.
          * The value will be clamped between 0 and 1 to ensure it stays within the valid range for the progress bar.
          */
-         if(isDebuffed)
-         {
-            _angerLevel += Time.deltaTime * angerSpeed; 
-            _angerLevel = Mathf.Clamp01(_angerLevel);
+         float increaseRate = angerSpeed * Time.deltaTime * (isDebuffed ? angerSpeed : 0.01f);
+        _angerLevel += increaseRate; // Increase the anger level based on the speed and time delta
+        _angerLevel = Mathf.Clamp01(_angerLevel); // Ensure the anger level stays within 0 and 1
+        progressBarFill.fillAmount = _angerLevel; // Update the UI to reflect the current anger level
+        progressBarFill.color = Color.Lerp(Color.green, Color.red, _angerLevel); // Update the color of the progress bar based on the anger level
 
-            progressBarFill.fillAmount = _angerLevel; 
-            progressBarFill.color = Color.Lerp(Color.green, Color.red, _angerLevel); 
-         }
-            else
-            {
-                // If not debuffed, the anger level will decay over time to simulate calming down.
-                _angerLevel -= Time.deltaTime * 0.05f; 
-                _angerLevel = Mathf.Clamp01(_angerLevel); // Ensure it stays within 0 and 1
-    
-                progressBarFill.fillAmount = _angerLevel; 
-                progressBarFill.color = Color.Lerp(Color.green, Color.red, _angerLevel); 
-            }
     }
 
      public void SetAngerLevel(float level)
@@ -68,10 +57,30 @@ public class AngerMeter : MonoBehaviour
             neutralIcon.SetActive(false); // Hide neutral icon when debuffed
         }
         else if (debuffIcon != null && debuffed == false){
+            CalmDown();
             debuffIcon.SetActive(false);
             neutralIcon.SetActive(true); // Show neutral icon when not debuffed
+            
         }
         else 
             Debug.LogWarning("Debuff icon not assigned in the inspector.");
+    }
+
+    public void CalmDown()
+    {
+        float timer = 5f;
+
+        while (timer > 0f){
+            _angerLevel -= Time.deltaTime * 0.05f; // Simulate calming down when called
+            _angerLevel = Mathf.Clamp01(_angerLevel); // Ensure it stays within 0 and 1
+            progressBarFill.fillAmount = _angerLevel; // Update the UI to reflect the new anger level
+            progressBarFill.color = Color.Lerp(Color.green, Color.red, _angerLevel); // Update the color of the progress bar based on the new anger level   
+
+            timer -= Time.deltaTime; // Decrease the timer
+            if (timer <= 0f)
+            {
+                break; // Exit the loop when the timer is up
+            }
+        }
     }
 }
