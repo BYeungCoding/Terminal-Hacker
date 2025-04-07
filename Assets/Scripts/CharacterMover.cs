@@ -5,6 +5,7 @@ public class CharacterMover : MonoBehaviour
     public float baseMoveSpeed = 4f;
     private float currMoveSpeed;
     public Rigidbody2D PlayerBody;
+    public bool isCurruptionActive = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -18,21 +19,42 @@ public class CharacterMover : MonoBehaviour
         Vector2 moveDirection = Vector2.zero;
 
         // Check for input and calculate movement direction
-        if (Input.GetKey(KeyCode.W))
-        {
-            moveDirection += Vector2.up;
+
+        if(!isCurruptionActive){
+            if (Input.GetKey(KeyCode.W))
+            {
+                moveDirection += Vector2.up;
+            }
+            if (Input.GetKey(KeyCode.A))
+            {
+                moveDirection += Vector2.left;
+            }
+            if (Input.GetKey(KeyCode.S))
+            {
+                moveDirection += Vector2.down;
+            }
+            if (Input.GetKey(KeyCode.D))
+            {
+                moveDirection += Vector2.right;
+            }
         }
-        if (Input.GetKey(KeyCode.A))
-        {
-            moveDirection += Vector2.left;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            moveDirection += Vector2.down;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            moveDirection += Vector2.right;
+        else{
+            if (Input.GetKey(KeyCode.W))
+            {
+                moveDirection += Vector2.down;
+            }
+            if (Input.GetKey(KeyCode.A))
+            {
+                moveDirection += Vector2.right;
+            }
+            if (Input.GetKey(KeyCode.S))
+            {
+                moveDirection += Vector2.up;
+            }
+            if (Input.GetKey(KeyCode.D))
+            {
+                moveDirection += Vector2.left;
+            }
         }
 
         // Normalize the direction to ensure consistent speed in all directions
