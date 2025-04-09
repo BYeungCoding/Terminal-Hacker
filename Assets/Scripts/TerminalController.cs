@@ -26,6 +26,11 @@ public class TerminalController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if(inputField.isFocused)
+        {
+            return;
+        }
         if (Input.GetKeyDown(KeyCode.Tab)) // Toggle terminal visibility with the backquote key (`)
         {
             isTerminalVisible = !isTerminalVisible;

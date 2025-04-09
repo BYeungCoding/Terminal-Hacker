@@ -7,6 +7,8 @@ public class CharacterMover : MonoBehaviour
     public Rigidbody2D PlayerBody;
     public bool isCurruptionActive = false;
 
+    public TerminalController terminalController; // Reference to the TerminalController script
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -16,8 +18,10 @@ public class CharacterMover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Prevent movement if the terminal input field is focused
+        if (scriptAReference != null && terminalController.!inputOpen)
+        {
         Vector2 moveDirection = Vector2.zero;
-
         // Check for input and calculate movement direction
 
         if(!isCurruptionActive){
@@ -65,6 +69,7 @@ public class CharacterMover : MonoBehaviour
 
         // Apply the velocity
         PlayerBody.linearVelocity = moveDirection * currMoveSpeed;
+        }
     }
 
     public void SetMoveSpeed(float newSpeed)
