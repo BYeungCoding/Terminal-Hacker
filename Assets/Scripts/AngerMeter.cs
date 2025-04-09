@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -68,19 +69,22 @@ public class AngerMeter : MonoBehaviour
 
     public void CalmDown()
     {
-        float timer = 5f;
+        StartCoroutine(CalmDownCoroutine());
+    }
+    private IEnumerator CalmDownCoroutine()
+    {
+        float timer = 5f; // Duration for calming down
+        float decreaseRate = 0.05f; // Rate at which anger decreases
 
-        while (timer > 0f){
-            _angerLevel -= Time.deltaTime * 0.05f; // Simulate calming down when called
+        while (timer > 0f)
+        {
+            _angerLevel -= Time.deltaTime * decreaseRate; // Gradually decrease anger level
             _angerLevel = Mathf.Clamp01(_angerLevel); // Ensure it stays within 0 and 1
             progressBarFill.fillAmount = _angerLevel; // Update the UI to reflect the new anger level
-            progressBarFill.color = Color.Lerp(Color.green, Color.red, _angerLevel); // Update the color of the progress bar based on the new anger level   
+            progressBarFill.color = Color.Lerp(Color.green, Color.red, _angerLevel); // Update the color of the progress bar
 
             timer -= Time.deltaTime; // Decrease the timer
-            if (timer <= 0f)
-            {
-                break; // Exit the loop when the timer is up
-            }
+            yield return null; // Wait for the next frame
         }
     }
 }

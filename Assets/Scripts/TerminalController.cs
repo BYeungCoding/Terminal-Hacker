@@ -13,7 +13,9 @@ public class TerminalController : MonoBehaviour
     public AngerMeter angerMeter; // Reference to the AngerMeter component (optional, if you want to integrate with it)
     private List<string> commandHistory = new List<string>(); // Store command history for the terminal
     private int historyIndex = 0; // Track the current index in the command history for navigation
-    private bool isTerminalVisible = false; // Track the visibility of the terminal panel
+    public bool isTerminalVisible = false; // Track the visibility of the terminal panel
+
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
