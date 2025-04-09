@@ -2,37 +2,97 @@ using UnityEngine;
 
 public class CharacterMover : MonoBehaviour
 {
-    public int moveSpeed = 4;
+    public float baseMoveSpeed = 4f;
+    private float currMoveSpeed;
     public Rigidbody2D PlayerBody;
+    public bool isCurruptionActive = false;
+
+    public TerminalController terminalController; // Reference to the TerminalController script
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        currMoveSpeed = baseMoveSpeed; // Initialize current move speed to the base move speed
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.W)){
-            PlayerBody.linearVelocity = Vector2.up * moveSpeed;
-        }else if(Input.GetKeyUp(KeyCode.W)){
-            PlayerBody.linearVelocity = Vector2.zero;
+        // Prevent movement if the terminal input field is focused
+        if (scriptAReference != null && terminalController.!inputOpen)
+        {
+        Vector2 moveDirection = Vector2.zero;
+        // Check for input and calculate movement direction
+
+        if(!isCurruptionActive){
+            if (Input.GetKey(KeyCode.W))
+            {
+                moveDirection += Vector2.up;
+            }
+            if (Input.GetKey(KeyCode.A))
+            {
+                moveDirection += Vector2.left;
+            }
+            if (Input.GetKey(KeyCode.S))
+            {
+                moveDirection += Vector2.down;
+            }
+            if (Input.GetKey(KeyCode.D))
+            {
+                moveDirection += Vector2.right;
+            }
         }
-        if (Input.GetKey(KeyCode.A)){
-            PlayerBody.linearVelocity = Vector2.left * moveSpeed;
-        }else if(Input.GetKeyUp(KeyCode.A)){
-            PlayerBody.linearVelocity = Vector2.zero;
+        else{
+            if (Input.GetKey(KeyCode.W))
+            {
+                moveDirection += Vector2.down;
+            }
+            if (Input.GetKey(KeyCode.A))
+            {
+                moveDirection += Vector2.right;
+            }
+            if (Input.GetKey(KeyCode.S))
+            {
+                moveDirection += Vector2.up;
+            }
+            if (Input.GetKey(KeyCode.D))
+            {
+                moveDirection += Vector2.left;
+            }
         }
-        if (Input.GetKey(KeyCode.S)){
-            PlayerBody.linearVelocity = Vector2.down * moveSpeed;
-        }else if(Input.GetKeyUp(KeyCode.S)){
-            PlayerBody.linearVelocity = Vector2.zero;
+
+        // Normalize the direction to ensure consistent speed in all directions
+        if (moveDirection != Vector2.zero)
+        {
+            moveDirection = moveDirection.normalized;
         }
-        if (Input.GetKey(KeyCode.D)){
-            PlayerBody.linearVelocity = Vector2.right * moveSpeed;
-        }else if(Input.GetKeyUp(KeyCode.D)){
-            PlayerBody.linearVelocity = Vector2.zero;
+
+        // Apply the velocity
+        PlayerBody.linearVelocity = moveDirection * currMoveSpeed;
         }
+    }
+
+    public void SetMoveSpeed(float newSpeed)
+    {
+        /*
+         * This method allows external scripts to set the current move speed of the character.
+         */
+        if (newSpeed < 0)
+        {
+            Debug.LogWarning("Move speed cannot be negative. Setting to base speed.");
+            currMoveSpeed = baseMoveSpeed; // Fallback to base speed if negative value is provided
+        }
+        else
+        {
+            currMoveSpeed = newSpeed;
+        }
+    }
+
+    public void ResetMoveSpeed()
+    {
+        /*
+         * This method resets the move speed to the base move speed.
+         */
+        currMoveSpeed = baseMoveSpeed; // Reset to the base move speed
     }
 }

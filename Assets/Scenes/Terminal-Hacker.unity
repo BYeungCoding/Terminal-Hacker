@@ -967,8 +967,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed2df5086ef6029458600f3962910916, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
+  baseMoveSpeed: 4
   PlayerBody: {fileID: 2120456277}
+  isCurruptionActive: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
