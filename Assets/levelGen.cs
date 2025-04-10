@@ -1,9 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UIElements;
 
 public class levelGen : MonoBehaviour
 {
     public GameObject roomPrefab;
+    public GameObject playerPrefab;
+
+    private GameObject playerInstance;
     public int numberOfRooms = 10;
 
     private Dictionary<Vector2Int, GameObject> spawnedRooms = new Dictionary<Vector2Int, GameObject>();
@@ -65,6 +69,36 @@ public class levelGen : MonoBehaviour
             bool left = spawnedRooms.ContainsKey(pos + Vector2Int.left); 
 
             rc.SetDoors(top, bottom, right, left);
+        }
+
+        GameObject startRoom = spawnedRooms[Vector2Int.zero];
+        
+        Transform floorTransform = null;
+        foreach (Transform child in startRoom.transform)
+        {
+            if (child.CompareTag("Floor"))
+            {
+                floorTransform = child;
+                break;
+            }
+        }
+
+        if (floorTransform != null)
+        {
+            Debug.Log("Spawning player at: " + floorTransform.position);
+           playerInstance = Instantiate(playerPrefab, floorTransform.position + new Vector3(12, 0, 0), Quaternion.identity);
+        }
+
+        Vector3 spawnPosition = floorTransform.position;
+
+        playerInstance = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
+
+        Camera.main.transform.position = new Vector3(spawnPosition.x, spawnPosition.y, Camera.main.transform.position.z);
+
+        CameraFollow camFollow = Camera.main.GetComponent<CameraFollow>();
+        if (camFollow != null)
+        {
+            camFollow.target = playerInstance.transform;
         }
     }
 
