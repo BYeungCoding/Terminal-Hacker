@@ -52,27 +52,28 @@ public class levelGen : MonoBehaviour
             foreach (var dir in directions)
             {
                 Vector2Int nextPos = currPos + dir;
-                if(!spawnedRooms.ContainsKey(nextPos) && Random.value > 0.5f)
+                if (!spawnedRooms.ContainsKey(nextPos) && Random.value > 0.5f)
                 {
                     frontier.Enqueue(nextPos);
                 }
             }
         }
 
-        foreach (var kvp in spawnedRooms){
+        foreach (var kvp in spawnedRooms)
+        {
             Vector2Int pos = kvp.Key;
             RoomController rc = kvp.Value.GetComponent<RoomController>();
 
             bool top = spawnedRooms.ContainsKey(pos + Vector2Int.up);
             bool bottom = spawnedRooms.ContainsKey(pos + Vector2Int.down);
             bool right = spawnedRooms.ContainsKey(pos + Vector2Int.right);
-            bool left = spawnedRooms.ContainsKey(pos + Vector2Int.left); 
+            bool left = spawnedRooms.ContainsKey(pos + Vector2Int.left);
 
             rc.SetDoors(top, bottom, right, left);
         }
 
         GameObject startRoom = spawnedRooms[Vector2Int.zero];
-        
+
         Transform floorTransform = null;
         foreach (Transform child in startRoom.transform)
         {
@@ -85,20 +86,33 @@ public class levelGen : MonoBehaviour
 
         if (floorTransform != null)
         {
-            Debug.Log("Spawning player at: " + floorTransform.position);
-           playerInstance = Instantiate(playerPrefab, floorTransform.position + new Vector3(12, 0, 0), Quaternion.identity);
-        }
+            Vector3 spawnPosition = floorTransform.position + new Vector3(27.5f, 0f, 0f);
+            playerInstance = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
 
-        Vector3 spawnPosition = floorTransform.position;
-
-        playerInstance = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
-
-        Camera.main.transform.position = new Vector3(spawnPosition.x, spawnPosition.y, Camera.main.transform.position.z);
-
-        CameraFollow camFollow = Camera.main.GetComponent<CameraFollow>();
-        if (camFollow != null)
-        {
-            camFollow.target = playerInstance.transform;
+            Camera.main.transform.position = spawnPosition + new Vector3(0f, 0f, Camera.main.transform.position.z);
+            // Hook up the TerminalManagement reference
+            GameObject terminalManager = GameObject.Find("TerminalManager"); // Name in the hierarchy
+            if (terminalManager != null)
+            {
+                CharacterMover moveScript = playerInstance.GetComponent<CharacterMover>();
+                if (moveScript != null)
+                {
+                    // Assign the TerminalController component to the CharacterMover script
+                    TerminalController terminalController = terminalManager.GetComponent<TerminalController>();
+                    if (terminalController != null)
+                    {
+                        moveScript.terminalController = terminalController;
+                    }
+                    else
+                    {
+                        Debug.LogWarning("TerminalController component not found on TerminalManager!");
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogWarning("TerminalManagement object not found in scene!");
+            }
         }
     }
 
