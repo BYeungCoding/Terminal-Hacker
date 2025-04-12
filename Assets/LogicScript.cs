@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LogicScript : MonoBehaviour
 {
@@ -20,5 +21,6 @@ public class LogicScript : MonoBehaviour
     public void startGame()
     {
         titleScreen.SetActive(false);
+        SceneManager.LoadScene("Main01");
     }
 }
