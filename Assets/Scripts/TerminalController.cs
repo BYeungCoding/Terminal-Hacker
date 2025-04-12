@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
+using System.Linq;
+using System;
 
 public class TerminalController : MonoBehaviour
 {
@@ -97,7 +99,7 @@ void SubmitCommand(string input)
     }
 
 
-void LogToTerminal(string message)
+    void LogToTerminal(string message)
     {
         if (string.IsNullOrEmpty(message))
         {
@@ -113,14 +115,16 @@ void LogToTerminal(string message)
 
     void ProcessCommand(string input)
     {
-        string[] parts = input.ToLower().Split(' ');
+        string[] parts = input.ToLower().Split(' ',StringSplitOptions.RemoveEmptyEntries);
         string command = parts[0];
+        string[] args = parts.Skip(1).ToArray();
 
         //Processing commands 
         switch (command)
         {
             case "help":
                 LogToTerminal("Available commands: help, clear, exit, debuff, cure");
+                LogToTerminal("Available Bash commands: ls, ls -l, ls -a, cd, vim, mv, pwd, rm, touch");
                 break;
             case "clear":
                 outputText.text = ""; // Clear the terminal output
@@ -149,6 +153,89 @@ void LogToTerminal(string message)
                 else
                 {
                     LogToTerminal("AngerMeter component not assigned.");
+                }
+                break;
+            case "ls":
+                if (args.Length == 0)
+                {
+                    LogToTerminal("ls used: showing basic map");
+                }
+                else if (args.Contains("-l"))
+                {
+                    LogToTerminal("ls -l used: showing detailed map info");
+                }
+                else if (args.Contains("-a"))
+                {
+                    LogToTerminal("ls -a used: showing all including hidden files");
+                }
+                else
+                {
+                    LogToTerminal("ls used with unknown flag: " + string.Join(" ", args));
+                }
+                break;
+            case "cd":
+                if (args.Length > 0)
+                {
+                    if(args.Length > 1)
+                    {
+                        LogToTerminal("cd error: only one argument allowed");
+                        break;
+                    }
+                    string target = args[0];
+                    LogToTerminal($"cd used: changing directory to {target}");
+                    // Add logic for actual directory change if you want
+                }
+                else
+                {
+                    LogToTerminal("cd error: missing target directory");
+                }
+                break;
+            case "vim":
+                if (args.Length > 0)
+                {
+                    string target = args[0];
+                    LogToTerminal($"vim used: editing {target}");
+                }
+                else
+                {
+                    LogToTerminal("vim error: missing target file");
+                }
+                break;
+            case "mv":
+                if (args.Length > 0)
+                {
+                    string target = args[0];
+                    LogToTerminal($"mv used: moving {target}");
+                }
+                else
+                {
+                    LogToTerminal("mv error: missing target file");
+                }
+                break;
+            case "pwd":
+                LogToTerminal("pwd was used: showing you the current path of your directory");
+                break;
+            case "rm":
+                if (args.Length > 0)
+                {
+                    string target = args[0];
+                    LogToTerminal($"rm used: deleting {target}");
+                }
+                else
+                {
+                    LogToTerminal("rm error: missing target file");
+                }
+                break;
+            case "touch":
+                if (args.Length > 0)
+                {
+                    string target = args[0];
+                    LogToTerminal($"touch used: updating timestamp on/creating {target}");
+                    // Add logic for handling whether or not the file already exists.
+                }
+                else
+                {
+                    LogToTerminal("touch error: missing target file");
                 }
                 break;
             default:
