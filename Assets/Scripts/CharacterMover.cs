@@ -103,19 +103,19 @@ public class CharacterMover : MonoBehaviour
         Debug.Log(collision.gameObject.tag);
         if(collision.gameObject.CompareTag("Door Top")){
             Debug.Log("Top works");
-            Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + 27f, 0f);
+            Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + 27f, -1f);
             Camera.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + 10.0f, -10f);
         } else if(collision.gameObject.CompareTag("Door Bottom")){
             Debug.Log("Bottom works");
-            Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y - 27f, 0);
+            Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y - 27f, -1f);
             Camera.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y - 10.0f, -10f);
         } else if(collision.gameObject.CompareTag("Door Left")){
             Debug.Log("Left works");
-            Player.transform.position = new Vector3(Player.transform.position.x - 38f, Player.transform.position.y, 0f);
+            Player.transform.position = new Vector3(Player.transform.position.x - 38f, Player.transform.position.y, -1f);
             Camera.transform.position = new Vector3(Player.transform.position.x - 12.0f, Player.transform.position.y, -10f);
         } else if(collision.gameObject.CompareTag("Door Right")){
             Debug.Log("Right works");
-            Player.transform.position = new Vector3(Player.transform.position.x + 38f, Player.transform.position.y, 0f);
+            Player.transform.position = new Vector3(Player.transform.position.x + 38f, Player.transform.position.y, -1f);
             Camera.transform.position = new Vector3(Player.transform.position.x + 12.0f, Player.transform.position.y, -10f);
         }
     }

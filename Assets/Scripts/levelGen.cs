@@ -85,7 +85,7 @@ public class levelGen : MonoBehaviour
         }
         if (floorTransform != null)
         {
-            Vector3 spawnPosition = floorTransform.position + new Vector3(0f, 0f, 0f);
+            Vector3 spawnPosition = floorTransform.position + new Vector3(0f, 0f, -1f);
             playerInstance = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
 
             Camera.main.transform.position = spawnPosition + new Vector3(0f, 0f, Camera.main.transform.position.z);
