@@ -2,16 +2,19 @@ using UnityEngine;
 
 public class CharacterMover : MonoBehaviour
 {
+    public GameObject Player;
+    private GameObject Camera;
     public float baseMoveSpeed = 4f;
     private float currMoveSpeed;
     public Rigidbody2D PlayerBody;
-    public bool isCurruptionActive = false;
+    public bool isCorruptionActive = false;
     public TerminalController terminalController; // Reference to the TerminalController script
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         currMoveSpeed = baseMoveSpeed; // Initialize current move speed to the base move speed
+        Camera = GameObject.FindGameObjectWithTag("MainCamera");
     }
 
     // Update is called once per frame
@@ -24,7 +27,7 @@ public class CharacterMover : MonoBehaviour
         Vector2 moveDirection = Vector2.zero;
         // Check for input and calculate movement direction
 
-        if(!isCurruptionActive){
+        if(!isCorruptionActive){
             if (Input.GetKey(KeyCode.W))
             {
                 moveDirection += Vector2.up;
@@ -94,5 +97,26 @@ public class CharacterMover : MonoBehaviour
          * This method resets the move speed to the base move speed.
          */
         currMoveSpeed = baseMoveSpeed; // Reset to the base move speed
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision){
+        Debug.Log(collision.gameObject.tag);
+        if(collision.gameObject.CompareTag("Door Top")){
+            Debug.Log("Top works");
+            Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + 27f, 0f);
+            Camera.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + 10.0f, -10f);
+        } else if(collision.gameObject.CompareTag("Door Bottom")){
+            Debug.Log("Bottom works");
+            Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y - 27f, 0);
+            Camera.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y - 10.0f, -10f);
+        } else if(collision.gameObject.CompareTag("Door Left")){
+            Debug.Log("Left works");
+            Player.transform.position = new Vector3(Player.transform.position.x - 38f, Player.transform.position.y, 0f);
+            Camera.transform.position = new Vector3(Player.transform.position.x - 12.0f, Player.transform.position.y, -10f);
+        } else if(collision.gameObject.CompareTag("Door Right")){
+            Debug.Log("Right works");
+            Player.transform.position = new Vector3(Player.transform.position.x + 38f, Player.transform.position.y, 0f);
+            Camera.transform.position = new Vector3(Player.transform.position.x + 12.0f, Player.transform.position.y, -10f);
+        }
     }
 }

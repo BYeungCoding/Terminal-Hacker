@@ -148,9 +148,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed2df5086ef6029458600f3962910916, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Player: {fileID: 4127580618593139818}
   baseMoveSpeed: 10
   PlayerBody: {fileID: 4584825985142039187}
-  isCurruptionActive: 0
+  isCorruptionActive: 0
   terminalController: {fileID: 0}
 --- !u!50 &4584825985142039187
 Rigidbody2D:

@@ -281,7 +281,7 @@ GameObject:
   - component: {fileID: 892318707111589058}
   m_Layer: 0
   m_Name: Door Left
-  m_TagString: Floor
+  m_TagString: Door Left
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -295,7 +295,7 @@ Transform:
   m_GameObject: {fileID: 1305441070977484268}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1254977, y: -0, z: -0, w: 0.9920939}
-  m_LocalPosition: {x: 0.97618484, y: 2.89976, z: -4.097439}
+  m_LocalPosition: {x: 0.97618484, y: 2.89976, z: 0}
   m_LocalScale: {x: 0.36499998, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -363,7 +363,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1305441070977484268}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -414,7 +414,7 @@ GameObject:
   - component: {fileID: 6899525589860728911}
   m_Layer: 0
   m_Name: Floor
-  m_TagString: Untagged
+  m_TagString: Floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -502,7 +502,7 @@ GameObject:
   - component: {fileID: 3059123142015014795}
   m_Layer: 0
   m_Name: Door Bottom
-  m_TagString: Untagged
+  m_TagString: Door Bottom
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -516,7 +516,7 @@ Transform:
   m_GameObject: {fileID: 2586452011120291028}
   serializedVersion: 2
   m_LocalRotation: {x: 0.08873995, y: -0.088739894, z: 0.70151645, w: 0.70151645}
-  m_LocalPosition: {x: 27.76, y: -12.98, z: -8.07}
+  m_LocalPosition: {x: 27.76, y: -12.98, z: 0}
   m_LocalScale: {x: 0.365, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -584,7 +584,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2586452011120291028}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -636,7 +636,7 @@ GameObject:
   - component: {fileID: 418039629643627278}
   m_Layer: 0
   m_Name: Door Right
-  m_TagString: Untagged
+  m_TagString: Door Right
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -650,7 +650,7 @@ Transform:
   m_GameObject: {fileID: 3772519685075649430}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1254977, y: -0, z: -0, w: 0.9920939}
-  m_LocalPosition: {x: 54.58618, y: 2.89976, z: -4.097439}
+  m_LocalPosition: {x: 54.58618, y: 2.89976, z: 0}
   m_LocalScale: {x: 0.36499998, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -718,7 +718,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3772519685075649430}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -770,7 +770,7 @@ GameObject:
   - component: {fileID: 7484991832763699998}
   m_Layer: 0
   m_Name: Door Top
-  m_TagString: Untagged
+  m_TagString: Door Top
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -784,7 +784,7 @@ Transform:
   m_GameObject: {fileID: 5844122039482593243}
   serializedVersion: 2
   m_LocalRotation: {x: -0.0035850233, y: 0.0035850215, z: 0.7070977, w: 0.7070977}
-  m_LocalPosition: {x: 27.76, y: 18.77, z: -7}
+  m_LocalPosition: {x: 27.76, y: 18.77, z: 0}
   m_LocalScale: {x: 0.365, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -852,7 +852,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5844122039482593243}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -879,7 +879,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.013289452, y: 0.008529812}
+  m_Offset: {x: -0.11255813, y: 0.008529812}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -889,7 +889,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 13.06658, y: 0.85952836}
+  m_Size: {x: 13.265118, y: 0.85952836}
   m_EdgeRadius: 0
 --- !u!1 &6213383999250267925
 GameObject:
