@@ -1,9 +1,10 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LogicScript : MonoBehaviour
 {
-        public GameObject titleScreen;
+    public GameObject titleScreen;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -20,5 +21,6 @@ public class LogicScript : MonoBehaviour
     public void startGame()
     {
         titleScreen.SetActive(false);
+        SceneManager.LoadScene("Main01");
     }
 }
