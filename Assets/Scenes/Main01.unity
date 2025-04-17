@@ -1708,7 +1708,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomPrefab: {fileID: 6373475449236581238, guid: 340a5f8712e75134e92ad73f3cc86970, type: 3}
   playerPrefab: {fileID: 4127580618593139818, guid: 817c1ca785e16b74d84132a35504d1de, type: 3}
+  elevatorPrefab: {fileID: 7282296055075798613, guid: 11050d2f7639c464f96b3030dea62387, type: 3}
   numberOfRooms: 10
+  maxFloors: 3
 --- !u!4 &1520682134
 Transform:
   m_ObjectHideFlags: 0
