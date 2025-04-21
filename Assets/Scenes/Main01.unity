@@ -540,7 +540,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &263599876
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1711,6 +1711,8 @@ MonoBehaviour:
   elevatorPrefab: {fileID: 7282296055075798613, guid: 11050d2f7639c464f96b3030dea62387, type: 3}
   numberOfRooms: 10
   maxFloors: 3
+  dummyFiles:
+  - {fileID: 6525159838667719404, guid: 1310b96f3b8380f4baae2872b8dcd33a, type: 3}
 --- !u!4 &1520682134
 Transform:
   m_ObjectHideFlags: 0

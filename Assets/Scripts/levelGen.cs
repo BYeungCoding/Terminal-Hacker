@@ -6,13 +6,15 @@ public class levelGen : MonoBehaviour
     public GameObject roomPrefab;
     public GameObject playerPrefab;
     public GameObject elevatorPrefab;
-    public int numberOfRooms = 10;
-    public int maxFloors = 5;
-
+    public int numberOfRooms = 10; // Number of rooms to generate per floor
+    public int maxFloors = 5; // Maximum number of floors to generate per level
+    public GameObject[] dummyFiles;
     private int totalFloorsSpawned = 1;
     private int elevatorCounter = 1;
     private int DeadEndFloorSpawnCounter = 0;
 
+
+    //Directions used for room conections: up, right, down, left
     private Vector2Int[] directions = new Vector2Int[]
     {
         new Vector2Int(0, 1),
@@ -30,11 +32,14 @@ public class levelGen : MonoBehaviour
 
     void Start()
     {
-        GenerateLevelAt(Vector2Int.zero, 0, -1); // No return for root
+        //Generate the root Floor + rest of the levels
+        GenerateLevelAt(Vector2Int.zero, 0, -1);
         Debug.Log("Level generation complete. Total floors spawned: " + totalFloorsSpawned);
         Debug.Log("Total elevators spawned: " + elevatorCounter);
+        Debug.Log("Total dead-end floors spawned: " + DeadEndFloorSpawnCounter);
     }
 
+    // Generates a level at the specified offset with the given floor ID and return elevator ID
     void GenerateLevelAt(Vector2Int offset, int floorID, int returnToFloorID)
     {
         Queue<Vector2Int> frontier = new Queue<Vector2Int>();
@@ -45,19 +50,18 @@ public class levelGen : MonoBehaviour
         int roomCount = 0;
         List<ElevatorSpawnData> elevatorsToSpawn = new List<ElevatorSpawnData>();
 
+        // Randomly generate Room layout using BFS
         while (frontier.Count > 0 && roomCount < numberOfRooms)
         {
             Vector2Int currPos = frontier.Dequeue();
             if (localRooms.ContainsKey(currPos)) continue;
 
-            // Step 1: Spawn room at Vector3.zero temporarily
+            // Instantiate room temporarily at origin
             GameObject room = Instantiate(roomPrefab, Vector3.zero, Quaternion.identity);
             Transform floor = FindFloorTransform(room);
 
-            // Step 2: Calculate world position
+            // Set Final world position for the room
             Vector3 targetGridPos = new Vector3(currPos.x * 75 + offset.x, currPos.y * 50 + offset.y, 0);
-
-            // Step 3: Align room so that its Floor center is at the grid position
             if (floor != null)
             {
                 Vector3 centerOffset = room.transform.position - floor.position;
@@ -69,11 +73,13 @@ public class levelGen : MonoBehaviour
                 room.transform.position = targetGridPos;
             }
 
+            //Assign grid position and add to localRooms
             RoomController rc = room.GetComponent<RoomController>();
             rc.gridPosition = currPos;
             localRooms.Add(currPos, room);
             roomCount++;
 
+            // Randomly shuffle directions to add variety in room connections
             ShuffleArray(directions);
             bool addedAtLeastOne = false;
             foreach (var dir in directions)
@@ -90,7 +96,8 @@ public class levelGen : MonoBehaviour
             }
         }
 
-        // Add return elevator in the center room
+        // Spawn A return Elevator in the center room of the level
+        // If returnToFloorID is -1, it means this is the root floor and we don't need a return elevator
         if (returnToFloorID != -1 && localRooms.ContainsKey(Vector2Int.zero))
         {
             Transform centerFloor = FindFloorTransform(localRooms[Vector2Int.zero]);
@@ -106,7 +113,7 @@ public class levelGen : MonoBehaviour
             }
         }
 
-        // Set doors and collect elevator candidates
+        // Set doors for each room based on neighbors
         foreach (var kvp in localRooms)
         {
             Vector2Int pos = kvp.Key;
@@ -117,7 +124,9 @@ public class levelGen : MonoBehaviour
             bool right = localRooms.ContainsKey(pos + Vector2Int.right);
             bool left = localRooms.ContainsKey(pos + Vector2Int.left);
             rc.SetDoors(top, bottom, right, left);
+            SpawnFiles(kvp.Value);
 
+            //Spawn elevators if room is dead-end and totalFloorsSpawned < maxFloors
             int neighborCount = 0;
             if (top) neighborCount++;
             if (bottom) neighborCount++;
@@ -143,7 +152,7 @@ public class levelGen : MonoBehaviour
             }
         }
 
-        // Spawn elevators and then spawn new floors
+        // Place elevators and generate new floors or dead-end rooms
         foreach (var data in elevatorsToSpawn)
         {
             GameObject elevator = Instantiate(elevatorPrefab, data.position, Quaternion.identity);
@@ -166,7 +175,7 @@ public class levelGen : MonoBehaviour
             }
         }
 
-        // Spawn player on root floor
+        // Spawn player on root floor only
         if (floorID == 0 && GameObject.FindGameObjectWithTag("Player") == null)
         {
             if (localRooms.TryGetValue(Vector2Int.zero, out GameObject centerRoom))
@@ -178,7 +187,7 @@ public class levelGen : MonoBehaviour
                     GameObject playerInstance = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
                     Camera.main.transform.position = spawnPos + new Vector3(0f, 0f, Camera.main.transform.position.z);
 
-                    // Hook up terminal controller
+                    // Hook up terminal controller to the player
                     GameObject terminalManager = GameObject.Find("TerminalManager");
                     if (terminalManager != null)
                     {
@@ -196,6 +205,8 @@ public class levelGen : MonoBehaviour
             }
         }
     }
+    // Generates a 3x3 dead-end floor with only a return elevator
+    // This is used when the maximum number of floors has been reached
     void Generate3x3DeadEndFloor(Vector2Int offset, int returnToFloorID)
     {
         Dictionary<Vector2Int, GameObject> localRooms = new Dictionary<Vector2Int, GameObject>();
@@ -236,6 +247,7 @@ public class levelGen : MonoBehaviour
             bool right = localRooms.ContainsKey(pos + Vector2Int.right);
             bool left = localRooms.ContainsKey(pos + Vector2Int.left);
             rc.SetDoors(top, bottom, right, left);
+            SpawnFiles(kvp.Value);
         }
 
         // Place return elevator in center room
@@ -254,7 +266,7 @@ public class levelGen : MonoBehaviour
             }
         }
     }
-
+    // Finds the floor transform within a room
     Transform FindFloorTransform(GameObject room)
     {
         foreach (Transform child in room.transform)
@@ -265,6 +277,7 @@ public class levelGen : MonoBehaviour
         return null;
     }
 
+    // Shuffles the array in place using Fisher-Yates algorithm
     void ShuffleArray(Vector2Int[] array)
     {
         for (int i = 0; i < array.Length; i++)
@@ -273,6 +286,67 @@ public class levelGen : MonoBehaviour
             int rand = Random.Range(i, array.Length);
             array[i] = array[rand];
             array[rand] = temp;
+        }
+    }
+
+    void SpawnFiles(GameObject room)
+    {
+        RoomController rc = room.GetComponent<RoomController>();
+        int spawned = 0;
+
+        List<string> walls = new List<string>(rc.emptyWalls);
+        ShuffleList(walls);
+
+        foreach(string wall in walls)
+        {
+            if(spawned >= rc.emptyWalls.Count -1) break;
+            if (Random.value < 0.6f)
+            {
+                GameObject file = Instantiate(dummyFiles[Random.Range(0, dummyFiles.Length)]);
+                Transform floor = FindFloorTransform(room);
+                
+                Vector3 spawnOffset = Vector3.zero;
+                Quaternion rotation = Quaternion.identity;
+                switch(wall)
+                {
+                    case "Top":
+                        spawnOffset = new Vector3(0, 15f, -0.5f);
+                        rotation = Quaternion.Euler(0, 0, 180f);
+                        break;
+                    case "Bottom":
+                        spawnOffset = new Vector3(0, -15f, -0.5f);
+                        rotation = Quaternion.Euler(0, 0, 0);
+                        break;
+                    case "Right":
+                        spawnOffset = new Vector3(26f, 0, -0.5f);
+                        rotation = Quaternion.Euler(0, 0, 90f);
+                        break;
+                    case "Left":
+                        spawnOffset = new Vector3(-26f, 0, -0.5f);
+                        rotation = Quaternion.Euler(0, 0, -90f);
+                        break;
+                }
+
+                file.transform.position = floor.position + spawnOffset;
+                file.transform.rotation = rotation;
+
+                DummyFile df = file.GetComponent<DummyFile>();
+                float rand = Random.value;
+                if(rand < 0.2f) df.isCorrupted = true;
+                else if(rand < 0.4f) df.isHidden = true;
+                spawned++;
+            }
+        }
+    }
+    // Define the ShuffleList method
+    void ShuffleList<T>(List<T> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            T temp = list[i];
+            int rand = Random.Range(i, list.Count);
+            list[i] = list[rand];
+            list[rand] = temp;
         }
     }
 }
