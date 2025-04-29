@@ -1,5 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Data.Common;
 
 public class levelGen : MonoBehaviour
 {
@@ -12,6 +15,10 @@ public class levelGen : MonoBehaviour
     private int totalFloorsSpawned = 1;
     private int elevatorCounter = 1;
     private int DeadEndFloorSpawnCounter = 0;
+    public Dictionary<Vector2Int, GameObject> generatedRooms = new Dictionary<Vector2Int, GameObject>();
+    public Vector2Int currentPlayerRoom { get; set; }
+    public int currentPlayerFloorID { get; set; }
+    private List<ElevatorController> allElevators = new List<ElevatorController>();
 
 
     //Directions used for room conections: up, right, down, left
@@ -77,7 +84,9 @@ public class levelGen : MonoBehaviour
             RoomController rc = room.GetComponent<RoomController>();
             rc.gridPosition = currPos;
             localRooms.Add(currPos, room);
+            generatedRooms[offset + new Vector2Int(currPos.x * 75, currPos.y * 50)] = room;
             roomCount++;
+            room.AddComponent<RoomFloorTag>().floorID = floorID;
 
             // Randomly shuffle directions to add variety in room connections
             ShuffleArray(directions);
@@ -109,7 +118,10 @@ public class levelGen : MonoBehaviour
                 if (ec != null)
                 {
                     ec.floorID = returnToFloorID;
+                    ec.levelGen = this;
+                    allElevators.Add(ec);
                 }
+
             }
         }
 
@@ -124,7 +136,7 @@ public class levelGen : MonoBehaviour
             bool right = localRooms.ContainsKey(pos + Vector2Int.right);
             bool left = localRooms.ContainsKey(pos + Vector2Int.left);
             rc.SetDoors(top, bottom, right, left);
-            SpawnFiles(kvp.Value);
+            rc.GetComponent<RoomController>().SpawnFiles(dummyFiles);
 
             //Spawn elevators if room is dead-end and totalFloorsSpawned < maxFloors
             int neighborCount = 0;
@@ -156,10 +168,25 @@ public class levelGen : MonoBehaviour
         foreach (var data in elevatorsToSpawn)
         {
             GameObject elevator = Instantiate(elevatorPrefab, data.position, Quaternion.identity);
+
+            // Find the closest room to the elevator position
+            GameObject closestRoom = generatedRooms
+                .Where(kvp => kvp.Value.GetComponent<RoomFloorTag>()?.floorID == floorID)
+                .OrderBy(kvp => Vector3.Distance(kvp.Value.transform.position, data.position))
+                .FirstOrDefault().Value;
+
+            if (closestRoom != null)
+            {
+                elevator.transform.SetParent(closestRoom.transform);
+            }
+
             ElevatorController ec = elevator.GetComponent<ElevatorController>();
             if (ec != null)
             {
                 ec.floorID = data.floorID;
+                ec.returnToFloorID = floorID;
+                ec.levelGen = this;
+                allElevators.Add(ec);
             }
 
             if (totalFloorsSpawned < maxFloors)
@@ -187,12 +214,11 @@ public class levelGen : MonoBehaviour
                     GameObject playerInstance = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
                     Camera.main.transform.position = spawnPos + new Vector3(0f, 0f, Camera.main.transform.position.z);
 
-                    // Hook up terminal controller to the player
-                    GameObject terminalManager = GameObject.Find("TerminalManager");
-                    if (terminalManager != null)
+                    CharacterMover moveScript = playerInstance.GetComponent<CharacterMover>();
+                    if (moveScript != null)
                     {
-                        CharacterMover moveScript = playerInstance.GetComponent<CharacterMover>();
-                        if (moveScript != null)
+                        GameObject terminalManager = GameObject.Find("TerminalManager");
+                        if (terminalManager != null)
                         {
                             TerminalController terminalController = terminalManager.GetComponent<TerminalController>();
                             if (terminalController != null)
@@ -200,9 +226,22 @@ public class levelGen : MonoBehaviour
                                 moveScript.terminalController = terminalController;
                             }
                         }
+
+                        moveScript.levelGen = this;
+
+                        foreach (ElevatorController ec in allElevators)
+                        {
+                            if (ec != null)
+                            {
+                                ec.playerMover = moveScript;
+                            }
+                        }
                     }
                 }
             }
+
+            currentPlayerRoom = offset + Vector2Int.zero;
+            currentPlayerFloorID = 0;
         }
     }
     // Generates a 3x3 dead-end floor with only a return elevator
@@ -247,7 +286,7 @@ public class levelGen : MonoBehaviour
             bool right = localRooms.ContainsKey(pos + Vector2Int.right);
             bool left = localRooms.ContainsKey(pos + Vector2Int.left);
             rc.SetDoors(top, bottom, right, left);
-            SpawnFiles(kvp.Value);
+            rc.GetComponent<RoomController>().SpawnFiles(dummyFiles);
         }
 
         // Place return elevator in center room
@@ -258,10 +297,16 @@ public class levelGen : MonoBehaviour
             {
                 Vector3 returnPos = centerFloor.position + new Vector3(0f, 0f, -0.5f);
                 GameObject returnElevator = Instantiate(elevatorPrefab, returnPos, Quaternion.identity);
+                if (centerRoom != null)
+                {
+                    returnElevator.transform.SetParent(centerRoom.transform);
+                }
                 ElevatorController ec = returnElevator.GetComponent<ElevatorController>();
                 if (ec != null)
                 {
                     ec.floorID = returnToFloorID;
+                    ec.levelGen = this;
+                    allElevators.Add(ec);
                 }
             }
         }
@@ -288,65 +333,5 @@ public class levelGen : MonoBehaviour
             array[rand] = temp;
         }
     }
-
-    void SpawnFiles(GameObject room)
-    {
-        RoomController rc = room.GetComponent<RoomController>();
-        int spawned = 0;
-
-        List<string> walls = new List<string>(rc.emptyWalls);
-        ShuffleList(walls);
-
-        foreach(string wall in walls)
-        {
-            if(spawned >= rc.emptyWalls.Count -1) break;
-            if (Random.value < 0.6f)
-            {
-                GameObject file = Instantiate(dummyFiles[Random.Range(0, dummyFiles.Length)]);
-                Transform floor = FindFloorTransform(room);
-                
-                Vector3 spawnOffset = Vector3.zero;
-                Quaternion rotation = Quaternion.identity;
-                switch(wall)
-                {
-                    case "Top":
-                        spawnOffset = new Vector3(0, 15f, -0.5f);
-                        rotation = Quaternion.Euler(0, 0, 180f);
-                        break;
-                    case "Bottom":
-                        spawnOffset = new Vector3(0, -15f, -0.5f);
-                        rotation = Quaternion.Euler(0, 0, 0);
-                        break;
-                    case "Right":
-                        spawnOffset = new Vector3(26f, 0, -0.5f);
-                        rotation = Quaternion.Euler(0, 0, 90f);
-                        break;
-                    case "Left":
-                        spawnOffset = new Vector3(-26f, 0, -0.5f);
-                        rotation = Quaternion.Euler(0, 0, -90f);
-                        break;
-                }
-
-                file.transform.position = floor.position + spawnOffset;
-                file.transform.rotation = rotation;
-
-                DummyFile df = file.GetComponent<DummyFile>();
-                float rand = Random.value;
-                if(rand < 0.2f) df.isCorrupted = true;
-                else if(rand < 0.4f) df.isHidden = true;
-                spawned++;
-            }
-        }
-    }
-    // Define the ShuffleList method
-    void ShuffleList<T>(List<T> list)
-    {
-        for (int i = 0; i < list.Count; i++)
-        {
-            T temp = list[i];
-            int rand = Random.Range(i, list.Count);
-            list[i] = list[rand];
-            list[rand] = temp;
-        }
-    }
 }
+

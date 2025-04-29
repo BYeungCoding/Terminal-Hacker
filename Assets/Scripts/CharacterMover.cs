@@ -9,7 +9,8 @@ public class CharacterMover : MonoBehaviour
     public Rigidbody2D PlayerBody;
     public bool isCorruptionActive = false;
     public TerminalController terminalController; // Reference to the TerminalController script
-
+    public levelGen levelGen; // Reference to the LevelGenerator script
+    public Vector2Int location;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -18,61 +19,68 @@ public class CharacterMover : MonoBehaviour
     }
 
     // Update is called once per frame
+    [System.Obsolete]
     void Update()
     {
         // Prevent movement if the terminal input field is focused
-       if (terminalController != null && !terminalController.isTerminalVisible)
+        if (terminalController != null && !terminalController.isTerminalVisible)
 
-       {
-        Vector2 moveDirection = Vector2.zero;
-        // Check for input and calculate movement direction
-
-        if(!isCorruptionActive){
-            if (Input.GetKey(KeyCode.W))
-            {
-                moveDirection += Vector2.up;
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                moveDirection += Vector2.left;
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                moveDirection += Vector2.down;
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                moveDirection += Vector2.right;
-            }
-        }
-        else{
-            if (Input.GetKey(KeyCode.W))
-            {
-                moveDirection += Vector2.down;
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                moveDirection += Vector2.right;
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                moveDirection += Vector2.up;
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                moveDirection += Vector2.left;
-            }
-        }
-
-        // Normalize the direction to ensure consistent speed in all directions
-        if (moveDirection != Vector2.zero)
         {
-            moveDirection = moveDirection.normalized;
-        }
+            Vector2 moveDirection = Vector2.zero;
+            // Check for input and calculate movement direction
 
-        // Apply the velocity
-        PlayerBody.linearVelocity = moveDirection * currMoveSpeed;
-       }
+            if (!isCorruptionActive)
+            {
+                if (Input.GetKey(KeyCode.W))
+                {
+                    moveDirection += Vector2.up;
+                }
+                if (Input.GetKey(KeyCode.A))
+                {
+                    moveDirection += Vector2.left;
+                }
+                if (Input.GetKey(KeyCode.S))
+                {
+                    moveDirection += Vector2.down;
+                }
+                if (Input.GetKey(KeyCode.D))
+                {
+                    moveDirection += Vector2.right;
+                }
+            }
+            else
+            {
+                if (Input.GetKey(KeyCode.W))
+                {
+                    moveDirection += Vector2.down;
+                }
+                if (Input.GetKey(KeyCode.A))
+                {
+                    moveDirection += Vector2.right;
+                }
+                if (Input.GetKey(KeyCode.S))
+                {
+                    moveDirection += Vector2.up;
+                }
+                if (Input.GetKey(KeyCode.D))
+                {
+                    moveDirection += Vector2.left;
+                }
+            }
+
+            // Normalize the direction to ensure consistent speed in all directions
+            if (moveDirection != Vector2.zero)
+            {
+                moveDirection = moveDirection.normalized;
+            }
+
+            // Apply the velocity
+            PlayerBody.linearVelocity = moveDirection * currMoveSpeed;
+        }
+        else
+        {
+            PlayerBody.velocity = Vector2.zero; // Stop the player when the terminal is active
+        }
     }
 
     public void SetMoveSpeed(float newSpeed)
@@ -99,24 +107,52 @@ public class CharacterMover : MonoBehaviour
         currMoveSpeed = baseMoveSpeed; // Reset to the base move speed
     }
 
-    private void OnCollisionEnter2D(Collision2D collision){
-        Debug.Log(collision.gameObject.tag);
-        if(collision.gameObject.CompareTag("Door Top")){
-            Debug.Log("Top works");
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("Collision detected with: " + collision.gameObject.name);
+        if (collision.gameObject.CompareTag("Door Top"))
+        {
             Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + 27f, -1f);
             Camera.transform.position = new Vector3(Camera.transform.position.x, Camera.transform.position.y + 50.0f, -10f);
-        } else if(collision.gameObject.CompareTag("Door Bottom")){
-            Debug.Log("Bottom works");
+            UpdateCurrentRoom();        }
+        else if (collision.gameObject.CompareTag("Door Bottom"))
+        {
             Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y - 27f, -1f);
             Camera.transform.position = new Vector3(Camera.transform.position.x, Camera.transform.position.y - 50.0f, -10f);
-        } else if(collision.gameObject.CompareTag("Door Left")){
-            Debug.Log("Left works");
+            UpdateCurrentRoom();
+        }
+        else if (collision.gameObject.CompareTag("Door Left"))
+        {
             Player.transform.position = new Vector3(Player.transform.position.x - 38f, Player.transform.position.y, -1f);
-            Camera.transform.position = new Vector3(Camera.transform.position.x -75.0f, Camera.transform.position.y, -10f);
-        } else if(collision.gameObject.CompareTag("Door Right")){
-            Debug.Log("Right works");
+            Camera.transform.position = new Vector3(Camera.transform.position.x - 75.0f, Camera.transform.position.y, -10f);
+            UpdateCurrentRoom();
+        }
+        else if (collision.gameObject.CompareTag("Door Right"))
+        {
             Player.transform.position = new Vector3(Player.transform.position.x + 38f, Player.transform.position.y, -1f);
             Camera.transform.position = new Vector3(Camera.transform.position.x + 75.0f, Camera.transform.position.y, -10f);
+            UpdateCurrentRoom();
+
         }
+    }
+
+    public void UpdateCurrentRoom()
+    {
+        Vector3 playerPosition = transform.position;
+
+        // Calculate approximate room grid location
+        int gridX = Mathf.RoundToInt(playerPosition.x / 75f);
+        int gridY = Mathf.RoundToInt(playerPosition.y / 50f);
+
+        levelGen.currentPlayerRoom = new Vector2Int(gridX, gridY);
+        if (levelGen != null)
+        {
+            Debug.Log("Current Room: " + levelGen.currentPlayerRoom);
+        }
+        else
+        {
+            Debug.LogWarning("LevelGen is not assigned. Unable to log the current room.");
+        }
+
     }
 }
