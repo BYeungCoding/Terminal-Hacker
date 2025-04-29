@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      HUD Border_0: -7959138915191525011
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
