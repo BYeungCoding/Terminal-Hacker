@@ -12,7 +12,7 @@ public class levelGen : MonoBehaviour
     private int totalFloorsSpawned = 1;
     private int elevatorCounter = 1;
     private int DeadEndFloorSpawnCounter = 0;
-
+    public AudioSource LevelMusic;
 
     //Directions used for room conections: up, right, down, left
     private Vector2Int[] directions = new Vector2Int[]

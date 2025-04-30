@@ -8,7 +8,8 @@ public class ElevatorController : MonoBehaviour
     private bool playerInRange = false;
     private bool isTeleporting = false; //To prevent spams
     public Vector2Int returnGridPosition; //the grid position the player should appear at when returning to the floor
-    
+    public AudioSource ElevatorDing;
+
     //when the player is on the elevator, set the flag to true
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -58,6 +59,9 @@ public class ElevatorController : MonoBehaviour
         
         //Start a corotine to handle the teleportation with a fade effect
         StartCoroutine(FadeAndTeleport(player, destination));
+        
+        //Play elevator sound
+        ElevatorDing.Play();
 
         //Set flag to allow the player to teleport again
         isTeleporting = false;
