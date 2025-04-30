@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using System.Linq;
 using System.Text;
@@ -36,7 +37,9 @@ public class MapPrinter : MonoBehaviour
                 string marker = "";
 
                 // Check if player is in this room
-                if (rc.gridPosition == levelGen.currentPlayerRoom)
+                if (room == levelGen.generatedRooms.FirstOrDefault(r =>
+    r.Value.GetComponent<RoomFloorTag>()?.floorID == levelGen.currentPlayerFloorID &&
+    r.Value.GetComponent<RoomController>()?.gridPosition == levelGen.currentPlayerRoom).Value)
                 {
                     marker = "[X]";
                 }

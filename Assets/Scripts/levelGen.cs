@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -117,8 +118,10 @@ public class levelGen : MonoBehaviour
                 ElevatorController ec = returnElevator.GetComponent<ElevatorController>();
                 if (ec != null)
                 {
-                    ec.floorID = returnToFloorID;
+                    ec.floorID = floorID;
+                    ec.returnToFloorID = returnToFloorID;
                     ec.levelGen = this;
+                    ec.isReturnElevator = true;
                     allElevators.Add(ec);
                 }
 
@@ -333,5 +336,5 @@ public class levelGen : MonoBehaviour
             array[rand] = temp;
         }
     }
-}
 
+}

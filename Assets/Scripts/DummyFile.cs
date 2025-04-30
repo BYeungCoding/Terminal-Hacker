@@ -66,4 +66,3 @@ public class DummyFile : MonoBehaviour
         return names[UnityEngine.Random.Range(0, names.Length)] + UnityEngine.Random.Range(100, 999) + extensions[UnityEngine.Random.Range(0, extensions.Length)];
     }
 }
-

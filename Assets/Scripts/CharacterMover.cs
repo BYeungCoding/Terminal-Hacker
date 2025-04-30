@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 public class CharacterMover : MonoBehaviour
@@ -114,7 +115,8 @@ public class CharacterMover : MonoBehaviour
         {
             Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + 27f, -1f);
             Camera.transform.position = new Vector3(Camera.transform.position.x, Camera.transform.position.y + 50.0f, -10f);
-            UpdateCurrentRoom();        }
+            UpdateCurrentRoom();
+        }
         else if (collision.gameObject.CompareTag("Door Bottom"))
         {
             Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y - 27f, -1f);
@@ -140,18 +142,27 @@ public class CharacterMover : MonoBehaviour
     {
         Vector3 playerPosition = transform.position;
 
-        // Calculate approximate room grid location
-        int gridX = Mathf.RoundToInt(playerPosition.x / 75f);
-        int gridY = Mathf.RoundToInt(playerPosition.y / 50f);
+        // Calculate exact grid key as used in generatedRooms
+        int x = Mathf.RoundToInt(playerPosition.x / 75f);
+        int y = Mathf.RoundToInt(playerPosition.y / 50f);
+        Vector2Int gridKey = new Vector2Int(x * 75, y * 50);
 
-        levelGen.currentPlayerRoom = new Vector2Int(gridX, gridY);
-        if (levelGen != null)
+        if (levelGen.generatedRooms.ContainsKey(gridKey))
         {
-            Debug.Log("Current Room: " + levelGen.currentPlayerRoom);
+            GameObject room = levelGen.generatedRooms[gridKey];
+            RoomController rc = room.GetComponent<RoomController>();
+            RoomFloorTag tag = room.GetComponent<RoomFloorTag>();
+
+            if (rc != null && tag != null)
+            {
+                levelGen.currentPlayerRoom = rc.gridPosition;
+                levelGen.currentPlayerFloorID = tag.floorID;
+                Debug.Log($"[UpdateRoom] You are now at grid: {rc.gridPosition}, Floor: {tag.floorID}");
+            }
         }
         else
         {
-            Debug.LogWarning("LevelGen is not assigned. Unable to log the current room.");
+            Debug.LogWarning("Room not found in generatedRooms for key: " + gridKey);
         }
 
     }

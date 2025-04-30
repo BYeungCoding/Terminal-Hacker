@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections;
 using UnityEngine;
@@ -11,6 +12,7 @@ public class ElevatorController : MonoBehaviour
     public Vector2Int returnGridPosition; //the grid position the player should appear at when returning to the floor
     public levelGen levelGen; //Reference to the level generator script
     public CharacterMover playerMover; //Reference to the player mover script
+    public bool isReturnElevator = false;
 
     //when the player is on the elevator, set the flag to true
     void OnTriggerEnter2D(Collider2D other)
@@ -48,16 +50,13 @@ public class ElevatorController : MonoBehaviour
         GameObject player = playerMover.gameObject; // get the player from the assigned mover
         if (player == null) return;
 
-        int targetFloorID = (returnToFloorID != 0) ? returnToFloorID : floorID;
-
+        int targetFloorID = isReturnElevator ? returnToFloorID : floorID;
         Vector3 floorOffset = (targetFloorID % 2 == 0)
             ? new Vector3(targetFloorID * 500, 0, 0)
             : new Vector3(0, targetFloorID * 500, 0);
 
         Vector3 localOffset = new Vector3(returnGridPosition.x * 75, returnGridPosition.y * 50, 0);
         Vector3 destination = floorOffset + localOffset + new Vector3(0, 0, -1);
-
-        playerMover.UpdateCurrentRoom();
 
         StartCoroutine(FadeAndTeleport(player, destination));
         isTeleporting = false;
@@ -75,5 +74,7 @@ public class ElevatorController : MonoBehaviour
             destination.y,
             Camera.main.transform.position.z
         );
+
+        playerMover.UpdateCurrentRoom();
     }
 }
