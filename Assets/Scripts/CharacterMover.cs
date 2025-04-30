@@ -9,6 +9,8 @@ public class CharacterMover : MonoBehaviour
     public Rigidbody2D PlayerBody;
     public bool isCorruptionActive = false;
     public TerminalController terminalController; // Reference to the TerminalController script
+    public AudioSource DeathSound;
+    public AudioSource DoorSound;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -103,18 +105,30 @@ public class CharacterMover : MonoBehaviour
         Debug.Log(collision.gameObject.tag);
         if(collision.gameObject.CompareTag("Door Top")){
             Debug.Log("Top works");
+            //Plays sound for door opening
+            DoorSound.Play();
+            //Moves player to top room, then camera follows them
             Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + 27f, -1f);
             Camera.transform.position = new Vector3(Camera.transform.position.x, Camera.transform.position.y + 50.0f, -10f);
         } else if(collision.gameObject.CompareTag("Door Bottom")){
             Debug.Log("Bottom works");
+            //Plays sound for door opening
+            DoorSound.Play();
+            //Moves player to bottom room, then camera follows them
             Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y - 27f, -1f);
             Camera.transform.position = new Vector3(Camera.transform.position.x, Camera.transform.position.y - 50.0f, -10f);
         } else if(collision.gameObject.CompareTag("Door Left")){
             Debug.Log("Left works");
+            //Plays sound for door opening
+            DoorSound.Play();
+            //Moves player to left room, then camera follows them
             Player.transform.position = new Vector3(Player.transform.position.x - 38f, Player.transform.position.y, -1f);
             Camera.transform.position = new Vector3(Camera.transform.position.x -75.0f, Camera.transform.position.y, -10f);
         } else if(collision.gameObject.CompareTag("Door Right")){
             Debug.Log("Right works");
+            //Plays sound for door opening
+            DoorSound.Play();
+            //Moves player to right room, then camera follows them
             Player.transform.position = new Vector3(Player.transform.position.x + 38f, Player.transform.position.y, -1f);
             Camera.transform.position = new Vector3(Camera.transform.position.x + 75.0f, Camera.transform.position.y, -10f);
         }
