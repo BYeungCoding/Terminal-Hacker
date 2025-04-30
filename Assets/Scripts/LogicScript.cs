@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 public class LogicScript : MonoBehaviour
 {
     public GameObject titleScreen;
+    public AudioSource TitleMusic;
+    public AudioSource LevelStart;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -20,6 +22,7 @@ public class LogicScript : MonoBehaviour
 
     public void startGame()
     {
+        LevelStart.Play();
         titleScreen.SetActive(false);
         SceneManager.LoadScene("Main01");
     }

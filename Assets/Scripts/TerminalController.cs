@@ -17,6 +17,8 @@ public class TerminalController : MonoBehaviour
     private List<string> commandHistory = new List<string>(); // Store command history for the terminal
     private int historyIndex = 0; // Track the current index in the command history for navigation
     public bool isTerminalVisible = false; // Track the visibility of the terminal panel
+    public AudioSource TerminalOpen;
+    public AudioSource CommandSound;
     public MapPrinter mapPrinter; // Reference to the MapPrinter component (optional, if you want to integrate with it)
     public levelGen levelGen; // Reference to the LevelGen component (optional, if you want to integrate with it)
 
@@ -41,6 +43,9 @@ public class TerminalController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Tab)) // Toggle terminal visibility with the backquote key (`)
         {
+            //Play terminal opening sound
+            TerminalOpen.Play();
+
             isTerminalVisible = !isTerminalVisible;
             terminalPanel.SetActive(isTerminalVisible);
 
@@ -124,6 +129,9 @@ public class TerminalController : MonoBehaviour
         string[] parts = input.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
         string command = parts[0];
         string[] args = parts.Skip(1).ToArray();
+
+        //Play feedback sound
+        CommandSound.Play();
 
         //Processing commands 
         switch (command)

@@ -16,7 +16,7 @@ public class levelGen : MonoBehaviour
     private int totalFloorsSpawned = 1;
     private int elevatorCounter = 1;
     private int DeadEndFloorSpawnCounter = 0;
-    public Dictionary<Vector2Int, GameObject> generatedRooms = new Dictionary<Vector2Int, GameObject>();
+    public AudioSource LevelMusic;    public Dictionary<Vector2Int, GameObject> generatedRooms = new Dictionary<Vector2Int, GameObject>();
     public Vector2Int currentPlayerRoom { get; set; }
     public int currentPlayerFloorID { get; set; }
     private List<ElevatorController> allElevators = new List<ElevatorController>();
