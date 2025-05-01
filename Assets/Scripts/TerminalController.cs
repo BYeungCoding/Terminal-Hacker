@@ -17,8 +17,9 @@ public class TerminalController : MonoBehaviour
     private List<string> commandHistory = new List<string>(); // Store command history for the terminal
     private int historyIndex = 0; // Track the current index in the command history for navigation
     public bool isTerminalVisible = false; // Track the visibility of the terminal panel
-    public AudioSource TerminalOpen;
-    public AudioSource CommandSound;
+    public AudioClip TerminalOpenClip; // Assign the audio file directly in the inspector
+    public AudioClip CommandSoundClip; // Assign the audio file directly in the inspector
+    private AudioSource audioSource;
     public MapPrinter mapPrinter; // Reference to the MapPrinter component (optional, if you want to integrate with it)
     public levelGen levelGen; // Reference to the LevelGen component (optional, if you want to integrate with it)
 
@@ -30,6 +31,11 @@ public class TerminalController : MonoBehaviour
         terminalPanel.SetActive(false); // Start with the terminal panel hidden
         inputField.onSubmit.AddListener(SubmitCommand); // Add listener to process input when the user presses Enter
 
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
 
     }
 
@@ -44,7 +50,10 @@ public class TerminalController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Tab)) // Toggle terminal visibility with the backquote key (`)
         {
             //Play terminal opening sound
-            TerminalOpen.Play();
+            if (TerminalOpenClip != null)
+            {
+                audioSource.PlayOneShot(TerminalOpenClip); // Play the terminal opening sound
+            }
 
             isTerminalVisible = !isTerminalVisible;
             terminalPanel.SetActive(isTerminalVisible);
@@ -131,7 +140,10 @@ public class TerminalController : MonoBehaviour
         string[] args = parts.Skip(1).ToArray();
 
         //Play feedback sound
-        CommandSound.Play();
+        if (CommandSoundClip != null)
+        {
+            audioSource.PlayOneShot(CommandSoundClip); // Play the command feedback sound
+        }
 
         //Processing commands 
         switch (command)

@@ -105,11 +105,7 @@ MonoBehaviour:
   floorID: 0
   returnToFloorID: 0
   returnGridPosition: {x: 0, y: 0}
-<<<<<<< HEAD
-  levelGen: {fileID: 0}
-=======
   ElevatorDing: {fileID: 5116653679277038470}
->>>>>>> origin/main
 --- !u!61 &4625750638616640681
 BoxCollider2D:
   m_ObjectHideFlags: 0
