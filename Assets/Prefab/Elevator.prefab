@@ -105,7 +105,12 @@ MonoBehaviour:
   floorID: 0
   returnToFloorID: 0
   returnGridPosition: {x: 0, y: 0}
+  isReturnElevator: 0
+  levelGen: {fileID: 0}
+  playerMover: {fileID: 0}
   ElevatorDing: {fileID: 5116653679277038470}
+  fadeCanvasGroup: {fileID: 0}
+  fadeDuration: 0.3
 --- !u!61 &4625750638616640681
 BoxCollider2D:
   m_ObjectHideFlags: 0

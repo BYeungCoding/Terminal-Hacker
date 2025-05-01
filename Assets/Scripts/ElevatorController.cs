@@ -1,16 +1,38 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class ElevatorController : MonoBehaviour
 {
-    public int floorID; //The Floor this elevator leads to 
-    public int returnToFloorID; //The Floor this elevator returns to
+    public int floorID;
+    public int returnToFloorID;
+    public Vector2Int returnGridPosition;
+    public bool isReturnElevator = false;
+
     private bool playerInRange = false;
-    private bool isTeleporting = false; //To prevent spams
-    public Vector2Int returnGridPosition; //the grid position the player should appear at when returning to the floor
+    private bool isTeleporting = false;
+
+    public levelGen levelGen;
+    public CharacterMover playerMover;
     public AudioSource ElevatorDing;
 
-    //when the player is on the elevator, set the flag to true
+    public CanvasGroup fadeCanvasGroup;
+    public float fadeDuration = 0.5f;
+
+
+    void Start()
+    {
+        GameObject fadeObj = GameObject.Find("Black Screen");
+        if (fadeObj != null)
+        {
+            fadeCanvasGroup = fadeObj.GetComponent<CanvasGroup>();
+        }
+        else
+        {
+            Debug.LogWarning("FadeImage object with CanvasGroup not found!");
+        }
+    }
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
@@ -19,7 +41,6 @@ public class ElevatorController : MonoBehaviour
         }
     }
 
-    //when the player leaves the elevator, set the flag to false
     void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
@@ -28,7 +49,6 @@ public class ElevatorController : MonoBehaviour
         }
     }
 
-    //Check for player input E to trigger the teleportation
     void Update()
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E) && !isTeleporting)
@@ -38,46 +58,78 @@ public class ElevatorController : MonoBehaviour
         }
     }
 
-    //Teleport the player to the floor
     void TeleportPlayerToFloor()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (playerMover == null) return;
+
+        GameObject player = playerMover.gameObject;
         if (player == null) return;
 
-        // choose which floor to teleport to:
-        // if returnToFloorID is set not 0, use that; otherwise use the floorID
-        int targetFloorID = (returnToFloorID != 0) ? returnToFloorID : floorID;
-        
-        //Match the floor offset logic from LevelGen
+        // Determine which floor to go to
+        int targetFloorID = isReturnElevator ? returnToFloorID : floorID;
+
+        // Calculate floor world offset
         Vector3 floorOffset = (targetFloorID % 2 == 0)
             ? new Vector3(targetFloorID * 500, 0, 0)
             : new Vector3(0, targetFloorID * 500, 0);
 
-        // Calculate the destination position based on the returnGridPosition
+        // Calculate local room offset
         Vector3 localOffset = new Vector3(returnGridPosition.x * 75, returnGridPosition.y * 50, 0);
         Vector3 destination = floorOffset + localOffset + new Vector3(0, 0, -1);
-        
-        //Start a corotine to handle the teleportation with a fade effect
-        StartCoroutine(FadeAndTeleport(player, destination));
-        
-        //Play elevator sound
-        ElevatorDing.Play();
 
-        //Set flag to allow the player to teleport again
+        // Play sound
+        if (ElevatorDing != null)
+            ElevatorDing.Play();
+
+        // Start fade/teleport coroutine
+        StartCoroutine(FadeAndTeleport(player, destination));
+    }
+
+    IEnumerator FadeAndTeleport(GameObject player, Vector3 destination)
+    {
+        if (fadeCanvasGroup == null)
+        {
+            Debug.LogWarning("Fade canvas group not assigned.");
+            player.transform.position = destination;
+            Camera.main.transform.position = new Vector3(destination.x, destination.y, Camera.main.transform.position.z);
+            playerMover?.UpdateCurrentRoom();
+            isTeleporting = false;
+            yield break;
+        }
+
+        playerMover.PlayerBody.linearVelocity = Vector2.zero;
+        playerMover.PlayerBody.angularVelocity = 0f;
+        playerMover.enabled = false;
+
+
+        yield return StartCoroutine(Fade(0f, 1f, fadeDuration));
+
+        player.transform.position = destination;
+        Camera.main.transform.position = new Vector3(destination.x, destination.y, Camera.main.transform.position.z);
+
+        yield return new WaitForSeconds(0.1f);
+
+        yield return StartCoroutine(Fade(1f, 0f, fadeDuration));
+
+        playerMover.enabled = true;
+        playerMover.UpdateCurrentRoom();
+
         isTeleporting = false;
     }
 
-    //Coroutine handles teleportation with a fade effect(Not implemented yet)
-    IEnumerator FadeAndTeleport(GameObject player, Vector3 destination)
+    IEnumerator Fade(float startAlpha, float endAlpha, float duration)
     {
-        yield return new WaitForSeconds(0.3f); // optional delay/fade
+        float elapsed = 0f;
+        fadeCanvasGroup.blocksRaycasts = true;
 
-        player.transform.position = destination;
+        while (elapsed < duration)
+        {
+            fadeCanvasGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
 
-        Camera.main.transform.position = new Vector3(
-            destination.x,
-            destination.y,
-            Camera.main.transform.position.z
-        );
+        fadeCanvasGroup.alpha = endAlpha;
+        fadeCanvasGroup.blocksRaycasts = false;
     }
 }
