@@ -156,11 +156,11 @@ public class CharacterMover : MonoBehaviour
     {
         Vector3 playerPosition = transform.position;
 
-        // Calculate exact grid key as used in generatedRooms
+        // Compute global key (same as used in generatedRooms)
         int x = Mathf.RoundToInt(playerPosition.x / 75f);
         int y = Mathf.RoundToInt(playerPosition.y / 50f);
         Vector2Int gridKey = new Vector2Int(x * 75, y * 50);
-
+        Debug.Log($"[UpdateRoom] Global gridKey: {gridKey}, Position: {playerPosition}");
         if (levelGen.generatedRooms.ContainsKey(gridKey))
         {
             GameObject room = levelGen.generatedRooms[gridKey];
@@ -173,11 +173,14 @@ public class CharacterMover : MonoBehaviour
                 levelGen.currentPlayerFloorID = tag.floorID;
                 Debug.Log($"[UpdateRoom] You are now at grid: {rc.gridPosition}, Floor: {tag.floorID}");
             }
+            else
+            {
+                Debug.LogWarning("Room or tag missing in UpdateCurrentRoom.");
+            }
         }
         else
         {
-            Debug.LogWarning("Room not found in generatedRooms for key: " + gridKey);
+            Debug.LogWarning("No room found in generatedRooms for gridKey: " + gridKey);
         }
-
     }
 }

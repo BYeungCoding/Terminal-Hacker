@@ -16,7 +16,7 @@ public class levelGen : MonoBehaviour
     private int totalFloorsSpawned = 1;
     private int elevatorCounter = 1;
     private int DeadEndFloorSpawnCounter = 0;
-    public AudioSource LevelMusic;    
+    public AudioSource LevelMusic;
     public Dictionary<Vector2Int, GameObject> generatedRooms = new Dictionary<Vector2Int, GameObject>();
     public Vector2Int currentPlayerRoom { get; set; }
     public int currentPlayerFloorID { get; set; }
@@ -252,6 +252,7 @@ public class levelGen : MonoBehaviour
     // This is used when the maximum number of floors has been reached
     void Generate3x3DeadEndFloor(Vector2Int offset, int returnToFloorID)
     {
+        int thisFloorID = totalFloorsSpawned++;
         Dictionary<Vector2Int, GameObject> localRooms = new Dictionary<Vector2Int, GameObject>();
 
         for (int x = -1; x <= 1; x++)
@@ -276,6 +277,13 @@ public class levelGen : MonoBehaviour
                 RoomController rc = room.GetComponent<RoomController>();
                 rc.gridPosition = gridPos;
                 localRooms[gridPos] = room;
+
+                room.AddComponent<RoomFloorTag>().floorID = thisFloorID;
+                var tag = room.AddComponent<RoomFloorTag>();
+                tag.floorID = thisFloorID;
+                Debug.Log($"[DeadEndGen] Room {gridPos} assigned to floor {tag.floorID}");
+
+                generatedRooms[offset + new Vector2Int(gridPos.x * 75, gridPos.y * 50)] = room;
             }
         }
 
@@ -289,8 +297,8 @@ public class levelGen : MonoBehaviour
             bool bottom = localRooms.ContainsKey(pos + Vector2Int.down);
             bool right = localRooms.ContainsKey(pos + Vector2Int.right);
             bool left = localRooms.ContainsKey(pos + Vector2Int.left);
-            rc.SetDoors(top, bottom, right, left);            
-            rc.GetComponent<RoomController>().SpawnFiles(dummyFiles);
+            rc.SetDoors(top, bottom, right, left);
+            rc.SpawnFiles(dummyFiles);
         }
 
         // Place return elevator in center room
@@ -305,11 +313,15 @@ public class levelGen : MonoBehaviour
                 {
                     returnElevator.transform.SetParent(centerRoom.transform);
                 }
+
                 ElevatorController ec = returnElevator.GetComponent<ElevatorController>();
                 if (ec != null)
                 {
-                    ec.floorID = returnToFloorID;
+                    ec.floorID = thisFloorID;
+                    ec.returnToFloorID = returnToFloorID;
+                    ec.returnGridPosition = Vector2Int.zero;
                     ec.levelGen = this;
+                    ec.isReturnElevator = true;
                     allElevators.Add(ec);
                 }
             }
