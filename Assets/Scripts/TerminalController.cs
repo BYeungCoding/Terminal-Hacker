@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using System.Linq;
 using System;
+using UnityEngine.Rendering;
 
 public class TerminalController : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class TerminalController : MonoBehaviour
     private List<string> commandHistory = new List<string>(); // Store command history for the terminal
     private int historyIndex = 0; // Track the current index in the command history for navigation
     public bool isTerminalVisible = false; // Track the visibility of the terminal panel
+    public GameObject fileEditorScreen;
+    public FileEditor fileEditor;
+    public DummyFile linkedFile;
 
 
 
@@ -25,6 +29,7 @@ public class TerminalController : MonoBehaviour
         //start  
         terminalPanel.SetActive(false); // Start with the terminal panel hidden
         inputField.onSubmit.AddListener(SubmitCommand); // Add listener to process input when the user presses Enter
+        fileEditor = fileEditorScreen.GetComponent<FileEditor>();
     }
 
     // Update is called once per frame
@@ -37,13 +42,7 @@ public class TerminalController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Tab)) // Toggle terminal visibility with the backquote key (`)
         {
-            isTerminalVisible = !isTerminalVisible;
-            terminalPanel.SetActive(isTerminalVisible);
-
-            if (isTerminalVisible)
-            {
-                inputField.ActivateInputField(); // Focus the input field when the terminal is shown
-            }
+            OpenTerminal();
         }
 
         if(isTerminalVisible && commandHistory.Count > 0) // Allow navigation through command history with Up/Down arrows when terminal is active
@@ -72,7 +71,16 @@ public class TerminalController : MonoBehaviour
         }
     }
 
-void SubmitCommand(string input)
+    public void OpenTerminal(){
+        isTerminalVisible = !isTerminalVisible;
+        terminalPanel.SetActive(isTerminalVisible);
+
+        if (isTerminalVisible)
+        {
+            inputField.ActivateInputField(); // Focus the input field when the terminal is shown
+        }
+    }
+    void SubmitCommand(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
         {
@@ -99,7 +107,7 @@ void SubmitCommand(string input)
     }
 
 
-    void LogToTerminal(string message)
+    public void LogToTerminal(string message)
     {
         if (string.IsNullOrEmpty(message))
         {
@@ -195,6 +203,13 @@ void SubmitCommand(string input)
                 {
                     string target = args[0];
                     LogToTerminal($"vim used: editing {target}");
+                    Debug.Log("Target: " + target + " Filename: "+linkedFile.gameObject.name.ToLower());
+                    if(target == linkedFile.gameObject.name.ToLower()){
+                        linkedFile.OpenEditor();
+                    } else {
+                        LogToTerminal("Wrong file name");
+                    }
+                    Debug.Log("FileEditor isVisible: " + fileEditor.isVisible);
                 }
                 else
                 {
@@ -220,6 +235,9 @@ void SubmitCommand(string input)
                 {
                     string target = args[0];
                     LogToTerminal($"rm used: deleting {target}");
+                    if(target == linkedFile.gameObject.name.ToLower()){
+                        linkedFile.Removefile();
+                    }
                 }
                 else
                 {
@@ -236,6 +254,19 @@ void SubmitCommand(string input)
                 else
                 {
                     LogToTerminal("touch error: missing target file");
+                }
+                break;
+            case "cat":
+                if (args.Length > 0){
+                    string target = args[0];
+                    if(target == linkedFile.gameObject.name.ToLower()){
+                        linkedFile.readFile();
+                        if(linkedFile.isWin == true){
+                            
+                        }
+                    } else {
+                        LogToTerminal($"File {target} does not exist");
+                    }
                 }
                 break;
             default:

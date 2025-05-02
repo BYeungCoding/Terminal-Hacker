@@ -1,12 +1,26 @@
+using System.IO;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DummyFile : MonoBehaviour
 {
     public bool isCorrupted = false;
     public bool isHidden = false;
+    public bool isWin = false;
 
     private SpriteRenderer sr;
     private Collider2D triggerZone;
+    public TMP_InputField inputField;
+    public TMP_Text outputText;
+    public ScrollRect outputScroll;
+    public int fileID;
+    public TerminalController terminalController;
+    public string fileContents = "Default text";
+    public GameObject fileEditor;
+    public string fileName;
+    public FileEditor editorScript;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -24,8 +38,9 @@ public class DummyFile : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.E))
         {
+            string fileName = this.name;
             float dist = Vector2.Distance(transform.position, GameObject.FindGameObjectWithTag("Player").transform.position);
-            if (dist < 2f)
+            if (dist < 5f && !terminalController.isTerminalVisible)
             {
                 if(isCorrupted)
                 {
@@ -34,6 +49,9 @@ public class DummyFile : MonoBehaviour
                 else
                 {
                     Debug.Log("You read the file. It contains important information.");
+                    terminalController.linkedFile = this;
+                    terminalController.OpenTerminal();
+                    terminalController.LogToTerminal( "\n> You interacted with " + fileName);
                 }
             }
         }
@@ -45,5 +63,25 @@ public class DummyFile : MonoBehaviour
         {
             sr.enabled = true;
         }
+    }
+
+
+    public void OpenEditor(){
+        GameObject editor = Instantiate(fileEditor);
+        FileEditor editorScript = editor.GetComponent<FileEditor>();
+        editorScript.Setup(this);
+    }
+
+    public void Removefile(){
+        Destroy(gameObject);
+    }
+
+    
+    public void readFile(){
+        GameObject editor = Instantiate(fileEditor);
+        FileEditor editorScript = editor.GetComponent<FileEditor>();
+        editorScript.Setup(this);
+        editorScript.CloseEditor();
+        terminalController.LogToTerminal(editorScript.inputField.text);
     }
 }

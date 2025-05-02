@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.IO;
 
 public class levelGen : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class levelGen : MonoBehaviour
     private int totalFloorsSpawned = 1;
     private int elevatorCounter = 1;
     private int DeadEndFloorSpawnCounter = 0;
+    private int nextFileID = 0;
+
 
 
     //Directions used for room conections: up, right, down, left
@@ -189,15 +192,20 @@ public class levelGen : MonoBehaviour
 
                     // Hook up terminal controller to the player
                     GameObject terminalManager = GameObject.Find("TerminalManager");
+                    GameObject fileManager = GameObject.Find("File Manager");
                     if (terminalManager != null)
                     {
                         CharacterMover moveScript = playerInstance.GetComponent<CharacterMover>();
                         if (moveScript != null)
                         {
                             TerminalController terminalController = terminalManager.GetComponent<TerminalController>();
+                            FileManager fileManagerScript = fileManager.GetComponent<FileManager>();
                             if (terminalController != null)
                             {
                                 moveScript.terminalController = terminalController;
+                            }
+                            if (fileManagerScript != null){
+                                moveScript.fileManager = fileManagerScript;
                             }
                         }
                     }
@@ -291,6 +299,7 @@ public class levelGen : MonoBehaviour
 
     void SpawnFiles(GameObject room)
     {
+        bool thereIsWin = false;
         RoomController rc = room.GetComponent<RoomController>();
         int spawned = 0;
 
@@ -329,12 +338,35 @@ public class levelGen : MonoBehaviour
 
                 file.transform.position = floor.position + spawnOffset;
                 file.transform.rotation = rotation;
-
+                
                 DummyFile df = file.GetComponent<DummyFile>();
-                float rand = Random.value;
-                if(rand < 0.2f) df.isCorrupted = true;
-                else if(rand < 0.4f) df.isHidden = true;
-                spawned++;
+                GameObject terminalManager = GameObject.Find("TerminalManager");
+                if (terminalManager != null)
+                {
+                    if (df != null)
+                    {
+                        TerminalController terminalController = terminalManager.GetComponent<TerminalController>();
+                        if (terminalController != null)
+                        {
+                            df.terminalController = terminalController;
+                        }
+                    }
+                }
+                if(df != null){
+                    df.gameObject.name = "Dummy_file" + nextFileID;
+                    nextFileID++;
+                    float rand = Random.value;
+                    if(rand < 0.2f) df.isCorrupted = true;
+                    else if(rand < 0.4f) df.isHidden = true;
+                    spawned++;
+                    if(spawned >= 8 && thereIsWin == false){
+                        float winRand = Random.value;
+                        if(winRand < 0.1f){
+                            df.isWin = true;
+                            thereIsWin = true;
+                        }
+                    }
+                }
             }
         }
     }

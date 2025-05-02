@@ -9,6 +9,7 @@ public class CharacterMover : MonoBehaviour
     public Rigidbody2D PlayerBody;
     public bool isCorruptionActive = false;
     public TerminalController terminalController; // Reference to the TerminalController script
+    public FileManager fileManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -20,59 +21,35 @@ public class CharacterMover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Prevent movement if the terminal input field is focused
-       if (terminalController != null && !terminalController.isTerminalVisible)
-
-       {
-        Vector2 moveDirection = Vector2.zero;
-        // Check for input and calculate movement direction
-
-        if(!isCorruptionActive){
-            if (Input.GetKey(KeyCode.W))
-            {
-                moveDirection += Vector2.up;
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                moveDirection += Vector2.left;
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                moveDirection += Vector2.down;
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                moveDirection += Vector2.right;
-            }
-        }
-        else{
-            if (Input.GetKey(KeyCode.W))
-            {
-                moveDirection += Vector2.down;
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                moveDirection += Vector2.right;
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                moveDirection += Vector2.up;
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                moveDirection += Vector2.left;
-            }
-        }
-
-        // Normalize the direction to ensure consistent speed in all directions
-        if (moveDirection != Vector2.zero)
+        bool isTerminalCondition = terminalController != null && !terminalController.isTerminalVisible;
+        if (isTerminalCondition)
         {
-            moveDirection = moveDirection.normalized;
-        }
+            Vector2 moveDirection = Vector2.zero;
+            // Check for input and calculate movement direction
 
-        // Apply the velocity
-        PlayerBody.linearVelocity = moveDirection * currMoveSpeed;
-       }
+            if(!isCorruptionActive){
+                if (Input.GetKey(KeyCode.W)) moveDirection += Vector2.up;
+                if (Input.GetKey(KeyCode.A)) moveDirection += Vector2.left;
+                if (Input.GetKey(KeyCode.S)) moveDirection += Vector2.down;
+                if (Input.GetKey(KeyCode.D)) moveDirection += Vector2.right;
+            }
+            else
+            {
+                if (Input.GetKey(KeyCode.W)) moveDirection += Vector2.down;
+                if (Input.GetKey(KeyCode.A)) moveDirection += Vector2.right;
+                if (Input.GetKey(KeyCode.S)) moveDirection += Vector2.up;
+                if (Input.GetKey(KeyCode.D)) moveDirection += Vector2.left;
+            }
+
+            // Normalize the direction to ensure consistent speed in all directions
+            if (moveDirection != Vector2.zero)
+            {
+                moveDirection = moveDirection.normalized;
+            }
+
+            // Apply the velocity
+            PlayerBody.linearVelocity = moveDirection * currMoveSpeed;
+        }
     }
 
     public void SetMoveSpeed(float newSpeed)
@@ -104,19 +81,19 @@ public class CharacterMover : MonoBehaviour
         if(collision.gameObject.CompareTag("Door Top")){
             Debug.Log("Top works");
             Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + 27f, -1f);
-            Camera.transform.position = new Vector3(Camera.transform.position.x, Camera.transform.position.y + 50.0f, -10f);
+            Camera.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + 10.0f, -10f);
         } else if(collision.gameObject.CompareTag("Door Bottom")){
             Debug.Log("Bottom works");
             Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y - 27f, -1f);
-            Camera.transform.position = new Vector3(Camera.transform.position.x, Camera.transform.position.y - 50.0f, -10f);
+            Camera.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y - 10.0f, -10f);
         } else if(collision.gameObject.CompareTag("Door Left")){
             Debug.Log("Left works");
             Player.transform.position = new Vector3(Player.transform.position.x - 38f, Player.transform.position.y, -1f);
-            Camera.transform.position = new Vector3(Camera.transform.position.x -75.0f, Camera.transform.position.y, -10f);
+            Camera.transform.position = new Vector3(Player.transform.position.x - 12.0f, Player.transform.position.y, -10f);
         } else if(collision.gameObject.CompareTag("Door Right")){
             Debug.Log("Right works");
             Player.transform.position = new Vector3(Player.transform.position.x + 38f, Player.transform.position.y, -1f);
-            Camera.transform.position = new Vector3(Camera.transform.position.x + 75.0f, Camera.transform.position.y, -10f);
+            Camera.transform.position = new Vector3(Player.transform.position.x + 12.0f, Player.transform.position.y, -10f);
         }
     }
 }
