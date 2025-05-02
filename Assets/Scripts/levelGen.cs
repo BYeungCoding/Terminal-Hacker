@@ -1,6 +1,7 @@
 
 using UnityEngine;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Data.Common;
@@ -16,6 +17,7 @@ public class levelGen : MonoBehaviour
     private int totalFloorsSpawned = 1;
     private int elevatorCounter = 1;
     private int DeadEndFloorSpawnCounter = 0;
+    private int nextFileID = 0;
     public AudioSource LevelMusic;
     public Dictionary<Vector2Int, GameObject> generatedRooms = new Dictionary<Vector2Int, GameObject>();
     public Vector2Int currentPlayerRoom { get; set; }
@@ -218,6 +220,10 @@ public class levelGen : MonoBehaviour
                     GameObject playerInstance = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
                     Camera.main.transform.position = spawnPos + new Vector3(0f, 0f, Camera.main.transform.position.z);
 
+                    // Hook up terminal controller to the player
+                    GameObject terminalManager = GameObject.Find("TerminalManager");
+                    GameObject fileManager = GameObject.Find("File Manager");
+                    if (terminalManager != null)
                     CharacterMover moveScript = playerInstance.GetComponent<CharacterMover>();
                     if (moveScript != null)
                     {
@@ -225,9 +231,13 @@ public class levelGen : MonoBehaviour
                         if (terminalManager != null)
                         {
                             TerminalController terminalController = terminalManager.GetComponent<TerminalController>();
+                            FileManager fileManagerScript = fileManager.GetComponent<FileManager>();
                             if (terminalController != null)
                             {
                                 moveScript.terminalController = terminalController;
+                            }
+                            if (fileManagerScript != null){
+                                moveScript.fileManager = fileManagerScript;
                             }
                         }
 
@@ -350,4 +360,89 @@ public class levelGen : MonoBehaviour
         }
     }
 
+    void SpawnFiles(GameObject room)
+    {
+        bool thereIsWin = false;
+        RoomController rc = room.GetComponent<RoomController>();
+        int spawned = 0;
+
+        List<string> walls = new List<string>(rc.emptyWalls);
+        ShuffleList(walls);
+
+        foreach(string wall in walls)
+        {
+            if(spawned >= rc.emptyWalls.Count -1) break;
+            if (Random.value < 0.6f)
+            {
+                GameObject file = Instantiate(dummyFiles[Random.Range(0, dummyFiles.Length)]);
+                Transform floor = FindFloorTransform(room);
+                
+                Vector3 spawnOffset = Vector3.zero;
+                Quaternion rotation = Quaternion.identity;
+                switch(wall)
+                {
+                    case "Top":
+                        spawnOffset = new Vector3(0, 15f, -0.5f);
+                        rotation = Quaternion.Euler(0, 0, 180f);
+                        break;
+                    case "Bottom":
+                        spawnOffset = new Vector3(0, -15f, -0.5f);
+                        rotation = Quaternion.Euler(0, 0, 0);
+                        break;
+                    case "Right":
+                        spawnOffset = new Vector3(26f, 0, -0.5f);
+                        rotation = Quaternion.Euler(0, 0, 90f);
+                        break;
+                    case "Left":
+                        spawnOffset = new Vector3(-26f, 0, -0.5f);
+                        rotation = Quaternion.Euler(0, 0, -90f);
+                        break;
+                }
+
+                file.transform.position = floor.position + spawnOffset;
+                file.transform.rotation = rotation;
+                
+                DummyFile df = file.GetComponent<DummyFile>();
+                GameObject terminalManager = GameObject.Find("TerminalManager");
+                if (terminalManager != null)
+                {
+                    if (df != null)
+                    {
+                        TerminalController terminalController = terminalManager.GetComponent<TerminalController>();
+                        if (terminalController != null)
+                        {
+                            df.terminalController = terminalController;
+                        }
+                    }
+                }
+                if(df != null){
+                    df.gameObject.name = "Dummy_file" + nextFileID;
+                    nextFileID++;
+                    float rand = Random.value;
+                    if(rand < 0.2f) df.isCorrupted = true;
+                    else if(rand < 0.4f) df.isHidden = true;
+                    spawned++;
+                    if(spawned >= 8 && thereIsWin == false){
+                        float winRand = Random.value;
+                        if(winRand < 0.1f){
+                            df.isWin = true;
+                            thereIsWin = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    // Define the ShuffleList method
+    void ShuffleList<T>(List<T> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            T temp = list[i];
+            int rand = Random.Range(i, list.Count);
+            list[i] = list[rand];
+            list[rand] = temp;
+        }
+    }
 }
+
