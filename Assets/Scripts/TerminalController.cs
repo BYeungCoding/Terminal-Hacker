@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
@@ -20,7 +21,11 @@ public class TerminalController : MonoBehaviour
     public GameObject fileEditorScreen;
     public FileEditor fileEditor;
     public DummyFile linkedFile;
-
+    public AudioClip TerminalOpenClip; // Assign the audio file directly in the inspector
+    public AudioClip CommandSoundClip; // Assign the audio file directly in the inspector
+    private AudioSource audioSource;
+    public MapPrinter mapPrinter; // Reference to the MapPrinter component (optional, if you want to integrate with it)
+    public levelGen levelGen; // Reference to the LevelGen component (optional, if you want to integrate with it)
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -30,22 +35,41 @@ public class TerminalController : MonoBehaviour
         terminalPanel.SetActive(false); // Start with the terminal panel hidden
         inputField.onSubmit.AddListener(SubmitCommand); // Add listener to process input when the user presses Enter
         fileEditor = fileEditorScreen.GetComponent<FileEditor>();
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        if(inputField.isFocused)
+        if (inputField.isFocused)
         {
             return;
         }
         if (Input.GetKeyDown(KeyCode.Tab)) // Toggle terminal visibility with the backquote key (`)
         {
             OpenTerminal();
+
+            //Play terminal opening sound
+            if (TerminalOpenClip != null)
+            {
+                audioSource.PlayOneShot(TerminalOpenClip); // Play the terminal opening sound
+            }
+
+            isTerminalVisible = !isTerminalVisible;
+            terminalPanel.SetActive(isTerminalVisible);
+
+            if (isTerminalVisible)
+            {
+                inputField.ActivateInputField(); // Focus the input field when the terminal is shown
+            }
         }
 
-        if(isTerminalVisible && commandHistory.Count > 0) // Allow navigation through command history with Up/Down arrows when terminal is active
+        if (isTerminalVisible && commandHistory.Count > 0) // Allow navigation through command history with Up/Down arrows when terminal is active
         {
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
@@ -69,7 +93,10 @@ public class TerminalController : MonoBehaviour
                 }
             }
         }
+
+
     }
+
 
     public void OpenTerminal(){
         isTerminalVisible = !isTerminalVisible;
@@ -80,6 +107,7 @@ public class TerminalController : MonoBehaviour
             inputField.ActivateInputField(); // Focus the input field when the terminal is shown
         }
     }
+
     void SubmitCommand(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
@@ -123,9 +151,15 @@ public class TerminalController : MonoBehaviour
 
     void ProcessCommand(string input)
     {
-        string[] parts = input.ToLower().Split(' ',StringSplitOptions.RemoveEmptyEntries);
+        string[] parts = input.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
         string command = parts[0];
         string[] args = parts.Skip(1).ToArray();
+
+        //Play feedback sound
+        if (CommandSoundClip != null)
+        {
+            audioSource.PlayOneShot(CommandSoundClip); // Play the command feedback sound
+        }
 
         //Processing commands 
         switch (command)
@@ -166,15 +200,25 @@ public class TerminalController : MonoBehaviour
             case "ls":
                 if (args.Length == 0)
                 {
+                    bool includeHidden = false;
                     LogToTerminal("ls used: showing basic map");
+                    LogToTerminal("Map of current directory: \n");
+                    LogToTerminal("╔═════════ Floor Map ═════════╗\n" + mapPrinter.GetFloorLayout(includeHidden) + "╚════════════════════════════╝");
                 }
                 else if (args.Contains("-l"))
                 {
+                    bool includeHidden = false;
                     LogToTerminal("ls -l used: showing detailed map info");
+                    LogToTerminal("Detailed file listing:\n");
+                    LogToTerminal(mapPrinter.GetDetailedFileList(includeHidden));
                 }
                 else if (args.Contains("-a"))
                 {
+                    bool includeHidden = true;
                     LogToTerminal("ls -a used: showing all including hidden files");
+                    LogToTerminal("Map of current directory: \n");
+                    LogToTerminal("╔═════════ Floor Map ═════════╗\n" + mapPrinter.GetFloorLayout(includeHidden) + "╚════════════════════════════╝");
+
                 }
                 else
                 {
@@ -184,7 +228,7 @@ public class TerminalController : MonoBehaviour
             case "cd":
                 if (args.Length > 0)
                 {
-                    if(args.Length > 1)
+                    if (args.Length > 1)
                     {
                         LogToTerminal("cd error: only one argument allowed");
                         break;

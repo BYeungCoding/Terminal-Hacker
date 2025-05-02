@@ -1,5 +1,6 @@
 using System.IO;
 using TMPro;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,10 @@ public class DummyFile : MonoBehaviour
     public bool isCorrupted = false;
     public bool isHidden = false;
     public bool isWin = false;
+
+    public string fileName;
+    public DateTime creationDate;
+    public DateTime lastAccessed;
 
     private SpriteRenderer sr;
     private Collider2D triggerZone;
@@ -31,6 +36,13 @@ public class DummyFile : MonoBehaviour
             triggerZone = gameObject.AddComponent<BoxCollider2D>();
             triggerZone.isTrigger = true;
         }
+    }
+
+    void Awake()
+    {
+        fileName = GenerateRandomFileName();
+        creationDate = DateTime.Now.AddDays(-UnityEngine.Random.Range(75, 200));   
+        lastAccessed = DateTime.Now.AddDays(UnityEngine.Random.Range(1, 75)); 
     }
 
     // Update is called once per frame
@@ -65,7 +77,6 @@ public class DummyFile : MonoBehaviour
         }
     }
 
-
     public void OpenEditor(){
         GameObject editor = Instantiate(fileEditor);
         FileEditor editorScript = editor.GetComponent<FileEditor>();
@@ -83,5 +94,12 @@ public class DummyFile : MonoBehaviour
         editorScript.Setup(this);
         editorScript.CloseEditor();
         terminalController.LogToTerminal(editorScript.inputField.text);
+    }
+}
+    string GenerateRandomFileName()
+    {
+        string[] names = { "system", "config", "report", "log", "data", "tmp", "cache", "session" };
+        string[] extensions = { ".txt", ".log", ".dat", ".bin", ".cfg", ".tmp" };
+        return names[UnityEngine.Random.Range(0, names.Length)] + UnityEngine.Random.Range(100, 999) + extensions[UnityEngine.Random.Range(0, extensions.Length)];
     }
 }

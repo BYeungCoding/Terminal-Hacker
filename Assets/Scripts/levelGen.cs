@@ -1,6 +1,10 @@
+
 using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Data.Common;
 
 public class levelGen : MonoBehaviour
 {
@@ -14,7 +18,11 @@ public class levelGen : MonoBehaviour
     private int elevatorCounter = 1;
     private int DeadEndFloorSpawnCounter = 0;
     private int nextFileID = 0;
-
+    public AudioSource LevelMusic;
+    public Dictionary<Vector2Int, GameObject> generatedRooms = new Dictionary<Vector2Int, GameObject>();
+    public Vector2Int currentPlayerRoom { get; set; }
+    public int currentPlayerFloorID { get; set; }
+    private List<ElevatorController> allElevators = new List<ElevatorController>();
 
 
     //Directions used for room conections: up, right, down, left
@@ -80,7 +88,9 @@ public class levelGen : MonoBehaviour
             RoomController rc = room.GetComponent<RoomController>();
             rc.gridPosition = currPos;
             localRooms.Add(currPos, room);
+            generatedRooms[offset + new Vector2Int(currPos.x * 75, currPos.y * 50)] = room;
             roomCount++;
+            room.AddComponent<RoomFloorTag>().floorID = floorID;
 
             // Randomly shuffle directions to add variety in room connections
             ShuffleArray(directions);
@@ -111,8 +121,13 @@ public class levelGen : MonoBehaviour
                 ElevatorController ec = returnElevator.GetComponent<ElevatorController>();
                 if (ec != null)
                 {
-                    ec.floorID = returnToFloorID;
+                    ec.floorID = floorID;
+                    ec.returnToFloorID = returnToFloorID;
+                    ec.levelGen = this;
+                    ec.isReturnElevator = true;
+                    allElevators.Add(ec);
                 }
+
             }
         }
 
@@ -127,7 +142,7 @@ public class levelGen : MonoBehaviour
             bool right = localRooms.ContainsKey(pos + Vector2Int.right);
             bool left = localRooms.ContainsKey(pos + Vector2Int.left);
             rc.SetDoors(top, bottom, right, left);
-            SpawnFiles(kvp.Value);
+            rc.GetComponent<RoomController>().SpawnFiles(dummyFiles);
 
             //Spawn elevators if room is dead-end and totalFloorsSpawned < maxFloors
             int neighborCount = 0;
@@ -159,10 +174,25 @@ public class levelGen : MonoBehaviour
         foreach (var data in elevatorsToSpawn)
         {
             GameObject elevator = Instantiate(elevatorPrefab, data.position, Quaternion.identity);
+
+            // Find the closest room to the elevator position
+            GameObject closestRoom = generatedRooms
+                .Where(kvp => kvp.Value.GetComponent<RoomFloorTag>()?.floorID == floorID)
+                .OrderBy(kvp => Vector3.Distance(kvp.Value.transform.position, data.position))
+                .FirstOrDefault().Value;
+
+            if (closestRoom != null)
+            {
+                elevator.transform.SetParent(closestRoom.transform);
+            }
+
             ElevatorController ec = elevator.GetComponent<ElevatorController>();
             if (ec != null)
             {
                 ec.floorID = data.floorID;
+                ec.returnToFloorID = floorID;
+                ec.levelGen = this;
+                allElevators.Add(ec);
             }
 
             if (totalFloorsSpawned < maxFloors)
@@ -194,9 +224,11 @@ public class levelGen : MonoBehaviour
                     GameObject terminalManager = GameObject.Find("TerminalManager");
                     GameObject fileManager = GameObject.Find("File Manager");
                     if (terminalManager != null)
+                    CharacterMover moveScript = playerInstance.GetComponent<CharacterMover>();
+                    if (moveScript != null)
                     {
-                        CharacterMover moveScript = playerInstance.GetComponent<CharacterMover>();
-                        if (moveScript != null)
+                        GameObject terminalManager = GameObject.Find("TerminalManager");
+                        if (terminalManager != null)
                         {
                             TerminalController terminalController = terminalManager.GetComponent<TerminalController>();
                             FileManager fileManagerScript = fileManager.GetComponent<FileManager>();
@@ -208,15 +240,29 @@ public class levelGen : MonoBehaviour
                                 moveScript.fileManager = fileManagerScript;
                             }
                         }
+
+                        moveScript.levelGen = this;
+
+                        foreach (ElevatorController ec in allElevators)
+                        {
+                            if (ec != null)
+                            {
+                                ec.playerMover = moveScript;
+                            }
+                        }
                     }
                 }
             }
+
+            currentPlayerRoom = offset + Vector2Int.zero;
+            currentPlayerFloorID = 0;
         }
     }
     // Generates a 3x3 dead-end floor with only a return elevator
     // This is used when the maximum number of floors has been reached
     void Generate3x3DeadEndFloor(Vector2Int offset, int returnToFloorID)
     {
+        int thisFloorID = totalFloorsSpawned++;
         Dictionary<Vector2Int, GameObject> localRooms = new Dictionary<Vector2Int, GameObject>();
 
         for (int x = -1; x <= 1; x++)
@@ -241,6 +287,13 @@ public class levelGen : MonoBehaviour
                 RoomController rc = room.GetComponent<RoomController>();
                 rc.gridPosition = gridPos;
                 localRooms[gridPos] = room;
+
+                room.AddComponent<RoomFloorTag>().floorID = thisFloorID;
+                var tag = room.AddComponent<RoomFloorTag>();
+                tag.floorID = thisFloorID;
+                Debug.Log($"[DeadEndGen] Room {gridPos} assigned to floor {tag.floorID}");
+
+                generatedRooms[offset + new Vector2Int(gridPos.x * 75, gridPos.y * 50)] = room;
             }
         }
 
@@ -255,7 +308,7 @@ public class levelGen : MonoBehaviour
             bool right = localRooms.ContainsKey(pos + Vector2Int.right);
             bool left = localRooms.ContainsKey(pos + Vector2Int.left);
             rc.SetDoors(top, bottom, right, left);
-            SpawnFiles(kvp.Value);
+            rc.SpawnFiles(dummyFiles);
         }
 
         // Place return elevator in center room
@@ -266,10 +319,20 @@ public class levelGen : MonoBehaviour
             {
                 Vector3 returnPos = centerFloor.position + new Vector3(0f, 0f, -0.5f);
                 GameObject returnElevator = Instantiate(elevatorPrefab, returnPos, Quaternion.identity);
+                if (centerRoom != null)
+                {
+                    returnElevator.transform.SetParent(centerRoom.transform);
+                }
+
                 ElevatorController ec = returnElevator.GetComponent<ElevatorController>();
                 if (ec != null)
                 {
-                    ec.floorID = returnToFloorID;
+                    ec.floorID = thisFloorID;
+                    ec.returnToFloorID = returnToFloorID;
+                    ec.returnGridPosition = Vector2Int.zero;
+                    ec.levelGen = this;
+                    ec.isReturnElevator = true;
+                    allElevators.Add(ec);
                 }
             }
         }
@@ -382,3 +445,4 @@ public class levelGen : MonoBehaviour
         }
     }
 }
+
