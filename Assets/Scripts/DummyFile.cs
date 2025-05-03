@@ -23,12 +23,13 @@ public class DummyFile : MonoBehaviour
     public string fileContents = "Default text";
     public GameObject fileEditor;
     public FileEditor editorScript;
+    public LogicScript logicManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
-        if(isHidden)
+        if (isHidden)
         {
             sr.enabled = false;
             triggerZone = gameObject.AddComponent<BoxCollider2D>();
@@ -39,32 +40,47 @@ public class DummyFile : MonoBehaviour
     void Awake()
     {
         fileName = GenerateRandomFileName();
-        creationDate = DateTime.Now.AddDays(-UnityEngine.Random.Range(75, 200));   
-        lastAccessed = DateTime.Now.AddDays(UnityEngine.Random.Range(1, 75)); 
-        gameObject.name = fileName;
+        creationDate = DateTime.Now.AddDays(-UnityEngine.Random.Range(75, 200));
+        lastAccessed = DateTime.Now.AddDays(UnityEngine.Random.Range(1, 75));
 
-        
+        if (logicManager == null)
+        {
+            GameObject managerObj = GameObject.Find("Logic Manager");
+            if (managerObj != null)
+            {
+                logicManager = managerObj.GetComponent<LogicScript>();
+            }
+        }
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            string fileName = this.name;
             float dist = Vector2.Distance(transform.position, GameObject.FindGameObjectWithTag("Player").transform.position);
             if (dist < 5f && !terminalController.isTerminalVisible)
             {
-                if(isCorrupted)
+                if (isCorrupted)
                 {
                     Debug.Log("This file is corrupted. You cannot read it.");
+                }
+                else if (isWin)
+                {
+                    Debug.Log("You found the WIN file!");
+                    if (logicManager != null)
+                    {
+                        logicManager.TriggerGameOver(); // <- your existing method
+                    }
                 }
                 else
                 {
                     Debug.Log("You read the file. It contains important information.");
                     terminalController.linkedFile = this;
                     terminalController.OpenTerminal();
-                    terminalController.LogToTerminal( "\n> You interacted with " + fileName);
+                    terminalController.LogToTerminal("\n> You interacted with " + gameObject.name);
                 }
             }
         }
@@ -72,24 +88,27 @@ public class DummyFile : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
             sr.enabled = true;
         }
     }
 
-    public void OpenEditor(){
+    public void OpenEditor()
+    {
         GameObject editor = Instantiate(fileEditor);
         FileEditor editorScript = editor.GetComponent<FileEditor>();
         editorScript.Setup(this);
     }
 
-    public void Removefile(){
+    public void Removefile()
+    {
         Destroy(gameObject);
     }
 
-    
-    public void readFile(){
+
+    public void readFile()
+    {
         GameObject editor = Instantiate(fileEditor);
         FileEditor editorScript = editor.GetComponent<FileEditor>();
         editorScript.Setup(this);

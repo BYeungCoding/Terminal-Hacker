@@ -24,7 +24,7 @@ public class TerminalController : MonoBehaviour
     private AudioSource audioSource;
     public MapPrinter mapPrinter; // Reference to the MapPrinter component (optional, if you want to integrate with it)
     public levelGen levelGen; // Reference to the LevelGen component (optional, if you want to integrate with it)
-
+    public CharacterMover characterMover;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -269,6 +269,49 @@ public class TerminalController : MonoBehaviour
                 break;
             case "pwd":
                 LogToTerminal("pwd was used: showing you the current path of your directory");
+                if (characterMover != null)
+                {
+                    int currentFloor = characterMover.levelGen.currentPlayerFloorID;
+                    Vector2Int currentRoom = characterMover.levelGen.currentPlayerRoom;
+
+                    List<int> floorPath = new List<int>();
+                    int floor = currentFloor;
+
+                    while (true)
+                    {
+                        floorPath.Insert(0, floor); // Add to start of path
+
+                        // Find the return elevator for this floor
+                        ElevatorController returnElevator = characterMover.levelGen.allElevators
+                            .Find(e => e.floorID == floor && e.isReturnElevator);
+
+                        if (returnElevator != null)
+                        {
+                            floor = returnElevator.returnToFloorID;
+
+                            // If we reach the root (e.g., floor 1), add and break
+                            if (floor == 1)
+                            {
+                                floorPath.Insert(0, floor);
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            break; // No return elevator? stop
+                        }
+                    }
+
+                    // Build the path string
+                    string floorPathStr = string.Join("/", floorPath.Select(f => $"floor_{f}"));
+                    string roomCoords = $"{currentRoom.x},{currentRoom.y}";
+
+                    LogToTerminal($"/{floorPathStr}/{roomCoords}");
+                }
+                else
+                {
+                    LogToTerminal("pwd: CharacterMover not assigned.");
+                }
                 break;
             case "rm":
                 if (args.Length > 0)

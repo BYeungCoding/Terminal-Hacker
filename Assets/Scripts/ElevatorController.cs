@@ -22,16 +22,22 @@ public class ElevatorController : MonoBehaviour
 
     void Start()
     {
-        GameObject fadeObj = GameObject.Find("Black Screen");
-        if (fadeObj != null)
+        CanvasGroup[] allGroups = Resources.FindObjectsOfTypeAll<CanvasGroup>();
+        foreach (CanvasGroup cg in allGroups)
         {
-            fadeCanvasGroup = fadeObj.GetComponent<CanvasGroup>();
-        }
-        else
-        {
-            Debug.LogWarning("FadeImage object with CanvasGroup not found!");
+            if (cg.gameObject.name == "Black Screen")
+            {
+                fadeCanvasGroup = cg;
+                break;
+            }
+            else
+            {
+                Debug.LogWarning("Fade canvas group not found. Make sure the 'Black Screen' object is in the scene.");
+            }
         }
     }
+
+
 
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -53,6 +59,10 @@ public class ElevatorController : MonoBehaviour
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E) && !isTeleporting)
         {
+            // 🛑 Block input if terminal is open
+            if (playerMover != null && playerMover.terminalController != null && playerMover.terminalController.isTerminalVisible)
+                return;
+
             isTeleporting = true;
             TeleportPlayerToFloor();
         }

@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CharacterMover : MonoBehaviour
@@ -10,14 +11,9 @@ public class CharacterMover : MonoBehaviour
     public Rigidbody2D PlayerBody;
     public bool isCorruptionActive = false;
     public TerminalController terminalController; // Reference to the TerminalController script
-
-    public FileManager fileManager;
-
     public AudioSource DeathSound;
     public AudioSource DoorSound;
     public levelGen levelGen; // Reference to the LevelGenerator script
-    public Vector2Int location;
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
