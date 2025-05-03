@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 using System.Linq;
 using System;
+using UnityEngine.Rendering;
 
 public class TerminalController : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class TerminalController : MonoBehaviour
     private List<string> commandHistory = new List<string>(); // Store command history for the terminal
     private int historyIndex = 0; // Track the current index in the command history for navigation
     public bool isTerminalVisible = false; // Track the visibility of the terminal panel
+    public DummyFile linkedFile;
     public AudioClip TerminalOpenClip; // Assign the audio file directly in the inspector
     public AudioClip CommandSoundClip; // Assign the audio file directly in the inspector
     private AudioSource audioSource;
@@ -30,13 +32,12 @@ public class TerminalController : MonoBehaviour
         //start  
         terminalPanel.SetActive(false); // Start with the terminal panel hidden
         inputField.onSubmit.AddListener(SubmitCommand); // Add listener to process input when the user presses Enter
-
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
-
+        inputField.navigation = new Navigation { mode = Navigation.Mode.None };
     }
 
     // Update is called once per frame
@@ -47,21 +48,16 @@ public class TerminalController : MonoBehaviour
         {
             return;
         }
-        if (Input.GetKeyDown(KeyCode.Tab)) // Toggle terminal visibility with the backquote key (`)
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
-            //Play terminal opening sound
+            Debug.Log("Terminal key pressed");
+            Debug.Log("Terminal is visible: " + isTerminalVisible);
             if (TerminalOpenClip != null)
             {
-                audioSource.PlayOneShot(TerminalOpenClip); // Play the terminal opening sound
+                audioSource.PlayOneShot(TerminalOpenClip);
             }
 
-            isTerminalVisible = !isTerminalVisible;
-            terminalPanel.SetActive(isTerminalVisible);
-
-            if (isTerminalVisible)
-            {
-                inputField.ActivateInputField(); // Focus the input field when the terminal is shown
-            }
+            OpenTerminal();
         }
 
         if (isTerminalVisible && commandHistory.Count > 0) // Allow navigation through command history with Up/Down arrows when terminal is active
@@ -92,6 +88,18 @@ public class TerminalController : MonoBehaviour
 
     }
 
+
+    public void OpenTerminal()
+    {
+        isTerminalVisible = !isTerminalVisible;
+        terminalPanel.SetActive(isTerminalVisible);
+
+        if (isTerminalVisible)
+        {
+            inputField.ActivateInputField(); // Focus the input field when the terminal is shown
+        }
+    }
+
     void SubmitCommand(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
@@ -115,6 +123,7 @@ public class TerminalController : MonoBehaviour
 
         // Scroll to the bottom of the output
         outputScroll.verticalNormalizedPosition = 0f;
+        Canvas.ForceUpdateCanvases();
         inputField.ActivateInputField(); // Re-activate the input field for the next command
     }
 
@@ -131,6 +140,7 @@ public class TerminalController : MonoBehaviour
         Canvas.ForceUpdateCanvases();
         // Scroll to the bottom of the output
         outputScroll.verticalNormalizedPosition = 0f;
+        Canvas.ForceUpdateCanvases();
     }
 
     void ProcessCommand(string input)
@@ -231,6 +241,15 @@ public class TerminalController : MonoBehaviour
                 {
                     string target = args[0];
                     LogToTerminal($"vim used: editing {target}");
+                    Debug.Log("Target: " + target + " Filename: " + linkedFile.gameObject.name.ToLower());
+                    if (target == linkedFile.gameObject.name.ToLower())
+                    {
+                        linkedFile.OpenEditor();
+                    }
+                    else
+                    {
+                        LogToTerminal("Wrong file name");
+                    }
                 }
                 else
                 {
@@ -256,6 +275,10 @@ public class TerminalController : MonoBehaviour
                 {
                     string target = args[0];
                     LogToTerminal($"rm used: deleting {target}");
+                    if (target == linkedFile.gameObject.name.ToLower())
+                    {
+                        linkedFile.Removefile();
+                    }
                 }
                 else
                 {
@@ -272,6 +295,24 @@ public class TerminalController : MonoBehaviour
                 else
                 {
                     LogToTerminal("touch error: missing target file");
+                }
+                break;
+            case "cat":
+                if (args.Length > 0)
+                {
+                    string target = args[0];
+                    if (target == linkedFile.gameObject.name.ToLower())
+                    {
+                        linkedFile.readFile();
+                        if (linkedFile.isWin == true)
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        LogToTerminal($"File {target} does not exist");
+                    }
                 }
                 break;
             default:

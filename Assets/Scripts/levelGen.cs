@@ -1,6 +1,7 @@
 
 using UnityEngine;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Data.Common;
@@ -16,6 +17,7 @@ public class levelGen : MonoBehaviour
     private int totalFloorsSpawned = 1;
     private int elevatorCounter = 1;
     private int DeadEndFloorSpawnCounter = 0;
+    private int nextFileID = 0;
     public AudioSource LevelMusic;
     public Dictionary<Vector2Int, GameObject> generatedRooms = new Dictionary<Vector2Int, GameObject>();
     public Vector2Int currentPlayerRoom { get; set; }
@@ -140,7 +142,10 @@ public class levelGen : MonoBehaviour
             bool right = localRooms.ContainsKey(pos + Vector2Int.right);
             bool left = localRooms.ContainsKey(pos + Vector2Int.left);
             rc.SetDoors(top, bottom, right, left);
-            rc.GetComponent<RoomController>().SpawnFiles(dummyFiles);
+            GameObject terminalManager = GameObject.Find("TerminalManager");
+            TerminalController terminalController = terminalManager?.GetComponent<TerminalController>();
+
+            rc.SpawnFiles(dummyFiles, terminalController, ref nextFileID);
 
             //Spawn elevators if room is dead-end and totalFloorsSpawned < maxFloors
             int neighborCount = 0;
@@ -218,136 +223,234 @@ public class levelGen : MonoBehaviour
                     GameObject playerInstance = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
                     Camera.main.transform.position = spawnPos + new Vector3(0f, 0f, Camera.main.transform.position.z);
 
-                    CharacterMover moveScript = playerInstance.GetComponent<CharacterMover>();
-                    if (moveScript != null)
+                    // Hook up terminal controller to the player
+                    GameObject terminalManager = GameObject.Find("TerminalManager");
+
+                    if (terminalManager != null)
                     {
-                        GameObject terminalManager = GameObject.Find("TerminalManager");
-                        if (terminalManager != null)
+                        CharacterMover moveScript = playerInstance.GetComponent<CharacterMover>();
+                        if (moveScript != null)
+                        {
+                            if (terminalManager != null)
+                            {
+                                TerminalController terminalController = terminalManager.GetComponent<TerminalController>();
+                                if (terminalController != null)
+                                {
+                                    moveScript.terminalController = terminalController;
+                                }
+                            }
+
+                            moveScript.levelGen = this;
+
+                            foreach (ElevatorController ec in allElevators)
+                            {
+                                if (ec != null)
+                                {
+                                    ec.playerMover = moveScript;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                currentPlayerRoom = offset + Vector2Int.zero;
+                currentPlayerFloorID = 0;
+            }
+        }
+        // Generates a 3x3 dead-end floor with only a return elevator
+        // This is used when the maximum number of floors has been reached
+        void Generate3x3DeadEndFloor(Vector2Int offset, int returnToFloorID)
+        {
+            int thisFloorID = totalFloorsSpawned++;
+            Dictionary<Vector2Int, GameObject> localRooms = new Dictionary<Vector2Int, GameObject>();
+
+            for (int x = -1; x <= 1; x++)
+            {
+                for (int y = -1; y <= 1; y++)
+                {
+                    Vector2Int gridPos = new Vector2Int(x, y);
+                    GameObject room = Instantiate(roomPrefab, Vector3.zero, Quaternion.identity);
+                    Transform floor = FindFloorTransform(room);
+
+                    Vector3 targetGridPos = new Vector3(gridPos.x * 75 + offset.x, gridPos.y * 50 + offset.y, 0);
+                    if (floor != null)
+                    {
+                        Vector3 centerOffset = room.transform.position - floor.position;
+                        room.transform.position = targetGridPos + centerOffset;
+                    }
+                    else
+                    {
+                        room.transform.position = targetGridPos;
+                    }
+
+                    RoomController rc = room.GetComponent<RoomController>();
+                    rc.gridPosition = gridPos;
+                    localRooms[gridPos] = room;
+
+                    room.AddComponent<RoomFloorTag>().floorID = thisFloorID;
+                    var tag = room.AddComponent<RoomFloorTag>();
+                    tag.floorID = thisFloorID;
+                    Debug.Log($"[DeadEndGen] Room {gridPos} assigned to floor {tag.floorID}");
+
+                    generatedRooms[offset + new Vector2Int(gridPos.x * 75, gridPos.y * 50)] = room;
+                }
+            }
+
+            // Set doors
+            foreach (var kvp in localRooms)
+            {
+                Vector2Int pos = kvp.Key;
+                RoomController rc = kvp.Value.GetComponent<RoomController>();
+
+                bool top = localRooms.ContainsKey(pos + Vector2Int.up);
+                bool bottom = localRooms.ContainsKey(pos + Vector2Int.down);
+                bool right = localRooms.ContainsKey(pos + Vector2Int.right);
+                bool left = localRooms.ContainsKey(pos + Vector2Int.left);
+                rc.SetDoors(top, bottom, right, left);
+
+                GameObject terminalManager = GameObject.Find("TerminalManager");
+                TerminalController terminalController = terminalManager?.GetComponent<TerminalController>();
+
+                rc.SpawnFiles(dummyFiles, terminalController, ref nextFileID);
+            }
+
+            // Place return elevator in center room
+            if (localRooms.TryGetValue(Vector2Int.zero, out GameObject centerRoom))
+            {
+                Transform centerFloor = FindFloorTransform(centerRoom);
+                if (centerFloor != null)
+                {
+                    Vector3 returnPos = centerFloor.position + new Vector3(0f, 0f, -0.5f);
+                    GameObject returnElevator = Instantiate(elevatorPrefab, returnPos, Quaternion.identity);
+                    if (centerRoom != null)
+                    {
+                        returnElevator.transform.SetParent(centerRoom.transform);
+                    }
+
+                    ElevatorController ec = returnElevator.GetComponent<ElevatorController>();
+                    if (ec != null)
+                    {
+                        ec.floorID = thisFloorID;
+                        ec.returnToFloorID = returnToFloorID;
+                        ec.returnGridPosition = Vector2Int.zero;
+                        ec.levelGen = this;
+                        ec.isReturnElevator = true;
+                        allElevators.Add(ec);
+                    }
+                }
+            }
+        }
+        // Finds the floor transform within a room
+        Transform FindFloorTransform(GameObject room)
+        {
+            foreach (Transform child in room.transform)
+            {
+                if (child.CompareTag("Floor"))
+                    return child;
+            }
+            return null;
+        }
+
+        // Shuffles the array in place using Fisher-Yates algorithm
+        void ShuffleArray(Vector2Int[] array)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                Vector2Int temp = array[i];
+                int rand = Random.Range(i, array.Length);
+                array[i] = array[rand];
+                array[rand] = temp;
+            }
+        }
+
+        /**void SpawnFiles(GameObject room)
+        {
+            bool thereIsWin = false;
+            RoomController rc = room.GetComponent<RoomController>();
+            int spawned = 0;
+
+            List<string> walls = new List<string>(rc.emptyWalls);
+            ShuffleList(walls);
+
+            foreach (string wall in walls)
+            {
+                if (spawned >= rc.emptyWalls.Count - 1) break;
+                if (Random.value < 0.6f)
+                {
+                    GameObject file = Instantiate(dummyFiles[Random.Range(0, dummyFiles.Length)]);
+                    Transform floor = FindFloorTransform(room);
+
+                    Vector3 spawnOffset = Vector3.zero;
+                    Quaternion rotation = Quaternion.identity;
+                    switch (wall)
+                    {
+                        case "Top":
+                            spawnOffset = new Vector3(0, 15f, -0.5f);
+                            rotation = Quaternion.Euler(0, 0, 180f);
+                            break;
+                        case "Bottom":
+                            spawnOffset = new Vector3(0, -15f, -0.5f);
+                            rotation = Quaternion.Euler(0, 0, 0);
+                            break;
+                        case "Right":
+                            spawnOffset = new Vector3(26f, 0, -0.5f);
+                            rotation = Quaternion.Euler(0, 0, 90f);
+                            break;
+                        case "Left":
+                            spawnOffset = new Vector3(-26f, 0, -0.5f);
+                            rotation = Quaternion.Euler(0, 0, -90f);
+                            break;
+                    }
+
+                    file.transform.position = floor.position + spawnOffset;
+                    file.transform.rotation = rotation;
+
+                    DummyFile df = file.GetComponent<DummyFile>();
+                    GameObject terminalManager = GameObject.Find("TerminalManager");
+                    if (terminalManager != null)
+                    {
+                        if (df != null)
                         {
                             TerminalController terminalController = terminalManager.GetComponent<TerminalController>();
                             if (terminalController != null)
                             {
-                                moveScript.terminalController = terminalController;
+                                df.terminalController = terminalController;
                             }
                         }
-
-                        moveScript.levelGen = this;
-
-                        foreach (ElevatorController ec in allElevators)
+                    }
+                    if (df != null)
+                    {
+                        df.gameObject.name = "Dummy_file" + nextFileID;
+                        nextFileID++;
+                        float rand = Random.value;
+                        if (rand < 0.2f) df.isCorrupted = true;
+                        else if (rand < 0.4f) df.isHidden = true;
+                        spawned++;
+                        if (spawned >= 8 && thereIsWin == false)
                         {
-                            if (ec != null)
+                            float winRand = Random.value;
+                            if (winRand < 0.1f)
                             {
-                                ec.playerMover = moveScript;
+                                df.isWin = true;
+                                thereIsWin = true;
                             }
                         }
                     }
                 }
             }
-
-            currentPlayerRoom = offset + Vector2Int.zero;
-            currentPlayerFloorID = 0;
-        }
-    }
-    // Generates a 3x3 dead-end floor with only a return elevator
-    // This is used when the maximum number of floors has been reached
-    void Generate3x3DeadEndFloor(Vector2Int offset, int returnToFloorID)
-    {
-        int thisFloorID = totalFloorsSpawned++;
-        Dictionary<Vector2Int, GameObject> localRooms = new Dictionary<Vector2Int, GameObject>();
-
-        for (int x = -1; x <= 1; x++)
+        } 
+        // Define the ShuffleList method
+        void ShuffleList<T>(List<T> list)
         {
-            for (int y = -1; y <= 1; y++)
+            for (int i = 0; i < list.Count; i++)
             {
-                Vector2Int gridPos = new Vector2Int(x, y);
-                GameObject room = Instantiate(roomPrefab, Vector3.zero, Quaternion.identity);
-                Transform floor = FindFloorTransform(room);
-
-                Vector3 targetGridPos = new Vector3(gridPos.x * 75 + offset.x, gridPos.y * 50 + offset.y, 0);
-                if (floor != null)
-                {
-                    Vector3 centerOffset = room.transform.position - floor.position;
-                    room.transform.position = targetGridPos + centerOffset;
-                }
-                else
-                {
-                    room.transform.position = targetGridPos;
-                }
-
-                RoomController rc = room.GetComponent<RoomController>();
-                rc.gridPosition = gridPos;
-                localRooms[gridPos] = room;
-
-                room.AddComponent<RoomFloorTag>().floorID = thisFloorID;
-                var tag = room.AddComponent<RoomFloorTag>();
-                tag.floorID = thisFloorID;
-                Debug.Log($"[DeadEndGen] Room {gridPos} assigned to floor {tag.floorID}");
-
-                generatedRooms[offset + new Vector2Int(gridPos.x * 75, gridPos.y * 50)] = room;
+                T temp = list[i];
+                int rand = Random.Range(i, list.Count);
+                list[i] = list[rand];
+                list[rand] = temp;
             }
-        }
-
-        // Set doors
-        foreach (var kvp in localRooms)
-        {
-            Vector2Int pos = kvp.Key;
-            RoomController rc = kvp.Value.GetComponent<RoomController>();
-
-            bool top = localRooms.ContainsKey(pos + Vector2Int.up);
-            bool bottom = localRooms.ContainsKey(pos + Vector2Int.down);
-            bool right = localRooms.ContainsKey(pos + Vector2Int.right);
-            bool left = localRooms.ContainsKey(pos + Vector2Int.left);
-            rc.SetDoors(top, bottom, right, left);
-            rc.SpawnFiles(dummyFiles);
-        }
-
-        // Place return elevator in center room
-        if (localRooms.TryGetValue(Vector2Int.zero, out GameObject centerRoom))
-        {
-            Transform centerFloor = FindFloorTransform(centerRoom);
-            if (centerFloor != null)
-            {
-                Vector3 returnPos = centerFloor.position + new Vector3(0f, 0f, -0.5f);
-                GameObject returnElevator = Instantiate(elevatorPrefab, returnPos, Quaternion.identity);
-                if (centerRoom != null)
-                {
-                    returnElevator.transform.SetParent(centerRoom.transform);
-                }
-
-                ElevatorController ec = returnElevator.GetComponent<ElevatorController>();
-                if (ec != null)
-                {
-                    ec.floorID = thisFloorID;
-                    ec.returnToFloorID = returnToFloorID;
-                    ec.returnGridPosition = Vector2Int.zero;
-                    ec.levelGen = this;
-                    ec.isReturnElevator = true;
-                    allElevators.Add(ec);
-                }
-            }
-        }
-    }
-    // Finds the floor transform within a room
-    Transform FindFloorTransform(GameObject room)
-    {
-        foreach (Transform child in room.transform)
-        {
-            if (child.CompareTag("Floor"))
-                return child;
-        }
-        return null;
-    }
-
-    // Shuffles the array in place using Fisher-Yates algorithm
-    void ShuffleArray(Vector2Int[] array)
-    {
-        for (int i = 0; i < array.Length; i++)
-        {
-            Vector2Int temp = array[i];
-            int rand = Random.Range(i, array.Length);
-            array[i] = array[rand];
-            array[rand] = temp;
-        }
+        }**/
     }
 
 }
+

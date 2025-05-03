@@ -40,9 +40,11 @@ public class RoomController : MonoBehaviour
 
 
 
-    public void SpawnFiles(GameObject[] dummyFiles)
+    public void SpawnFiles(GameObject[] dummyFiles, TerminalController terminalController, ref int nextFileID)
     {
+        bool thereIsWin = false;
         int spawned = 0;
+
         List<string> walls = new List<string>(emptyWalls);
         ShuffleList(walls);
 
@@ -76,23 +78,27 @@ public class RoomController : MonoBehaviour
                         break;
                 }
 
-                if (floor != null)
-                {
-                    file.transform.position = floor.position + spawnOffset;
-                }
-                else
-                {
-                    file.transform.position = transform.position + spawnOffset;
-                }
-
+                file.transform.position = (floor != null ? floor.position : transform.position) + spawnOffset;
                 file.transform.rotation = rotation;
-                file.transform.SetParent(this.transform); // parent under room
+                file.transform.SetParent(transform); // Parent to this room
 
                 DummyFile df = file.GetComponent<DummyFile>();
-                float rand = Random.value;
-                if (rand < 0.3f) df.isCorrupted = true;
-                else if (rand < 0.4f) df.isHidden = true;
-                spawned++;
+                if (df != null)
+                {
+                    df.terminalController = terminalController;
+
+                    float rand = Random.value;
+                    if (rand < 0.2f) df.isCorrupted = true;
+                    else if (rand < 0.4f) df.isHidden = true;
+
+                    spawned++;
+
+                    if (spawned >= 8 && !thereIsWin && Random.value < 0.1f)
+                    {
+                        df.isWin = true;
+                        thereIsWin = true;
+                    }
+                }
             }
         }
     }

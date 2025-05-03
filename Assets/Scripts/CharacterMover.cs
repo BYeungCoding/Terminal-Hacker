@@ -14,6 +14,7 @@ public class CharacterMover : MonoBehaviour
     public AudioSource DoorSound;
     public levelGen levelGen; // Reference to the LevelGenerator script
     public Vector2Int location;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -25,50 +26,25 @@ public class CharacterMover : MonoBehaviour
     [System.Obsolete]
     void Update()
     {
-        // Prevent movement if the terminal input field is focused
-        if (terminalController != null && !terminalController.isTerminalVisible)
-
+        bool isTerminalCondition = terminalController != null && !terminalController.isTerminalVisible;
+        if (isTerminalCondition)
         {
             Vector2 moveDirection = Vector2.zero;
             // Check for input and calculate movement direction
 
-            if (!isCorruptionActive)
-            {
-                if (Input.GetKey(KeyCode.W))
-                {
-                    moveDirection += Vector2.up;
-                }
-                if (Input.GetKey(KeyCode.A))
-                {
-                    moveDirection += Vector2.left;
-                }
-                if (Input.GetKey(KeyCode.S))
-                {
-                    moveDirection += Vector2.down;
-                }
-                if (Input.GetKey(KeyCode.D))
-                {
-                    moveDirection += Vector2.right;
-                }
+            if(!isCorruptionActive){
+                if (Input.GetKey(KeyCode.W)) moveDirection += Vector2.up;
+                if (Input.GetKey(KeyCode.A)) moveDirection += Vector2.left;
+                if (Input.GetKey(KeyCode.S)) moveDirection += Vector2.down;
+                if (Input.GetKey(KeyCode.D)) moveDirection += Vector2.right;
             }
             else
             {
-                if (Input.GetKey(KeyCode.W))
-                {
-                    moveDirection += Vector2.down;
-                }
-                if (Input.GetKey(KeyCode.A))
-                {
-                    moveDirection += Vector2.right;
-                }
-                if (Input.GetKey(KeyCode.S))
-                {
-                    moveDirection += Vector2.up;
-                }
-                if (Input.GetKey(KeyCode.D))
-                {
-                    moveDirection += Vector2.left;
-                }
+                if (Input.GetKey(KeyCode.W)) moveDirection += Vector2.down;
+                if (Input.GetKey(KeyCode.A)) moveDirection += Vector2.right;
+                if (Input.GetKey(KeyCode.S)) moveDirection += Vector2.up;
+                if (Input.GetKey(KeyCode.D)) moveDirection += Vector2.left;
+
             }
 
             // Normalize the direction to ensure consistent speed in all directions
@@ -79,6 +55,7 @@ public class CharacterMover : MonoBehaviour
 
             // Apply the velocity
             PlayerBody.linearVelocity = moveDirection * currMoveSpeed;
+
         }
         else
         {
@@ -119,6 +96,7 @@ public class CharacterMover : MonoBehaviour
             DoorSound.Play();
             //Moves player to top room, then camera follows them
             Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + 27f, -1f);
+
             Camera.transform.position = new Vector3(Camera.transform.position.x, Camera.transform.position.y + 50.0f, -10f);
             UpdateCurrentRoom();
         }
