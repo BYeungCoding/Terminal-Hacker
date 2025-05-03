@@ -23,7 +23,6 @@ public class DummyFile : MonoBehaviour
     public TerminalController terminalController;
     public string fileContents = "Default text";
     public GameObject fileEditor;
-    public string fileName;
     public FileEditor editorScript;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -95,7 +94,7 @@ public class DummyFile : MonoBehaviour
         editorScript.CloseEditor();
         terminalController.LogToTerminal(editorScript.inputField.text);
     }
-}
+
     string GenerateRandomFileName()
     {
         string[] names = { "system", "config", "report", "log", "data", "tmp", "cache", "session" };
