@@ -12,8 +12,8 @@ public class AngerMeter : MonoBehaviour
     private bool isDebuffed = false;
     private bool isShaking = false;
     private Coroutine shakeCoroutine;
-    public GameObject gameOverScreen;
-    public GameObject locgicScript;
+    //public GameObject gameOverScreen;
+   // public GameObject locgicScript;
     private Vector3 originalBarPosition;
 
 
@@ -117,7 +117,7 @@ public class AngerMeter : MonoBehaviour
         }
 
         progressBarFill.rectTransform.localPosition = originalBarPosition;
-        TriggerGameOver();
+        //TriggerGameOver();
     }
 
     void StopShake()
@@ -127,8 +127,8 @@ public class AngerMeter : MonoBehaviour
             progressBarFill.rectTransform.localPosition = originalBarPosition;
     }
 
-    void TriggerGameOver()
-    {
+   /** void TriggerGameOver()
+{
 
         isShaking = false;
         Debug.Log("GAME OVER: Anger meter maxed out.");
@@ -138,5 +138,5 @@ public class AngerMeter : MonoBehaviour
         if (locgicScript != null)
             locgicScript.SetActive(false);
 
-    }
+    } **/
 }

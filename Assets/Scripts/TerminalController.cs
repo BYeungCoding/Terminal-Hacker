@@ -49,6 +49,8 @@ public class TerminalController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Tab)) // Toggle terminal visibility with the backquote key (`)
         {
+            OpenTerminal();
+
             //Play terminal opening sound
             if (TerminalOpenClip != null)
             {
@@ -90,6 +92,17 @@ public class TerminalController : MonoBehaviour
         }
 
 
+    }
+
+
+    public void OpenTerminal(){
+        isTerminalVisible = !isTerminalVisible;
+        terminalPanel.SetActive(isTerminalVisible);
+
+        if (isTerminalVisible)
+        {
+            inputField.ActivateInputField(); // Focus the input field when the terminal is shown
+        }
     }
 
     void SubmitCommand(string input)
@@ -231,6 +244,9 @@ public class TerminalController : MonoBehaviour
                 {
                     string target = args[0];
                     LogToTerminal($"vim used: editing {target}");
+
+                        LogToTerminal("Wrong file name");
+
                 }
                 else
                 {
@@ -272,6 +288,11 @@ public class TerminalController : MonoBehaviour
                 else
                 {
                     LogToTerminal("touch error: missing target file");
+                }
+                break;
+            case "cat":
+                if (args.Length > 0){
+
                 }
                 break;
             default:
