@@ -23,7 +23,8 @@ public class levelGen : MonoBehaviour
     public Vector2Int currentPlayerRoom { get; set; }
     public int currentPlayerFloorID { get; set; }
     private List<ElevatorController> allElevators = new List<ElevatorController>();
-
+    private bool winFileSpawned = false;
+    private List<DummyFile> allSpawnedFiles = new List<DummyFile>();
 
     //Directions used for room conections: up, right, down, left
     private Vector2Int[] directions = new Vector2Int[]
@@ -48,7 +49,9 @@ public class levelGen : MonoBehaviour
         Debug.Log("Level generation complete. Total floors spawned: " + totalFloorsSpawned);
         Debug.Log("Total elevators spawned: " + elevatorCounter);
         Debug.Log("Total dead-end floors spawned: " + DeadEndFloorSpawnCounter);
+        AssignWinFile();
     }
+
 
     // Generates a level at the specified offset with the given floor ID and return elevator ID
     void GenerateLevelAt(Vector2Int offset, int floorID, int returnToFloorID)
@@ -145,7 +148,7 @@ public class levelGen : MonoBehaviour
             GameObject terminalManager = GameObject.Find("TerminalManager");
             TerminalController terminalController = terminalManager?.GetComponent<TerminalController>();
 
-            rc.SpawnFiles(dummyFiles, terminalController, ref nextFileID);
+            rc.SpawnFiles(dummyFiles, terminalController, ref nextFileID, allSpawnedFiles);
 
             //Spawn elevators if room is dead-end and totalFloorsSpawned < maxFloors
             int neighborCount = 0;
@@ -311,7 +314,7 @@ public class levelGen : MonoBehaviour
                 GameObject terminalManager = GameObject.Find("TerminalManager");
                 TerminalController terminalController = terminalManager?.GetComponent<TerminalController>();
 
-                rc.SpawnFiles(dummyFiles, terminalController, ref nextFileID);
+                rc.SpawnFiles(dummyFiles, terminalController, ref nextFileID, allSpawnedFiles);
             }
 
             // Place return elevator in center room
@@ -362,94 +365,20 @@ public class levelGen : MonoBehaviour
                 array[rand] = temp;
             }
         }
-
-        /**void SpawnFiles(GameObject room)
+    }
+    void AssignWinFile()
+    {
+        var eligibleFiles = allSpawnedFiles.Where(f => !f.isCorrupted).ToList();
+        if (eligibleFiles.Count > 0)
         {
-            bool thereIsWin = false;
-            RoomController rc = room.GetComponent<RoomController>();
-            int spawned = 0;
-
-            List<string> walls = new List<string>(rc.emptyWalls);
-            ShuffleList(walls);
-
-            foreach (string wall in walls)
-            {
-                if (spawned >= rc.emptyWalls.Count - 1) break;
-                if (Random.value < 0.6f)
-                {
-                    GameObject file = Instantiate(dummyFiles[Random.Range(0, dummyFiles.Length)]);
-                    Transform floor = FindFloorTransform(room);
-
-                    Vector3 spawnOffset = Vector3.zero;
-                    Quaternion rotation = Quaternion.identity;
-                    switch (wall)
-                    {
-                        case "Top":
-                            spawnOffset = new Vector3(0, 15f, -0.5f);
-                            rotation = Quaternion.Euler(0, 0, 180f);
-                            break;
-                        case "Bottom":
-                            spawnOffset = new Vector3(0, -15f, -0.5f);
-                            rotation = Quaternion.Euler(0, 0, 0);
-                            break;
-                        case "Right":
-                            spawnOffset = new Vector3(26f, 0, -0.5f);
-                            rotation = Quaternion.Euler(0, 0, 90f);
-                            break;
-                        case "Left":
-                            spawnOffset = new Vector3(-26f, 0, -0.5f);
-                            rotation = Quaternion.Euler(0, 0, -90f);
-                            break;
-                    }
-
-                    file.transform.position = floor.position + spawnOffset;
-                    file.transform.rotation = rotation;
-
-                    DummyFile df = file.GetComponent<DummyFile>();
-                    GameObject terminalManager = GameObject.Find("TerminalManager");
-                    if (terminalManager != null)
-                    {
-                        if (df != null)
-                        {
-                            TerminalController terminalController = terminalManager.GetComponent<TerminalController>();
-                            if (terminalController != null)
-                            {
-                                df.terminalController = terminalController;
-                            }
-                        }
-                    }
-                    if (df != null)
-                    {
-                        df.gameObject.name = "Dummy_file" + nextFileID;
-                        nextFileID++;
-                        float rand = Random.value;
-                        if (rand < 0.2f) df.isCorrupted = true;
-                        else if (rand < 0.4f) df.isHidden = true;
-                        spawned++;
-                        if (spawned >= 8 && thereIsWin == false)
-                        {
-                            float winRand = Random.value;
-                            if (winRand < 0.1f)
-                            {
-                                df.isWin = true;
-                                thereIsWin = true;
-                            }
-                        }
-                    }
-                }
-            }
-        } 
-        // Define the ShuffleList method
-        void ShuffleList<T>(List<T> list)
+            var chosen = eligibleFiles[UnityEngine.Random.Range(0, eligibleFiles.Count)];
+            chosen.isWin = true;
+            Debug.Log("[Win File] Assigned to: " + chosen.fileName);
+        }
+        else
         {
-            for (int i = 0; i < list.Count; i++)
-            {
-                T temp = list[i];
-                int rand = Random.Range(i, list.Count);
-                list[i] = list[rand];
-                list[rand] = temp;
-            }
-        }**/
+            Debug.LogWarning("No eligible files found to assign win file.");
+        }
     }
 
 }
