@@ -23,7 +23,6 @@ public class levelGen : MonoBehaviour
     public Vector2Int currentPlayerRoom { get; set; }
     public int currentPlayerFloorID { get; set; }
     private List<ElevatorController> allElevators = new List<ElevatorController>();
-    private bool winFileSpawned = false;
     private List<DummyFile> allSpawnedFiles = new List<DummyFile>();
 
     //Directions used for room conections: up, right, down, left
@@ -293,7 +292,7 @@ public class levelGen : MonoBehaviour
                     room.AddComponent<RoomFloorTag>().floorID = thisFloorID;
                     var tag = room.AddComponent<RoomFloorTag>();
                     tag.floorID = thisFloorID;
-                    Debug.Log($"[DeadEndGen] Room {gridPos} assigned to floor {tag.floorID}");
+                    //Debug.Log($"[DeadEndGen] Room {gridPos} assigned to floor {tag.floorID}");
 
                     generatedRooms[offset + new Vector2Int(gridPos.x * 75, gridPos.y * 50)] = room;
                 }

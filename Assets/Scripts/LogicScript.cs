@@ -63,6 +63,13 @@ public class LogicScript : MonoBehaviour
         TitleMusic.Play();
         LevelStart.Stop();
         titleScreen.SetActive(true);
-        
+
+    }
+
+    public void TriggerGameOver()
+    {
+        Debug.Log("GAME OVER triggered.");
+        gameOverScreen.SetActive(true);
+        Canvas.SetActive(false);
     }
 }
