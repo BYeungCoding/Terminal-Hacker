@@ -142,7 +142,10 @@ public class levelGen : MonoBehaviour
             bool right = localRooms.ContainsKey(pos + Vector2Int.right);
             bool left = localRooms.ContainsKey(pos + Vector2Int.left);
             rc.SetDoors(top, bottom, right, left);
-            SpawnFiles(kvp.Value);
+            GameObject terminalManager = GameObject.Find("TerminalManager");
+            TerminalController terminalController = terminalManager?.GetComponent<TerminalController>();
+
+            rc.SpawnFiles(dummyFiles, terminalController, ref nextFileID);
 
             //Spawn elevators if room is dead-end and totalFloorsSpawned < maxFloors
             int neighborCount = 0;
@@ -222,7 +225,7 @@ public class levelGen : MonoBehaviour
 
                     // Hook up terminal controller to the player
                     GameObject terminalManager = GameObject.Find("TerminalManager");
-                    GameObject fileManager = GameObject.Find("File Manager");
+
                     if (terminalManager != null)
                     {
                         CharacterMover moveScript = playerInstance.GetComponent<CharacterMover>();
@@ -231,14 +234,9 @@ public class levelGen : MonoBehaviour
                             if (terminalManager != null)
                             {
                                 TerminalController terminalController = terminalManager.GetComponent<TerminalController>();
-                                FileManager fileManagerScript = fileManager.GetComponent<FileManager>();
                                 if (terminalController != null)
                                 {
                                     moveScript.terminalController = terminalController;
-                                }
-                                if (fileManagerScript != null)
-                                {
-                                    moveScript.fileManager = fileManagerScript;
                                 }
                             }
 
@@ -309,7 +307,11 @@ public class levelGen : MonoBehaviour
                 bool right = localRooms.ContainsKey(pos + Vector2Int.right);
                 bool left = localRooms.ContainsKey(pos + Vector2Int.left);
                 rc.SetDoors(top, bottom, right, left);
-                SpawnFiles(kvp.Value);
+
+                GameObject terminalManager = GameObject.Find("TerminalManager");
+                TerminalController terminalController = terminalManager?.GetComponent<TerminalController>();
+
+                rc.SpawnFiles(dummyFiles, terminalController, ref nextFileID);
             }
 
             // Place return elevator in center room
@@ -361,7 +363,7 @@ public class levelGen : MonoBehaviour
             }
         }
 
-        void SpawnFiles(GameObject room)
+        /**void SpawnFiles(GameObject room)
         {
             bool thereIsWin = false;
             RoomController rc = room.GetComponent<RoomController>();
@@ -436,7 +438,7 @@ public class levelGen : MonoBehaviour
                     }
                 }
             }
-        }
+        } 
         // Define the ShuffleList method
         void ShuffleList<T>(List<T> list)
         {
@@ -447,7 +449,8 @@ public class levelGen : MonoBehaviour
                 list[i] = list[rand];
                 list[rand] = temp;
             }
-        }
+        }**/
     }
+
 }
 

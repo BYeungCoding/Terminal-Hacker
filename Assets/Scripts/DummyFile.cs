@@ -9,7 +9,6 @@ public class DummyFile : MonoBehaviour
     public bool isCorrupted = false;
     public bool isHidden = false;
     public bool isWin = false;
-
     public string fileName;
     public DateTime creationDate;
     public DateTime lastAccessed;
@@ -42,6 +41,9 @@ public class DummyFile : MonoBehaviour
         fileName = GenerateRandomFileName();
         creationDate = DateTime.Now.AddDays(-UnityEngine.Random.Range(75, 200));   
         lastAccessed = DateTime.Now.AddDays(UnityEngine.Random.Range(1, 75)); 
+        gameObject.name = fileName;
+
+        
     }
 
     // Update is called once per frame
