@@ -22,7 +22,7 @@ public class levelGen : MonoBehaviour
     public Dictionary<Vector2Int, GameObject> generatedRooms = new Dictionary<Vector2Int, GameObject>();
     public Vector2Int currentPlayerRoom { get; set; }
     public int currentPlayerFloorID { get; set; }
-    private List<ElevatorController> allElevators = new List<ElevatorController>();
+    public List<ElevatorController> allElevators = new List<ElevatorController>();
     private List<DummyFile> allSpawnedFiles = new List<DummyFile>();
 
     //Directions used for room conections: up, right, down, left
@@ -239,6 +239,7 @@ public class levelGen : MonoBehaviour
                                 if (terminalController != null)
                                 {
                                     moveScript.terminalController = terminalController;
+                                    terminalController.characterMover = moveScript;
                                 }
                             }
 

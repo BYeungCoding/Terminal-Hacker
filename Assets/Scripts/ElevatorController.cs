@@ -30,11 +30,14 @@ public class ElevatorController : MonoBehaviour
                 fadeCanvasGroup = cg;
                 break;
             }
-            else{
+            else
+            {
                 Debug.LogWarning("Fade canvas group not found. Make sure the 'Black Screen' object is in the scene.");
             }
         }
     }
+
+
 
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -56,6 +59,10 @@ public class ElevatorController : MonoBehaviour
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E) && !isTeleporting)
         {
+            // 🛑 Block input if terminal is open
+            if (playerMover != null && playerMover.terminalController != null && playerMover.terminalController.isTerminalVisible)
+                return;
+
             isTeleporting = true;
             TeleportPlayerToFloor();
         }
