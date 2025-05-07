@@ -886,6 +886,7 @@ MonoBehaviour:
   CommandSoundClip: {fileID: 8300000, guid: ce287981c2322f54f939be2ea31459b3, type: 3}
   mapPrinter: {fileID: 1400066587}
   levelGen: {fileID: 1520682133}
+  characterMover: {fileID: 0}
 --- !u!4 &303854288
 Transform:
   m_ObjectHideFlags: 0
@@ -2260,6 +2261,7 @@ MonoBehaviour:
   TitleMusic: {fileID: 936390931}
   LevelStart: {fileID: 936390930}
   angerMeter: {fileID: 1539653067}
+  levelGEN: {fileID: 1520682133}
 --- !u!82 &936390930
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4003,6 +4005,7 @@ MonoBehaviour:
   dummyFiles:
   - {fileID: 6525159838667719404, guid: 1310b96f3b8380f4baae2872b8dcd33a, type: 3}
   LevelMusic: {fileID: 0}
+  allElevators: []
 --- !u!4 &1520682134
 Transform:
   m_ObjectHideFlags: 0

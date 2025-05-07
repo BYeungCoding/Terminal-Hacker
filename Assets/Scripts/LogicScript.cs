@@ -10,6 +10,7 @@ public class LogicScript : MonoBehaviour
     public AudioSource TitleMusic;
     public AudioSource LevelStart;
     public AngerMeter angerMeter;
+    public levelGen levelGEN;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -23,6 +24,7 @@ public class LogicScript : MonoBehaviour
 
     public void startGame()
     {
+        levelGEN.ResetLevel();
         LevelStart.Play();
         titleScreen.SetActive(false);
         gameOverScreen.SetActive(false);
@@ -44,6 +46,7 @@ public class LogicScript : MonoBehaviour
     }
     public void restartGame()
     {
+        levelGEN.ResetLevel();
         Canvas.SetActive(true);
         LevelStart.Play();
         TitleMusic.Stop();

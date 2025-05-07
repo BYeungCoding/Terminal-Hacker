@@ -279,7 +279,7 @@ public class TerminalController : MonoBehaviour
 
                     while (true)
                     {
-                        floorPath.Insert(0, floor); // Add to start of path
+                        floorPath.Insert(0, floor);
 
                         // Find the return elevator for this floor
                         ElevatorController returnElevator = characterMover.levelGen.allElevators
@@ -288,7 +288,6 @@ public class TerminalController : MonoBehaviour
                         if (returnElevator != null)
                         {
                             floor = returnElevator.returnToFloorID;
-
                             // If we reach the root (e.g., floor 1), add and break
                             if (floor == 1)
                             {
@@ -356,6 +355,17 @@ public class TerminalController : MonoBehaviour
                     {
                         LogToTerminal($"File {target} does not exist");
                     }
+                }
+                break;
+            case "^c":
+                if(levelGen != null)
+                {
+                    levelGen.ResetLevel();
+                    LogToTerminal("Game reset to the last checkpoint.");
+                }
+                else
+                {
+                    LogToTerminal("levelGen component not assigned.");
                 }
                 break;
             default:

@@ -380,6 +380,29 @@ public class levelGen : MonoBehaviour
             Debug.LogWarning("No eligible files found to assign win file.");
         }
     }
+    public void ResetLevel()
+    {
+        foreach (var room in generatedRooms.Values)
+        {
+            Destroy(room);
+        }
+        generatedRooms.Clear();
+        foreach (var elevator in allElevators)
+        {
+            if (elevator != null)
+                Destroy(elevator.gameObject);
+        }
+        allElevators.Clear();
+
+        totalFloorsSpawned = 1;
+        elevatorCounter = 1;
+        DeadEndFloorSpawnCounter = 0;
+        nextFileID = 0;
+
+        GenerateLevelAt(Vector2Int.zero, 0, -1);
+
+        Debug.Log("Level has been reset!");
+    }
 
 }
 
