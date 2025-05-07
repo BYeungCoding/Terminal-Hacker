@@ -41,17 +41,6 @@ public class levelGen : MonoBehaviour
         public Vector2Int offset;
     }
 
-    void Start()
-    {
-        //Generate the root Floor + rest of the levels
-        GenerateLevelAt(Vector2Int.zero, 0, -1);
-        Debug.Log("Level generation complete. Total floors spawned: " + totalFloorsSpawned);
-        Debug.Log("Total elevators spawned: " + elevatorCounter);
-        Debug.Log("Total dead-end floors spawned: " + DeadEndFloorSpawnCounter);
-        AssignWinFile();
-    }
-
-
     // Generates a level at the specified offset with the given floor ID and return elevator ID
     void GenerateLevelAt(Vector2Int offset, int floorID, int returnToFloorID)
     {
@@ -400,6 +389,20 @@ public class levelGen : MonoBehaviour
         nextFileID = 0;
 
         GenerateLevelAt(Vector2Int.zero, 0, -1);
+        AssignWinFile();
+
+        CharacterMover moveScript = GameObject.FindGameObjectWithTag("Player")?.GetComponent<CharacterMover>();
+        if (moveScript != null)
+        {
+            foreach (ElevatorController ec in allElevators)
+            {
+                if (ec != null)
+                {
+                    ec.playerMover = moveScript;
+                    Debug.Log($"[ResetLevel] Reassigned playerMover to elevator on floor {ec.floorID}");
+                }
+            }
+        }
 
         Debug.Log("Level has been reset!");
     }
