@@ -11,6 +11,7 @@ public class LogicScript : MonoBehaviour
     public AudioSource LevelStart;
     public AngerMeter angerMeter;
     public levelGen levelGEN;
+    public TerminalController terminalController; // Reference to the TerminalController script
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -19,6 +20,7 @@ public class LogicScript : MonoBehaviour
         gameOverScreen.SetActive(false);
         Canvas.SetActive(false);
         TitleMusic.Play();
+        terminalController.terminalPanel.SetActive(false); 
     }
 
 
@@ -31,6 +33,7 @@ public class LogicScript : MonoBehaviour
         Canvas.SetActive(true);
         TitleMusic.Stop();
         LevelStart.Play();
+        terminalController.terminalPanel.SetActive(false); 
 
         if (angerMeter != null)
         {
@@ -52,6 +55,7 @@ public class LogicScript : MonoBehaviour
         TitleMusic.Stop();
         gameOverScreen.SetActive(false);
         titleScreen.SetActive(false);
+        terminalController.terminalPanel.SetActive(false); 
         if (angerMeter != null)
         {
             angerMeter.StopAllCoroutines();         // stop any ongoing shake

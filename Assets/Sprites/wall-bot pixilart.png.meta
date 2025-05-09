@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b14e2ae89e4815249bb13ec8dc2af474
+guid: 159a0b9802eb4a842b24147ae7007006
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8969056817082029647
-    second: happy Virus 2.0 16x16_0
+      213: -8296962049271244362
+    second: wall-bot pixilart_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: happy Virus 2.0 16x16_0
+      name: wall-bot pixilart_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 16
-        height: 16
+        x: 16
+        y: 210
+        width: 467
+        height: 57
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1b9a78f4852878380800000000000000
-      internalID: -8969056817082029647
+      spriteID: 6b95a42b9f44bdc80800000000000000
+      internalID: -8296962049271244362
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      happy Virus 2.0 16x16_0: -8969056817082029647
+      wall-bot pixilart_0: -8296962049271244362
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

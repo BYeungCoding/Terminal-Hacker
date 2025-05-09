@@ -25,6 +25,7 @@ public class TerminalController : MonoBehaviour
     public MapPrinter mapPrinter; // Reference to the MapPrinter component (optional, if you want to integrate with it)
     public levelGen levelGen; // Reference to the LevelGen component (optional, if you want to integrate with it)
     public CharacterMover characterMover;
+    public LogicScript LogicScript; // Reference to the LogicScript component (optional, if you want to integrate with it)
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -357,11 +358,10 @@ public class TerminalController : MonoBehaviour
                     }
                 }
                 break;
-            case "^c":
+            case "^n":
                 if(levelGen != null)
                 {
                     levelGen.ResetLevel();
-                    LogToTerminal("Game reset to the last checkpoint.");
                 }
                 else
                 {
@@ -370,6 +370,16 @@ public class TerminalController : MonoBehaviour
                 break;
             default:
                 LogToTerminal("Unknown command: " + command);
+                break;
+            case "^c":
+                if (levelGen != null)
+                {
+                    LogicScript.TriggerGameOver();
+                }
+                else
+                {
+                    LogToTerminal("LogicScript component not assigned.");
+                }
                 break;
         }
     }
