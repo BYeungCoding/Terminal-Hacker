@@ -10,6 +10,8 @@ public class LogicScript : MonoBehaviour
     public AudioSource TitleMusic;
     public AudioSource LevelStart;
     public AngerMeter angerMeter;
+    public UnityEngine.UI.Text winFileText; //Add a new text box for holding the amount of wins
+    private int wins = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -71,5 +73,10 @@ public class LogicScript : MonoBehaviour
         Debug.Log("GAME OVER triggered.");
         gameOverScreen.SetActive(true);
         Canvas.SetActive(false);
+    }
+
+    public void WinFileSolved(){
+        wins++;
+        winFileText.text = "Win Files Found: " + wins; //Replace this with whatever new win text box you want to add
     }
 }
