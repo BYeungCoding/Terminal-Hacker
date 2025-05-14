@@ -94,7 +94,7 @@ public class CharacterMover : MonoBehaviour
             //Plays sound for door opening
             DoorSound.Play();
             //Moves player to top room, then camera follows them
-            Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + 27f, -1f);
+            Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y + 29f, -1f);
 
             Camera.transform.position = new Vector3(Camera.transform.position.x, Camera.transform.position.y + 50.0f, -10f);
             UpdateCurrentRoom();
@@ -104,7 +104,7 @@ public class CharacterMover : MonoBehaviour
             //Plays sound for door opening
             DoorSound.Play();
             //Moves player to bottom room, then camera follows them
-            Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y - 27f, -1f);
+            Player.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y - 29f, -1f);
             Camera.transform.position = new Vector3(Camera.transform.position.x, Camera.transform.position.y - 50.0f, -10f);
             UpdateCurrentRoom();
         }
@@ -113,7 +113,7 @@ public class CharacterMover : MonoBehaviour
             //Plays sound for door opening
             DoorSound.Play();
             //Moves player to left room, then camera follows them
-            Player.transform.position = new Vector3(Player.transform.position.x - 38f, Player.transform.position.y, -1f);
+            Player.transform.position = new Vector3(Player.transform.position.x - 40f, Player.transform.position.y, -1f);
             Camera.transform.position = new Vector3(Camera.transform.position.x - 75.0f, Camera.transform.position.y, -10f);
             UpdateCurrentRoom();
         }
@@ -122,7 +122,7 @@ public class CharacterMover : MonoBehaviour
             //Plays sound for door opening
             DoorSound.Play();
             //Moves player to right room, then camera follows them
-            Player.transform.position = new Vector3(Player.transform.position.x + 38f, Player.transform.position.y, -1f);
+            Player.transform.position = new Vector3(Player.transform.position.x + 40f, Player.transform.position.y, -1f);
             Camera.transform.position = new Vector3(Camera.transform.position.x + 75.0f, Camera.transform.position.y, -10f);
             UpdateCurrentRoom();
 

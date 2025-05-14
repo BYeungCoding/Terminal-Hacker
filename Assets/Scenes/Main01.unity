@@ -962,7 +962,6 @@ MonoBehaviour:
   mapPrinter: {fileID: 1400066587}
   levelGen: {fileID: 1520682133}
   characterMover: {fileID: 0}
-  characterMover: {fileID: 0}
   LogicScript: {fileID: 936390929}
 --- !u!4 &303854288
 Transform:
@@ -2428,6 +2427,7 @@ MonoBehaviour:
   TitleMusic: {fileID: 936390931}
   LevelStart: {fileID: 936390930}
   angerMeter: {fileID: 1539653067}
+  winFileText: {fileID: 0}
   levelGEN: {fileID: 1520682133}
   terminalController: {fileID: 303854287}
 --- !u!82 &936390930
