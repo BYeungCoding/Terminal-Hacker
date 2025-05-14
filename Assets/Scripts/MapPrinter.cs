@@ -96,7 +96,8 @@ public class MapPrinter : MonoBehaviour
             var rc = room.GetComponent<RoomController>();
             if (rc == null) continue;
 
-            var files = rc.GetFiles(includeHidden);
+            
+            var files = rc.GetFiles(includeHidden).Where(f => f.isHidden == includeHidden).ToList();
             if (files.Count == 0) continue;
 
             sb.AppendLine($"Room {rc.gridPosition}:");
