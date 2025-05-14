@@ -5,10 +5,11 @@ using UnityEngine.UI;
 public class AngerMeter : MonoBehaviour
 {
     public Image progressBarFill;
-    public float angerSpeed = 0.1f;
+    public float angerSpeed = 0.02f;
     private float _angerLevel = 0f;
     public GameObject debuffIcon;
     public GameObject neutralIcon;
+    private float increaseRate;
     private bool isDebuffed = false;
     private bool isShaking = false;
     private Coroutine shakeCoroutine;
@@ -23,7 +24,8 @@ public class AngerMeter : MonoBehaviour
     }
     void Update()
     {
-        float increaseRate = angerSpeed * Time.deltaTime * (isDebuffed ? angerSpeed : 0.01f);
+        increaseRate = Time.deltaTime * (isDebuffed ? angerSpeed : 0.01f);
+
         _angerLevel += increaseRate;
         _angerLevel = Mathf.Clamp01(_angerLevel);
         progressBarFill.fillAmount = _angerLevel;
@@ -87,7 +89,7 @@ public class AngerMeter : MonoBehaviour
     private IEnumerator CalmDownCoroutine()
     {
         float timer = 5f;
-        float decreaseRate = 0.05f;
+        float decreaseRate = 0.01f;
 
         while (timer > 0f)
         {

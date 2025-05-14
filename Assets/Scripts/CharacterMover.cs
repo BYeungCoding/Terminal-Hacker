@@ -6,7 +6,7 @@ public class CharacterMover : MonoBehaviour
 {
     public GameObject Player;
     private GameObject Camera;
-    public float baseMoveSpeed = 4f;
+    public float baseMoveSpeed = 16f;
     private float currMoveSpeed;
     public Rigidbody2D PlayerBody;
     public bool isCorruptionActive = false;

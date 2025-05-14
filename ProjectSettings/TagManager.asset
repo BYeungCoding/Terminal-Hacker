@@ -9,6 +9,8 @@ TagManager:
   - Door Bottom
   - Door Right
   - Door Left
+  - Flies
+  - DebuffManager
   layers:
   - Default
   - TransparentFX
