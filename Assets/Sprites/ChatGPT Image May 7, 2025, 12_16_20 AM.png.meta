@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b14e2ae89e4815249bb13ec8dc2af474
+guid: 1e6c97bcd3c36c344a57ebe0bb1d1de3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8969056817082029647
-    second: happy Virus 2.0 16x16_0
+      213: 1215018423564065248
+    second: ChatGPT Image May 7, 2025, 12_16_20 AM_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: happy Virus 2.0 16x16_0
+      name: ChatGPT Image May 7, 2025, 12_16_20 AM_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 16
-        height: 16
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1b9a78f4852878380800000000000000
-      internalID: -8969056817082029647
+      spriteID: 0e9571c91dc9cd010800000000000000
+      internalID: 1215018423564065248
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      happy Virus 2.0 16x16_0: -8969056817082029647
+      ChatGPT Image May 7, 2025, 12_16_20 AM_0: 1215018423564065248
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

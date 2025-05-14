@@ -10,6 +10,10 @@ public class LogicScript : MonoBehaviour
     public AudioSource TitleMusic;
     public AudioSource LevelStart;
     public AngerMeter angerMeter;
+    public UnityEngine.UI.Text winFileText; //Add a new text box for holding the amount of wins
+    private int wins = 0;
+    public levelGen levelGEN;
+    public TerminalController terminalController; // Reference to the TerminalController script
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -18,17 +22,20 @@ public class LogicScript : MonoBehaviour
         gameOverScreen.SetActive(false);
         Canvas.SetActive(false);
         TitleMusic.Play();
+        terminalController.terminalPanel.SetActive(false); 
     }
 
 
     public void startGame()
     {
+        levelGEN.ResetLevel();
         LevelStart.Play();
         titleScreen.SetActive(false);
         gameOverScreen.SetActive(false);
         Canvas.SetActive(true);
         TitleMusic.Stop();
         LevelStart.Play();
+        terminalController.terminalPanel.SetActive(false); 
 
         if (angerMeter != null)
         {
@@ -44,11 +51,13 @@ public class LogicScript : MonoBehaviour
     }
     public void restartGame()
     {
+        levelGEN.ResetLevel();
         Canvas.SetActive(true);
         LevelStart.Play();
         TitleMusic.Stop();
         gameOverScreen.SetActive(false);
         titleScreen.SetActive(false);
+        terminalController.terminalPanel.SetActive(false); 
         if (angerMeter != null)
         {
             angerMeter.StopAllCoroutines();         // stop any ongoing shake
@@ -70,6 +79,28 @@ public class LogicScript : MonoBehaviour
     {
         Debug.Log("GAME OVER triggered.");
         gameOverScreen.SetActive(true);
-        Canvas.SetActive(false);
+        switch(wins){
+            case 0:
+                //If the score is 0: JAIL 
+                Canvas.SetActive(false);
+                break;
+            case 1:
+                //If the score is 1: BAD
+                Canvas.SetActive(false);
+                break;
+            case 2:
+                //If the score is 2: GOOD
+                Canvas.SetActive(false);
+                break;
+            default:
+                //If the score is 3 or more: GREAT
+                Canvas.SetActive(false);
+                break;
+        }
+    }
+
+    public void WinFileSolved(){
+        wins++;
+        winFileText.text = $"{wins}"; //Replace this with whatever new win text box you want to add
     }
 }

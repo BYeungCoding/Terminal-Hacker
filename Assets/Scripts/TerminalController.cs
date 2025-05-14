@@ -25,6 +25,7 @@ public class TerminalController : MonoBehaviour
     public MapPrinter mapPrinter; // Reference to the MapPrinter component (optional, if you want to integrate with it)
     public levelGen levelGen; // Reference to the LevelGen component (optional, if you want to integrate with it)
     public CharacterMover characterMover;
+    public LogicScript LogicScript; // Reference to the LogicScript component (optional, if you want to integrate with it)
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -214,6 +215,13 @@ public class TerminalController : MonoBehaviour
                     LogToTerminal("╔═════════ Floor Map ═════════╗\n" + mapPrinter.GetFloorLayout(includeHidden) + "╚════════════════════════════╝");
 
                 }
+                else if (args.Contains("-h"))
+                {
+                    bool includeHidden = true;
+                    LogToTerminal("ls -h used: showing hidden files");
+                    LogToTerminal("Hidden files in the current room:\n");
+                    LogToTerminal(mapPrinter.GetDetailedFileList(includeHidden));
+                }
                 else
                 {
                     LogToTerminal("ls used with unknown flag: " + string.Join(" ", args));
@@ -241,10 +249,11 @@ public class TerminalController : MonoBehaviour
                 {
                     string target = args[0];
                     LogToTerminal($"vim used: editing {target}");
+                    inputField.DeactivateInputField();
                     Debug.Log("Target: " + target + " Filename: " + linkedFile.gameObject.name.ToLower());
                     if (target == linkedFile.gameObject.name.ToLower())
                     {
-                        linkedFile.OpenEditor();
+                        linkedFile.OpenEditor(angerMeter);
                     }
                     else
                     {
@@ -279,7 +288,7 @@ public class TerminalController : MonoBehaviour
 
                     while (true)
                     {
-                        floorPath.Insert(0, floor); // Add to start of path
+                        floorPath.Insert(0, floor);
 
                         // Find the return elevator for this floor
                         ElevatorController returnElevator = characterMover.levelGen.allElevators
@@ -288,7 +297,6 @@ public class TerminalController : MonoBehaviour
                         if (returnElevator != null)
                         {
                             floor = returnElevator.returnToFloorID;
-
                             // If we reach the root (e.g., floor 1), add and break
                             if (floor == 1)
                             {
@@ -358,8 +366,39 @@ public class TerminalController : MonoBehaviour
                     }
                 }
                 break;
+            case "^n":
+                if(levelGen != null)
+                {
+                    levelGen.ResetLevel();
+                }
+                else
+                {
+                    LogToTerminal("levelGen component not assigned.");
+                }
+                break;
             default:
                 LogToTerminal("Unknown command: " + command);
+                break;
+            case "^c":
+                if (levelGen != null)
+                {
+                    LogicScript.TriggerGameOver();
+                }
+                else
+                {
+                    LogToTerminal("LogicScript component not assigned.");
+                }
+                break;
+            case "dir":
+                if (args.Contains("/a:h"))
+                {
+                    LogToTerminal($"dir /a:h used: showing hidden files in the current room");
+                    levelGen.showHidden();
+                }
+                else
+                {
+                    LogToTerminal("dir /a:h error");
+                }
                 break;
         }
     }

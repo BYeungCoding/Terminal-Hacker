@@ -41,17 +41,6 @@ public class levelGen : MonoBehaviour
         public Vector2Int offset;
     }
 
-    void Start()
-    {
-        //Generate the root Floor + rest of the levels
-        GenerateLevelAt(Vector2Int.zero, 0, -1);
-        Debug.Log("Level generation complete. Total floors spawned: " + totalFloorsSpawned);
-        Debug.Log("Total elevators spawned: " + elevatorCounter);
-        Debug.Log("Total dead-end floors spawned: " + DeadEndFloorSpawnCounter);
-        AssignWinFile();
-    }
-
-
     // Generates a level at the specified offset with the given floor ID and return elevator ID
     void GenerateLevelAt(Vector2Int offset, int floorID, int returnToFloorID)
     {
@@ -212,54 +201,6 @@ public class levelGen : MonoBehaviour
                 Generate3x3DeadEndFloor(data.offset, floorID);
             }
         }
-
-        // Spawn player on root floor only
-        if (floorID == 0 && GameObject.FindGameObjectWithTag("Player") == null)
-        {
-            if (localRooms.TryGetValue(Vector2Int.zero, out GameObject centerRoom))
-            {
-                Transform floorTransform = centerRoom.transform.Find("Floor");
-                if (floorTransform != null)
-                {
-                    Vector3 spawnPos = floorTransform.position + new Vector3(0f, 0f, -1f);
-                    GameObject playerInstance = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
-                    Camera.main.transform.position = spawnPos + new Vector3(0f, 0f, Camera.main.transform.position.z);
-
-                    // Hook up terminal controller to the player
-                    GameObject terminalManager = GameObject.Find("TerminalManager");
-
-                    if (terminalManager != null)
-                    {
-                        CharacterMover moveScript = playerInstance.GetComponent<CharacterMover>();
-                        if (moveScript != null)
-                        {
-                            if (terminalManager != null)
-                            {
-                                TerminalController terminalController = terminalManager.GetComponent<TerminalController>();
-                                if (terminalController != null)
-                                {
-                                    moveScript.terminalController = terminalController;
-                                    terminalController.characterMover = moveScript;
-                                }
-                            }
-
-                            moveScript.levelGen = this;
-
-                            foreach (ElevatorController ec in allElevators)
-                            {
-                                if (ec != null)
-                                {
-                                    ec.playerMover = moveScript;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                currentPlayerRoom = offset + Vector2Int.zero;
-                currentPlayerFloorID = 0;
-            }
-        }
         // Generates a 3x3 dead-end floor with only a return elevator
         // This is used when the maximum number of floors has been reached
         void Generate3x3DeadEndFloor(Vector2Int offset, int returnToFloorID)
@@ -368,7 +309,7 @@ public class levelGen : MonoBehaviour
     }
     void AssignWinFile()
     {
-        var eligibleFiles = allSpawnedFiles.Where(f => !f.isCorrupted).ToList();
+        var eligibleFiles = allSpawnedFiles.Where(f => !f.isCorrupted && !f.isWin).ToList();
         if (eligibleFiles.Count > 0)
         {
             var chosen = eligibleFiles[UnityEngine.Random.Range(0, eligibleFiles.Count)];
@@ -378,6 +319,104 @@ public class levelGen : MonoBehaviour
         else
         {
             Debug.LogWarning("No eligible files found to assign win file.");
+        }
+    }
+    public void ResetLevel()
+    {
+        foreach (var room in generatedRooms.Values)
+            Destroy(room);
+        generatedRooms.Clear();
+
+        foreach (var elevator in allElevators)
+            if (elevator != null) Destroy(elevator.gameObject);
+        allElevators.Clear();
+
+        GameObject existingPlayer = GameObject.FindGameObjectWithTag("Player");
+        if (existingPlayer != null)
+            Destroy(existingPlayer);
+
+        totalFloorsSpawned = 1;
+        elevatorCounter = 1;
+        DeadEndFloorSpawnCounter = 0;
+        nextFileID = 0;
+
+        GenerateLevelAt(Vector2Int.zero, 0, -1);
+        SpawnPlayerAtFloorZero();
+        int timesToAssign = Random.Range(3, 6); // 3 to 5 times
+        for (int i = 0; i < timesToAssign; i++)
+        {
+            AssignWinFile();
+        }
+        Debug.Log("Level has been reset!");
+    }
+
+    void SpawnPlayerAtFloorZero()
+    {
+        Vector2Int centerKey = new Vector2Int(0, 0);
+        if (generatedRooms.TryGetValue(centerKey * 75, out GameObject centerRoom))
+        {
+            Transform floorTransform = centerRoom.transform.Find("Floor");
+            if (floorTransform != null)
+            {
+                Vector3 spawnPos = floorTransform.position + new Vector3(0f, 0f, -1f);
+                GameObject playerInstance = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
+                Camera.main.transform.position = new Vector3(spawnPos.x, spawnPos.y, -10f);
+
+                // Reassign connections like before
+                GameObject terminalManager = GameObject.Find("TerminalManager");
+                CharacterMover moveScript = playerInstance.GetComponent<CharacterMover>();
+                if (moveScript != null)
+                {
+                    if (terminalManager != null)
+                    {
+                        TerminalController terminalController = terminalManager.GetComponent<TerminalController>();
+                        if (terminalController != null)
+                        {
+                            moveScript.terminalController = terminalController;
+                            terminalController.characterMover = moveScript;
+                        }
+                    }
+
+                    moveScript.levelGen = this;
+
+                    foreach (ElevatorController ec in allElevators)
+                    {
+                        ec.playerMover = moveScript;
+                    }
+                }
+
+                currentPlayerRoom = Vector2Int.zero;
+                currentPlayerFloorID = 0;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("SpawnPlayerAtFloorZero: center room not found.");
+        }
+    }
+
+    public void showHidden()
+    {
+        Debug.Log("Showing hidden files");
+
+        // Convert current grid position into world-space room key
+        Vector2Int key = new Vector2Int(currentPlayerRoom.x * 75, currentPlayerRoom.y * 50);
+
+        if (generatedRooms.TryGetValue(key, out GameObject room))
+        {
+            Debug.Log("Showing hidden files in room: " + room.name);
+            DummyFile[] files = room.GetComponentsInChildren<DummyFile>();
+            foreach (DummyFile file in files)
+            {
+                if (file.isHidden)
+                {
+                     file.Reveal();
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[showHidden] Room not found at key: " + key);
         }
     }
 
