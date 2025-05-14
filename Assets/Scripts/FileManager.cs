@@ -7,6 +7,7 @@ public class FileManager : MonoBehaviour
     public GameObject fileEditorScreen;
     public bool isVisible = false;
     public FileEditor fileEditor;
+    public AngerMeter angerMeter;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {

@@ -20,10 +20,13 @@ public class DummyFile : MonoBehaviour
     public ScrollRect outputScroll;
     public int fileID;
     public TerminalController terminalController;
-    public string fileContents = "Default text";
+    public string fileContents = "<Replace with answer>";
+    public string question;
     public GameObject fileEditor;
     public FileEditor editorScript;
     public LogicScript logicManager;
+    public bool isSolved = false;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -40,6 +43,7 @@ public class DummyFile : MonoBehaviour
     void Awake()
     {
         fileName = GenerateRandomFileName();
+        question = GeneratePuzzle();
         creationDate = DateTime.Now.AddDays(-UnityEngine.Random.Range(75, 200));
         lastAccessed = DateTime.Now.AddDays(UnityEngine.Random.Range(1, 75));
 
@@ -67,14 +71,6 @@ public class DummyFile : MonoBehaviour
                 {
                     Debug.Log("This file is corrupted. You cannot read it.");
                 }
-                else if (isWin)
-                {
-                    Debug.Log("You found the WIN file!");
-                    if (logicManager != null)
-                    {
-                        logicManager.TriggerGameOver(); // <- your existing method
-                    }
-                }
                 else
                 {
                     Debug.Log("You read the file. It contains important information.");
@@ -94,10 +90,11 @@ public class DummyFile : MonoBehaviour
         }
     }
 
-    public void OpenEditor()
+    public void OpenEditor(AngerMeter angerMeter)
     {
         GameObject editor = Instantiate(fileEditor);
         FileEditor editorScript = editor.GetComponent<FileEditor>();
+        editorScript.angerMeter = angerMeter;
         editorScript.Setup(this);
     }
 
@@ -139,5 +136,17 @@ public class DummyFile : MonoBehaviour
         }
 
         Debug.Log($"[Reveal] {gameObject.name} is now visible.");
+    }
+
+    string GeneratePuzzle(){
+        string[] commands = { "edit", "delete", "change the name of", "read", "create" };
+        string file = GenerateRandomFileName();
+        string file2 = GenerateRandomFileName();
+        string command = commands[UnityEngine.Random.Range(0,commands.Length)];
+        if(command == "change the name of"){
+            return "How would you " + command + " the file " + file + " to " + file2 + "?";
+        } else {
+            return "How would you " + command + " a file named " + file + "?";
+        }
     }
 }

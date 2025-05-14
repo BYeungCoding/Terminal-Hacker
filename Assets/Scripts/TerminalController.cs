@@ -249,10 +249,11 @@ public class TerminalController : MonoBehaviour
                 {
                     string target = args[0];
                     LogToTerminal($"vim used: editing {target}");
+                    inputField.DeactivateInputField();
                     Debug.Log("Target: " + target + " Filename: " + linkedFile.gameObject.name.ToLower());
                     if (target == linkedFile.gameObject.name.ToLower())
                     {
-                        linkedFile.OpenEditor();
+                        linkedFile.OpenEditor(angerMeter);
                     }
                     else
                     {

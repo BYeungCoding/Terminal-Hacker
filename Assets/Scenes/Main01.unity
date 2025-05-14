@@ -962,6 +962,7 @@ MonoBehaviour:
   mapPrinter: {fileID: 1400066587}
   levelGen: {fileID: 1520682133}
   characterMover: {fileID: 0}
+  characterMover: {fileID: 0}
   LogicScript: {fileID: 936390929}
 --- !u!4 &303854288
 Transform:
