@@ -110,7 +110,7 @@ public class DummyFile : MonoBehaviour
         FileEditor editorScript = editor.GetComponent<FileEditor>();
         editorScript.Setup(this);
         editorScript.CloseEditor();
-        terminalController.LogToTerminal(editorScript.inputField.text);
+        terminalController.LogToTerminal(question);
     }
 
     string GenerateRandomFileName()
