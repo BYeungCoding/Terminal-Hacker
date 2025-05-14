@@ -56,20 +56,20 @@ public class RoomController : MonoBehaviour
             switch (wall)
             {
                 case "Top":
-                    spawnOffset = new Vector3(0, 15f, -0.5f);
-                    rotation = Quaternion.Euler(0, 0, 180f);
+                    spawnOffset = new Vector3(0, 14f, -2.5f);
+                    rotation = Quaternion.Euler(0, 0, 0);
                     break;
                 case "Bottom":
-                    spawnOffset = new Vector3(0, -15f, -0.5f);
+                    spawnOffset = new Vector3(0, -10f, -2.5f);
                     rotation = Quaternion.Euler(0, 0, 0);
                     break;
                 case "Right":
-                    spawnOffset = new Vector3(26f, 0, -0.5f);
-                    rotation = Quaternion.Euler(0, 0, 90f);
+                    spawnOffset = new Vector3(18.5f, 0, -2.5f);
+                    rotation = Quaternion.Euler(0, 0, 0);
                     break;
                 case "Left":
-                    spawnOffset = new Vector3(-26f, 0, -0.5f);
-                    rotation = Quaternion.Euler(0, 0, -90f);
+                    spawnOffset = new Vector3(-19f, 0, -2.5f);
+                    rotation = Quaternion.Euler(0, 0, 0);
                     break;
                 default:
                     spawnOffset = Vector3.zero;

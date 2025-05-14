@@ -120,6 +120,24 @@ public class DummyFile : MonoBehaviour
         return names[UnityEngine.Random.Range(0, names.Length)] + UnityEngine.Random.Range(100, 999) + extensions[UnityEngine.Random.Range(0, extensions.Length)];
     }
 
+    public void Reveal()
+    {
+        isHidden = false;
+        if (sr == null)
+            sr = GetComponent<SpriteRenderer>();
+
+        sr.enabled = true;
+
+        // Remove trigger so it doesn’t re-hide or conflict
+        if (triggerZone != null)
+        {
+            Destroy(triggerZone);
+            triggerZone = null;
+        }
+
+        Debug.Log($"[Reveal] {gameObject.name} is now visible.");
+    }
+
     string GeneratePuzzle(){
         string[] commands = { "edit", "delete", "change the name of", "read", "create" };
         string file = GenerateRandomFileName();

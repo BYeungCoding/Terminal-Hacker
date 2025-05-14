@@ -59,12 +59,12 @@ public class ElevatorController : MonoBehaviour
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E) && !isTeleporting)
         {
-            // 🛑 Block input if terminal is open
             if (playerMover != null && playerMover.terminalController != null && playerMover.terminalController.isTerminalVisible)
                 return;
 
             isTeleporting = true;
             TeleportPlayerToFloor();
+            isTeleporting = false;
         }
     }
 
