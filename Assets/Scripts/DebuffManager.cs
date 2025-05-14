@@ -1,14 +1,42 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.UI; // For UI elements if needed, though not used in this snippet
+using UnityEngine.UI;
+using System.Runtime.InteropServices;
+using UnityEngine.InputSystem.Interactions; // For UI elements if needed, though not used in this snippet
 
 public class DebuffManager : MonoBehaviour
 {
+    public float baseDebuffLength = 10f;
+    public float currDebuffLength = 0f;
+    void Start()
+    {
+        characterMover = GameObject.FindGameObjectWithTag("Player").GetComponent<CharacterMover>();
+        debuffDisplays[1].iconObject.SetActive(false);
+        debuffDisplays[2].iconObject.SetActive(false);
+    }
+
+    void Update()
+    {
+        if(currDebuffLength <= 0 && activeDebuffs.Count != 0){
+            if(activeDebuffs.Contains(DebuffType.Corruption)){
+                RemoveDebuff(DebuffType.Corruption);
+                RemoveDebuff(DebuffType.FirewallRage);
+            }
+            if (activeDebuffs.Contains(DebuffType.Slow)){
+                RemoveDebuff(DebuffType.Slow);
+                RemoveDebuff(DebuffType.FirewallRage);
+            }
+            
+        }else if(currDebuffLength > 0 && activeDebuffs.Count > 0){
+            currDebuffLength -= 1 * Time.deltaTime;
+        }
+    }
+
     [System.Serializable]
     public class DebuffDisplay
     {
         public DebuffType type; // The type of the debuff (FirewallRage, Slow, Curruption)
-        public Image iconObject; // The UI object to display the icon (assign in the inspector)
+        public GameObject iconObject; // The UI object to display the icon (assign in the inspector)
     }
 
     public AngerMeter angerMeter;
@@ -40,16 +68,15 @@ public class DebuffManager : MonoBehaviour
 
         if(type == DebuffType.Slow)
         {
-            characterMover.SetMoveSpeed(2f);
+            characterMover.SetMoveSpeed(characterMover.baseMoveSpeed/2);//Halve the current MovementSpeed
+            currDebuffLength = baseDebuffLength;
         }
             
-        else if (type == DebuffType.Curruption)
+        else if (type == DebuffType.Corruption)
         {
-            // Handle Curruption debuff logic here
-            // Example: Apply some other game-specific behavior
+            characterMover.isCorruptionActive = true; //Set corruption to active.
+            currDebuffLength = baseDebuffLength;
         }
-
-        //Add more later
     }    
 
     public void RemoveDebuff(DebuffType type)
@@ -75,6 +102,9 @@ public class DebuffManager : MonoBehaviour
         if (type == DebuffType.Slow)
         {
             characterMover.ResetMoveSpeed(); // back to normal
+        }
+        if(type == DebuffType.Corruption){
+            characterMover.isCorruptionActive = false;//No more corruption
         }
 
         //Add more later
