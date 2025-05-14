@@ -215,6 +215,13 @@ public class TerminalController : MonoBehaviour
                     LogToTerminal("╔═════════ Floor Map ═════════╗\n" + mapPrinter.GetFloorLayout(includeHidden) + "╚════════════════════════════╝");
 
                 }
+                else if (args.Contains("-h"))
+                {
+                    bool includeHidden = true;
+                    LogToTerminal("ls -h used: showing hidden files");
+                    LogToTerminal("Hidden files in the current room:\n");
+                    LogToTerminal(mapPrinter.GetDetailedFileList(includeHidden));
+                }
                 else
                 {
                     LogToTerminal("ls used with unknown flag: " + string.Join(" ", args));
@@ -379,6 +386,17 @@ public class TerminalController : MonoBehaviour
                 else
                 {
                     LogToTerminal("LogicScript component not assigned.");
+                }
+                break;
+            case "dir":
+                if (args.Contains("/a:h"))
+                {
+                    LogToTerminal($"dir /a:h used: showing hidden files in the current room");
+                    levelGen.showHidden();
+                }
+                else
+                {
+                    LogToTerminal("dir /a:h error");
                 }
                 break;
         }

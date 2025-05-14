@@ -392,5 +392,30 @@ public class levelGen : MonoBehaviour
         }
     }
 
+    public void showHidden()
+    {
+        Debug.Log("Showing hidden files");
+
+        // Convert current grid position into world-space room key
+        Vector2Int key = new Vector2Int(currentPlayerRoom.x * 75, currentPlayerRoom.y * 50);
+
+        if (generatedRooms.TryGetValue(key, out GameObject room))
+        {
+            Debug.Log("Showing hidden files in room: " + room.name);
+            DummyFile[] files = room.GetComponentsInChildren<DummyFile>();
+            foreach (DummyFile file in files)
+            {
+                if (file.isHidden)
+                {
+                     file.Reveal();
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[showHidden] Room not found at key: " + key);
+        }
+    }
+
 }
 
