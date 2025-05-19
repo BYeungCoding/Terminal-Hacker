@@ -302,7 +302,7 @@ public class levelGen : MonoBehaviour
                 }
             }
         }
-    }
+    
     // Finds the floor transform within a room
     Transform FindFloorTransform(GameObject room)
     {
