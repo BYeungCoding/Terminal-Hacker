@@ -49,6 +49,7 @@ public class LogicScript : MonoBehaviour
     }
 
     public void startTutorial(){
+        SetRemainingTime(300f);
         levelGEN.generateTutorial(terminalController);
         titleScreen.SetActive(false);
         gameOverScreen.SetActive(false);
