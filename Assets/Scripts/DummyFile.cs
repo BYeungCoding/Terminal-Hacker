@@ -136,7 +136,7 @@ public class DummyFile : MonoBehaviour
     {
         string[] names = { "system", "config", "report", "log", "data", "tmp", "cache", "session" };
         string[] extensions = { ".txt", ".log", ".dat", ".bin", ".cfg", ".tmp" };
-        return names[UnityEngine.Random.Range(0, names.Length)] + UnityEngine.Random.Range(100, 999) + extensions[UnityEngine.Random.Range(0, extensions.Length)];
+        return names[UnityEngine.Random.Range(0, names.Length)] + UnityEngine.Random.Range(0, 50) + extensions[UnityEngine.Random.Range(0, extensions.Length)];
     }
 
     public void Reveal()

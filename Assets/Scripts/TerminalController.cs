@@ -177,7 +177,7 @@ public class TerminalController : MonoBehaviour
                     bool includeHidden = false;
                     LogToTerminal("ls used: showing basic map");
                     LogToTerminal("Map of current directory: \n");
-                    LogToTerminal("╔═════════ Floor Map ═════════╗\n" + mapPrinter.GetFloorLayout(includeHidden) + "╚════════════════════════════╝");
+                    LogToTerminal(mapPrinter.GetFloorLayout(includeHidden));
                 }
                 else if (args.Contains("-l"))
                 {
@@ -191,7 +191,7 @@ public class TerminalController : MonoBehaviour
                     bool includeHidden = true;
                     LogToTerminal("ls -a used: showing all including hidden files");
                     LogToTerminal("Map of current directory: \n");
-                    LogToTerminal("╔═════════ Floor Map ═════════╗\n" + mapPrinter.GetFloorLayout(includeHidden) + "╚════════════════════════════╝");
+                    LogToTerminal(mapPrinter.GetFloorLayout(includeHidden));
 
                 }
                 else if (args.Contains("-h"))
