@@ -15,6 +15,8 @@ public class LogicScript : MonoBehaviour
     public levelGen levelGEN;
     public TerminalController terminalController; // Reference to the TerminalController script
 
+    public Timer timer;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -22,20 +24,21 @@ public class LogicScript : MonoBehaviour
         gameOverScreen.SetActive(false);
         Canvas.SetActive(false);
         TitleMusic.Play();
-        terminalController.terminalPanel.SetActive(false); 
+        terminalController.terminalPanel.SetActive(false);
     }
 
 
     public void startGame()
     {
         levelGEN.ResetLevel();
+        SetRemainingTime(300f);
         LevelStart.Play();
         titleScreen.SetActive(false);
         gameOverScreen.SetActive(false);
         Canvas.SetActive(true);
         TitleMusic.Stop();
         LevelStart.Play();
-        terminalController.terminalPanel.SetActive(false); 
+        terminalController.terminalPanel.SetActive(false);
 
         if (angerMeter != null)
         {
@@ -52,12 +55,13 @@ public class LogicScript : MonoBehaviour
     public void restartGame()
     {
         levelGEN.ResetLevel();
+        SetRemainingTime(300f);
         Canvas.SetActive(true);
         LevelStart.Play();
         TitleMusic.Stop();
         gameOverScreen.SetActive(false);
         titleScreen.SetActive(false);
-        terminalController.terminalPanel.SetActive(false); 
+        terminalController.terminalPanel.SetActive(false);
         if (angerMeter != null)
         {
             angerMeter.StopAllCoroutines();         // stop any ongoing shake
@@ -72,7 +76,6 @@ public class LogicScript : MonoBehaviour
         TitleMusic.Play();
         LevelStart.Stop();
         titleScreen.SetActive(true);
-
     }
 
     public void TriggerGameOver()
@@ -82,8 +85,21 @@ public class LogicScript : MonoBehaviour
         Canvas.SetActive(false);
     }
 
-    public void WinFileSolved(){
+    public void WinFileSolved()
+    {
         wins++;
         winFileText.text = "Win Files Found: " + wins; //Replace this with whatever new win text box you want to add
+    }
+
+    public void SetRemainingTime(float time)
+    {
+        if (timer != null)
+        {
+            timer.remaningTime = time;
+        }
+        else
+        {
+            Debug.LogError("Timer script not found in the scene.");
+        }
     }
 }

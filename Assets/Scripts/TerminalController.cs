@@ -170,28 +170,6 @@ public class TerminalController : MonoBehaviour
                 isTerminalVisible = false;
                 terminalPanel.SetActive(false); // Hide the terminal panel
                 break;
-            case "debuff":
-                if (angerMeter != null)
-                {
-                    angerMeter.AppyDebuff(true); // Apply debuff to increase anger level
-                    LogToTerminal("Debuff applied: Anger level will increase faster.");
-                }
-                else
-                {
-                    LogToTerminal("AngerMeter component not assigned.");
-                }
-                break;
-            case "cure":
-                if (angerMeter != null)
-                {
-                    angerMeter.AppyDebuff(false); // Remove debuff to return to normal anger level increase
-                    LogToTerminal("Cure applied: Anger level will now increase at a normal rate.");
-                }
-                else
-                {
-                    LogToTerminal("AngerMeter component not assigned.");
-                }
-                break;
             case "ls":
                 if (args.Length == 0)
                 {
