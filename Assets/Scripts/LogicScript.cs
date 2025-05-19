@@ -48,6 +48,22 @@ public class LogicScript : MonoBehaviour
         }
     }
 
+    public void startTutorial(){
+        levelGEN.generateTutorial(terminalController);
+        titleScreen.SetActive(false);
+        gameOverScreen.SetActive(false);
+        Canvas.SetActive(true);
+        TitleMusic.Stop();
+        LevelStart.Play();
+        terminalController.terminalPanel.SetActive(false); 
+        if (angerMeter != null)
+        {
+            angerMeter.StopAllCoroutines();         // stop any ongoing shake
+            angerMeter.ResetAngerLevel();           // reset value to 0
+            angerMeter.AppyDebuff(false);           // remove debuff icon
+        }
+    }
+
     public void quitGame()
     {
         Application.Quit();

@@ -97,7 +97,7 @@ public class RoomController : MonoBehaviour
         }
     }
 
-    private Transform FindFloorTransform()
+    public Transform FindFloorTransform()
     {
         foreach (Transform child in transform)
         {
