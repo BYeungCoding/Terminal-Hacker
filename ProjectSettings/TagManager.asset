@@ -10,6 +10,7 @@ TagManager:
   - Door Right
   - Door Left
   - Flies
+  - DebuffManager
   layers:
   - Default
   - TransparentFX

@@ -3,6 +3,7 @@ using TMPro;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using NUnit.Framework.Internal.Commands;
 
 public class DummyFile : MonoBehaviour
 {
@@ -25,9 +26,9 @@ public class DummyFile : MonoBehaviour
     public GameObject fileEditor;
     public FileEditor editorScript;
     public LogicScript logicManager;
+    public DebuffManager debuffManager;
+    private int debuffChance;
     public bool isSolved = false;
-
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -53,15 +54,23 @@ public class DummyFile : MonoBehaviour
             if (managerObj != null)
             {
                 logicManager = managerObj.GetComponent<LogicScript>();
+                Debug.Log("Logic manager assigned.");
             }
         }
-
-
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(debuffManager == null){
+            GameObject debuffManage = GameObject.Find("Effects Zone");
+            if (debuffManage != null)
+            {
+                debuffManager = debuffManage.GetComponent<DebuffManager>();
+                Debug.Log("Debuffs assigned.");
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.E))
         {
             float dist = Vector2.Distance(transform.position, GameObject.FindGameObjectWithTag("Player").transform.position);
@@ -70,6 +79,16 @@ public class DummyFile : MonoBehaviour
                 if (isCorrupted)
                 {
                     Debug.Log("This file is corrupted. You cannot read it.");
+                    debuffChance = UnityEngine.Random.Range(10,0);
+                    if(debuffChance <= 5){
+                        Debug.Log("DebuffScript: " + debuffManager.currDebuffLength);
+                        debuffManager.ApplyDebuff(DebuffType.Corruption);
+                        debuffManager.ApplyDebuff(DebuffType.FirewallRage);
+                    } else if(debuffChance >= 6){
+                        Debug.Log("DebuffScript: " + debuffManager.currDebuffLength);
+                        debuffManager.ApplyDebuff(DebuffType.Slow);
+                        debuffManager.ApplyDebuff(DebuffType.FirewallRage);
+                    }
                 }
                 else
                 {

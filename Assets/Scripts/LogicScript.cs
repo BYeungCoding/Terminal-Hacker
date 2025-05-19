@@ -82,13 +82,30 @@ public class LogicScript : MonoBehaviour
     {
         Debug.Log("GAME OVER triggered.");
         gameOverScreen.SetActive(true);
-        Canvas.SetActive(false);
+        switch(wins){
+            case 0:
+                //If the score is 0: JAIL 
+                Canvas.SetActive(false);
+                break;
+            case 1:
+                //If the score is 1: BAD
+                Canvas.SetActive(false);
+                break;
+            case 2:
+                //If the score is 2: GOOD
+                Canvas.SetActive(false);
+                break;
+            default:
+                //If the score is 3 or more: GREAT
+                Canvas.SetActive(false);
+                break;
+        }
     }
 
     public void WinFileSolved()
     {
         wins++;
-        winFileText.text = "Win Files Found: " + wins; //Replace this with whatever new win text box you want to add
+        winFileText.text = $"{wins}"; //Replace this with whatever new win text box you want to add
     }
 
     public void SetRemainingTime(float time)

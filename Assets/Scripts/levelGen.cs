@@ -309,7 +309,7 @@ public class levelGen : MonoBehaviour
     }
     void AssignWinFile()
     {
-        var eligibleFiles = allSpawnedFiles.Where(f => !f.isCorrupted).ToList();
+        var eligibleFiles = allSpawnedFiles.Where(f => !f.isCorrupted && !f.isWin).ToList();
         if (eligibleFiles.Count > 0)
         {
             var chosen = eligibleFiles[UnityEngine.Random.Range(0, eligibleFiles.Count)];
@@ -342,8 +342,11 @@ public class levelGen : MonoBehaviour
 
         GenerateLevelAt(Vector2Int.zero, 0, -1);
         SpawnPlayerAtFloorZero();
-        AssignWinFile();
-
+        int timesToAssign = Random.Range(3, 6); // 3 to 5 times
+        for (int i = 0; i < timesToAssign; i++)
+        {
+            AssignWinFile();
+        }
         Debug.Log("Level has been reset!");
     }
 
