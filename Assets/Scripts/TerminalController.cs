@@ -6,6 +6,7 @@ using TMPro;
 using System.Linq;
 using System;
 using UnityEngine.Rendering;
+using System.Collections;
 
 public class TerminalController : MonoBehaviour
 {
@@ -170,35 +171,13 @@ public class TerminalController : MonoBehaviour
                 isTerminalVisible = false;
                 terminalPanel.SetActive(false); // Hide the terminal panel
                 break;
-            case "debuff":
-                if (angerMeter != null)
-                {
-                    angerMeter.AppyDebuff(true); // Apply debuff to increase anger level
-                    LogToTerminal("Debuff applied: Anger level will increase faster.");
-                }
-                else
-                {
-                    LogToTerminal("AngerMeter component not assigned.");
-                }
-                break;
-            case "cure":
-                if (angerMeter != null)
-                {
-                    angerMeter.AppyDebuff(false); // Remove debuff to return to normal anger level increase
-                    LogToTerminal("Cure applied: Anger level will now increase at a normal rate.");
-                }
-                else
-                {
-                    LogToTerminal("AngerMeter component not assigned.");
-                }
-                break;
             case "ls":
                 if (args.Length == 0)
                 {
                     bool includeHidden = false;
                     LogToTerminal("ls used: showing basic map");
                     LogToTerminal("Map of current directory: \n");
-                    LogToTerminal("╔═════════ Floor Map ═════════╗\n" + mapPrinter.GetFloorLayout(includeHidden) + "╚════════════════════════════╝");
+                    LogToTerminal(mapPrinter.GetFloorLayout(includeHidden));
                 }
                 else if (args.Contains("-l"))
                 {
@@ -212,7 +191,7 @@ public class TerminalController : MonoBehaviour
                     bool includeHidden = true;
                     LogToTerminal("ls -a used: showing all including hidden files");
                     LogToTerminal("Map of current directory: \n");
-                    LogToTerminal("╔═════════ Floor Map ═════════╗\n" + mapPrinter.GetFloorLayout(includeHidden) + "╚════════════════════════════╝");
+                    LogToTerminal(mapPrinter.GetFloorLayout(includeHidden));
 
                 }
                 else if (args.Contains("-h"))
@@ -367,7 +346,7 @@ public class TerminalController : MonoBehaviour
                 }
                 break;
             case "^n":
-                if(levelGen != null)
+                if (levelGen != null)
                 {
                     levelGen.ResetLevel();
                 }
@@ -401,5 +380,16 @@ public class TerminalController : MonoBehaviour
                 }
                 break;
         }
+    }
+    public void DisableTerminalTemporarily()
+    {
+        isTerminalVisible = false;
+        terminalPanel.SetActive(false);
+        inputField.interactable = false;
+    }
+
+    public void EnableTerminal()
+    {
+        inputField.interactable = true;
     }
 }

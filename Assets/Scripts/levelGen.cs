@@ -244,14 +244,14 @@ public class levelGen : MonoBehaviour
                     room.transform.position = targetGridPos;
                 }
 
-                RoomController rc = room.GetComponent<RoomController>();
-                rc.gridPosition = gridPos;
-                localRooms[gridPos] = room;
 
-                room.AddComponent<RoomFloorTag>().floorID = thisFloorID;
-                var tag = room.AddComponent<RoomFloorTag>();
-                tag.floorID = thisFloorID;
-                //Debug.Log($"[DeadEndGen] Room {gridPos} assigned to floor {tag.floorID}");
+                    RoomController rc = room.GetComponent<RoomController>();
+                    rc.gridPosition = gridPos;
+
+                    localRooms[gridPos] = room;
+                    var tag = room.AddComponent<RoomFloorTag>();
+                    tag.floorID = thisFloorID;
+                    Debug.Log($"[DeadEndGen] Room {gridPos} assigned to floor {tag.floorID}");
 
                 generatedRooms[offset + new Vector2Int(gridPos.x * 75, gridPos.y * 50)] = room;
             }
@@ -288,15 +288,17 @@ public class levelGen : MonoBehaviour
                     returnElevator.transform.SetParent(centerRoom.transform);
                 }
 
-                ElevatorController ec = returnElevator.GetComponent<ElevatorController>();
-                if (ec != null)
-                {
-                    ec.floorID = thisFloorID;
-                    ec.returnToFloorID = returnToFloorID;
-                    ec.returnGridPosition = Vector2Int.zero;
-                    ec.levelGen = this;
-                    ec.isReturnElevator = true;
-                    allElevators.Add(ec);
+                    ElevatorController ec = returnElevator.GetComponent<ElevatorController>();
+                    if (ec != null)
+                    {
+                        ec.floorID = thisFloorID;
+                        ec.returnToFloorID = returnToFloorID;
+                        ec.returnGridPosition = Vector2Int.zero;
+                        ec.globalOffset = offset;
+                        ec.levelGen = this;
+                        ec.isReturnElevator = true;
+                        allElevators.Add(ec);
+                    }
                 }
             }
         }
@@ -401,26 +403,48 @@ public class levelGen : MonoBehaviour
 
     public void showHidden()
     {
-        Debug.Log("Showing hidden files");
+        Vector2Int roomKey = currentPlayerRoom;
 
-        // Convert current grid position into world-space room key
-        Vector2Int key = new Vector2Int(currentPlayerRoom.x * 75, currentPlayerRoom.y * 50);
-
-        if (generatedRooms.TryGetValue(key, out GameObject room))
+        if (!generatedRooms.TryGetValue(roomKey, out GameObject room))
         {
-            Debug.Log("Showing hidden files in room: " + room.name);
-            DummyFile[] files = room.GetComponentsInChildren<DummyFile>();
-            foreach (DummyFile file in files)
+            Debug.LogWarning($"[showHidden] Room not found at key: {roomKey}. Recalculating from player position...");
+
+            // 🔄 Try to recover by estimating player's current room based on position
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
             {
-                if (file.isHidden)
+                Vector3 pos = player.transform.position;
+                int x = Mathf.RoundToInt(pos.x / 75f) * 75;
+                int y = Mathf.RoundToInt(pos.y / 50f) * 50;
+                Vector2Int fallbackKey = new Vector2Int(x, y);
+
+                if (generatedRooms.TryGetValue(fallbackKey, out room))
                 {
-                     file.Reveal();
+                    Debug.Log($"[showHidden] Fallback succeeded with key: {fallbackKey}");
+                    currentPlayerRoom = fallbackKey;  // optionally update it
+                }
+                else
+                {
+                    Debug.LogWarning($"[showHidden] Fallback key {fallbackKey} also failed.");
+                    return;
                 }
             }
+            else
+            {
+                Debug.LogError("[showHidden] No player found in scene.");
+                return;
+            }
         }
-        else
+
+        Debug.Log("Showing hidden files in room: " + room.name);
+        DummyFile[] files = room.GetComponentsInChildren<DummyFile>();
+        foreach (DummyFile file in files)
         {
-            Debug.LogWarning("[showHidden] Room not found at key: " + key);
+            if (file.isHidden)
+            {
+                file.gameObject.SetActive(true);
+                file.isHidden = false;
+            }
         }
     }
 
