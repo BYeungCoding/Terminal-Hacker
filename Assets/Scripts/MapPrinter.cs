@@ -3,84 +3,83 @@ using UnityEngine;
 using System.Linq;
 using System.Text;
 
+
 public class MapPrinter : MonoBehaviour
 {
     public levelGen levelGen; // Reference to LevelGen (set this in Inspector)
 
     public string GetFloorLayout(bool includeHidden = false)
+{
+    if (levelGen == null) return "Error: levelGen not assigned.";
+
+    int currentFloor = levelGen.currentPlayerFloorID;
+    Vector2Int playerRoomKey = levelGen.currentPlayerRoom;
+
+    // Filter rooms for the current floor only
+    var floorRooms = levelGen.generatedRooms
+        .Where(kvp =>
+        {
+            var tag = kvp.Value.GetComponent<RoomFloorTag>();
+            return tag != null && tag.floorID == currentFloor;
+        })
+        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+    if (floorRooms.Count == 0)
+        return $"No rooms found on floor {currentFloor}.";
+
+    // Determine bounds of the map
+    int minX = floorRooms.Keys.Min(k => k.x);
+    int maxX = floorRooms.Keys.Max(k => k.x);
+    int minY = floorRooms.Keys.Min(k => k.y);
+    int maxY = floorRooms.Keys.Max(k => k.y);
+
+    string layout = "";
+
+    for (int y = maxY; y >= minY; y -= 50)
     {
-        int width = 9;
-        int height = 9;
-        int centerX = width / 2;
-        int centerY = height / 2;
-
-        string[,] grid = new string[width, height];
-
-        // Fill grid with empty spaces
-        for (int x = 0; x < width; x++)
-            for (int y = 0; y < height; y++)
-                grid[x, y] = " . ";
-
-        // Go through every generated room on the current floor
-        foreach (var roomEntry in levelGen.generatedRooms.Where(r =>
-            r.Value.GetComponent<RoomFloorTag>()?.floorID == levelGen.currentPlayerFloorID))
+        for (int x = minX; x <= maxX; x += 75)
         {
-            var room = roomEntry.Value;
-            var rc = room.GetComponent<RoomController>();
-            if (rc == null) continue;
+            Vector2Int key = new Vector2Int(x, y);
 
-            int gx = centerX + rc.gridPosition.x;
-            int gy = centerY - rc.gridPosition.y;
-
-            if (gx >= 0 && gx < width && gy >= 0 && gy < height)
+            if (!floorRooms.ContainsKey(key))
             {
-                string marker = "";
-
-                // Check if player is in this room
-                if (room == levelGen.generatedRooms.FirstOrDefault(r =>
-    r.Value.GetComponent<RoomFloorTag>()?.floorID == levelGen.currentPlayerFloorID &&
-    r.Value.GetComponent<RoomController>()?.gridPosition == levelGen.currentPlayerRoom).Value)
-                {
-                    marker = "[X]";
-                }
-                else
-                {
-                    ElevatorController ec = rc.GetElevator();
-                    if (ec != null)
-                    {
-                        marker = "[A" + ec.floorID + "]";
-                    }
-                    else
-                    {
-                        int fileCount = rc.GetFileCount(includeHidden);
-                        marker = $"[{fileCount}]";
-                    }
-                }
-
-                grid[gx, gy] = marker;
+                layout += "     ";
+                continue;
             }
+
+            GameObject room = floorRooms[key];
+
+            // Is player here?
+            if (key == playerRoomKey)
+            {
+                layout += "[ X ]";
+                continue;
+            }
+
+            // Does room have an elevator?
+            ElevatorController elevator = room.GetComponentInChildren<ElevatorController>();
+            if (elevator != null && !elevator.isReturnElevator)
+            {
+                layout += $"[A{elevator.floorID}]";
+                continue;
+            }
+
+            // Count visible files
+            int fileCount = 0;
+            foreach (var df in room.GetComponentsInChildren<DummyFile>())
+            {
+                if (!df.isHidden || includeHidden)
+                    fileCount++;
+            }
+
+            layout += $"[{fileCount}]".PadLeft(5);
         }
 
-        // Build the final string output
-        StringBuilder sb = new StringBuilder();
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                sb.Append(grid[x, y].PadRight(4));
-            }
-            sb.AppendLine();
-        }
-
-        sb.AppendLine();
-        sb.AppendLine("Legend:");
-        sb.AppendLine("[X] - You (current room)");
-        sb.AppendLine("[A#] - Elevator to floor #");
-        sb.AppendLine("[#] - Number of visible files");
-        sb.AppendLine(".   - Empty space (no room)");
-
-        return sb.ToString();
+        layout += "\n";
     }
+
+    return layout;
+}
 
     public string GetDetailedFileList(bool includeHidden = false)
     {
@@ -96,7 +95,7 @@ public class MapPrinter : MonoBehaviour
             var rc = room.GetComponent<RoomController>();
             if (rc == null) continue;
 
-            
+
             var files = rc.GetFiles(includeHidden).Where(f => f.isHidden == includeHidden).ToList();
             if (files.Count == 0) continue;
 

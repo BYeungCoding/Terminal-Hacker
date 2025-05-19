@@ -229,12 +229,11 @@ public class levelGen : MonoBehaviour
 
                     RoomController rc = room.GetComponent<RoomController>();
                     rc.gridPosition = gridPos;
-                    localRooms[gridPos] = room;
 
-                    room.AddComponent<RoomFloorTag>().floorID = thisFloorID;
+                    localRooms[gridPos] = room;
                     var tag = room.AddComponent<RoomFloorTag>();
                     tag.floorID = thisFloorID;
-                    //Debug.Log($"[DeadEndGen] Room {gridPos} assigned to floor {tag.floorID}");
+                    Debug.Log($"[DeadEndGen] Room {gridPos} assigned to floor {tag.floorID}");
 
                     generatedRooms[offset + new Vector2Int(gridPos.x * 75, gridPos.y * 50)] = room;
                 }
@@ -277,6 +276,7 @@ public class levelGen : MonoBehaviour
                         ec.floorID = thisFloorID;
                         ec.returnToFloorID = returnToFloorID;
                         ec.returnGridPosition = Vector2Int.zero;
+                        ec.globalOffset = offset;
                         ec.levelGen = this;
                         ec.isReturnElevator = true;
                         allElevators.Add(ec);
@@ -410,7 +410,7 @@ public class levelGen : MonoBehaviour
             {
                 if (file.isHidden)
                 {
-                     file.Reveal();
+                    file.Reveal();
                 }
             }
         }

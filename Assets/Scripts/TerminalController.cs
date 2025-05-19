@@ -6,6 +6,7 @@ using TMPro;
 using System.Linq;
 using System;
 using UnityEngine.Rendering;
+using System.Collections;
 
 public class TerminalController : MonoBehaviour
 {
@@ -345,7 +346,7 @@ public class TerminalController : MonoBehaviour
                 }
                 break;
             case "^n":
-                if(levelGen != null)
+                if (levelGen != null)
                 {
                     levelGen.ResetLevel();
                 }
@@ -379,5 +380,16 @@ public class TerminalController : MonoBehaviour
                 }
                 break;
         }
+    }
+    public void DisableTerminalTemporarily()
+    {
+        isTerminalVisible = false;
+        terminalPanel.SetActive(false);
+        inputField.interactable = false;
+    }
+
+    public void EnableTerminal()
+    {
+        inputField.interactable = true;
     }
 }

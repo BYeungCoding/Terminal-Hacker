@@ -15,7 +15,7 @@ public class ElevatorController : MonoBehaviour
     public levelGen levelGen;
     public CharacterMover playerMover;
     public AudioSource ElevatorDing;
-
+    public Vector2Int globalOffset;
     public CanvasGroup fadeCanvasGroup;
     public float fadeDuration = 0.5f;
 
@@ -117,11 +117,17 @@ public class ElevatorController : MonoBehaviour
         player.transform.position = destination;
         Camera.main.transform.position = new Vector3(destination.x, destination.y, Camera.main.transform.position.z);
 
+        levelGen.currentPlayerFloorID = isReturnElevator ? returnToFloorID : floorID;
+        Vector2Int globalKey = globalOffset + new Vector2Int(returnGridPosition.x * 75, returnGridPosition.y * 50);
+        levelGen.currentPlayerRoom = globalKey;
+
+        Debug.Log($"[Teleport] Set current floor to {levelGen.currentPlayerFloorID}, room {levelGen.currentPlayerRoom}");
         yield return new WaitForSeconds(0.1f);
 
         yield return StartCoroutine(Fade(1f, 0f, fadeDuration));
 
         playerMover.enabled = true;
+
         playerMover.UpdateCurrentRoom();
 
         isTeleporting = false;
