@@ -151,12 +151,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 4127580618593139818}
-  baseMoveSpeed: 10
+  baseMoveSpeed: 18
   PlayerBody: {fileID: 4584825985142039187}
   isCorruptionActive: 0
   terminalController: {fileID: 0}
   DeathSound: {fileID: 6524015264571293172}
   DoorSound: {fileID: 6373095092143767422}
+  levelGen: {fileID: 0}
 --- !u!50 &4584825985142039187
 Rigidbody2D:
   serializedVersion: 5

@@ -71,7 +71,7 @@ public class AngerMeter : MonoBehaviour
         }
         else if (debuffIcon != null && debuffed == false)
         {
-            CalmDown();
+            //CalmDown();
             debuffIcon.SetActive(false);
             neutralIcon.SetActive(true);
         }
@@ -89,7 +89,7 @@ public class AngerMeter : MonoBehaviour
     private IEnumerator CalmDownCoroutine()
     {
         float timer = 5f;
-        float decreaseRate = 0.01f;
+        float decreaseRate = 0.06f;
 
         while (timer > 0f)
         {
