@@ -47,7 +47,7 @@ You’re stuck in a dead-end CS job and enroll in an underground hacking course 
         
 ## Screenshot
 ### Terminal Interface
-![Terminal](Assets/doc/Ls command.png)
+![Ls command](Assets/doc/Ls%20command.png)
 
 ### Floor Map Display (`ls`)
 ![Map](docs/map.png)
