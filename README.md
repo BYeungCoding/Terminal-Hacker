@@ -46,7 +46,17 @@ You’re stuck in a dead-end CS job and enroll in an underground hacking course 
         :wq! – Save and quit
         
 ## Screenshot
-1. (Coming Soon)
+### Terminal Interface
+![Terminal](Assets/doc/Ls command.png)
+
+### Floor Map Display (`ls`)
+![Map](docs/map.png)
+
+### Elevator Interaction
+![Elevator](docs/elevator.png)
+
+### Puzzle File Editor
+![File Editor](docs/file_editor.png)
 ## Gameplay Video
 1. (Coming Soon)
 ## Education Game Design Document
