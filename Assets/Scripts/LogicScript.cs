@@ -145,7 +145,10 @@ public class LogicScript : MonoBehaviour
     public void WinFileSolved()
     {
         wins++;
-        winFileText.text = $"{wins}"; //Replace this with whatever new win text box you want to add
+        if (winFileText != null)
+            winFileText.text = $"{wins}";
+        else
+            Debug.LogWarning("winFileText is not assigned in LogicScript!");
     }
 
     public void SetRemainingTime(float time)

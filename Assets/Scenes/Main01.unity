@@ -1538,7 +1538,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 799, y: -337}
+  m_AnchoredPosition: {x: 799, y: -355}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &390464822
@@ -2992,7 +2992,7 @@ MonoBehaviour:
   TitleMusic: {fileID: 936390931}
   LevelStart: {fileID: 936390930}
   angerMeter: {fileID: 1539653067}
-  winFileText: {fileID: 975390145}
+  winFileText: {fileID: 1016473606}
   levelGEN: {fileID: 1520682133}
   terminalController: {fileID: 303854287}
   timer: {fileID: 1539653072}
@@ -3215,7 +3215,6 @@ GameObject:
   m_Component:
   - component: {fileID: 975390143}
   - component: {fileID: 975390144}
-  - component: {fileID: 975390145}
   - component: {fileID: 1016473606}
   m_Layer: 5
   m_Name: Score
@@ -3251,18 +3250,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 975390142}
   m_CullTransparentMesh: 1
---- !u!114 &975390145
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 975390142}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1016473604
 GameObject:
   m_ObjectHideFlags: 0
@@ -3998,7 +3985,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -4, y: 22}
+  m_AnchoredPosition: {x: 0, y: -17}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1136337653
@@ -6123,7 +6110,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -8, y: 209}
+  m_AnchoredPosition: {x: -15, y: 167}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1806925467
@@ -7565,9 +7552,9 @@ SceneRoots:
   - {fileID: 1020595460}
   - {fileID: 2132238704}
   - {fileID: 1539653068}
+  - {fileID: 1606195945}
   - {fileID: 1243095053}
   - {fileID: 303854288}
   - {fileID: 1520682134}
   - {fileID: 1400066586}
   - {fileID: 936390932}
-  - {fileID: 1606195945}

@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 4127580618593139818}
-  baseMoveSpeed: 18
+  baseMoveSpeed: 15
   PlayerBody: {fileID: 4584825985142039187}
   isCorruptionActive: 0
   terminalController: {fileID: 0}
