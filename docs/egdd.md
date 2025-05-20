@@ -2,7 +2,7 @@
 
 ## Elevator Pitch
 
-You’re stuck in a dead-end CS job and decide to take on a hacking course. Your goal: find important data hidden in a secure system and escape. But the system’s firewall is chasing you, and you’ll need to leave a fake trail to throw it off while you hack your way to escape.
+You’re stuck in a dead-end CS job and enroll in an underground hacking course to make some extra cash, and finally afford that hair transplant. Dropped into a virtual system, you navigate directories and rooms using terminal commands, uncover hidden files, and ride elevators deeper into a tangled network. Your mission: collect valuable data and sell it off. But the system is watching. An anger meter tracks your mistakes and presence, growing more volatile the longer you stay. Solve mini-puzzles, find the data-rich files, and escape.
 
 ## Influences (Brief)
 
@@ -18,12 +18,15 @@ You’re stuck in a dead-end CS job and decide to take on a hacking course. Your
 
 ## Core Gameplay Mechanics (Brief)
 
-You write commands to traverse directories, trying to find a specific piece of data. You are being pursued by the firewall, which you have to try and trick to throw them off your trail. Each level gets progressively harder as the player must race against the clock to retrieve the desired data.
+You write terminal commands to traverse a virtual file system, searching for hidden data to steal and sell. But the deeper you go, the more unstable the system becomes. An anger meter tracks your mistakes and presence, growing more volatile over time. To stay ahead, you'll need to solve puzzles and avoid detection. Each level has complex layouts, limited time, and trickier file structures.
 
--  traversing through directories
--  Chased by the Firewall 
--  Creating fake trails(directories, files) 
--  Rising difficulty
+   Traverse directories and digital rooms
+
+   Avoid system detection as the anger meter rises
+
+   Solve puzzles to collect data and/or avoid detection
+
+   Complex Levels with puzzles
 
 
 # Learning Aspects
@@ -59,16 +62,16 @@ Introduction to directory and file traversal and management
 
 # What sets this project apart?
 
-- The gameplay of having to “dungeon crawl” through a terminal style world
-- the game focuses on teaching player how cmd/terminal works, with a fun gameplay mechanics 
-- the game will have a unique enemies preventing player from succeeding
-- this game will have fun and unique endings that the players can achieve
+- The gameplay of having to “dungeon crawl” through a terminal-style world
+- The game focuses on teaching players how cmd/terminal works, with fun gameplay mechanics 
+- The game features unique system-driven effects, like corruption, visual glitches, and misleading paths, that actively work against the player’s success.
+- This game will have fun and unique endings that the players can achieve
 
 # Player Interaction Patterns and Modes
 
 ## Player Interaction Pattern
 
-*Terminal Hacker is a single-player game. You traverse through the world using the WASD movement. You interact with objects/prompts with, that will pop up a keyboard allowing you to type in bash commands. You will repeatedly go through harder and harder levels until you reach the end.*
+*Terminal Hacker is a single-player game. You traverse through the world using the WASD movement. You interact with objects/prompts that will pop up a keyboard, allowing you to type in bash commands. You will repeatedly go through harder and harder levels the deeper you go.*
 
 ## Player Modes
 
@@ -80,17 +83,19 @@ Introduction to directory and file traversal and management
     - Description: *The player must find and collect secure data hidden throughout the level.*
     - Alignment: *This teaches players how to navigate directories and manage files.*
 - *Don’t get caught*:
-    - Description: *There will be a firewall (progress bar) that will be hunting you down. You have to write in bash commands to throw them off.*
-    - Alignment: *This aligns with teachthe player to create new files/directories*
+    - Description: *There will be a firewall (progress bar) that will be hunting you down. You have to write in bash commands/ solve puzzles to throw them off.*
+    - Alignment: *This aligns with the player to create new files/directories*
 - *Advance to the next level*:
     - Description: *Once the player reaches the end of the level, you will progress to the next level* 
-    - Alignment: *This will help them advance their knowledge of directory traversal and file management*
+    - Alignment: *This will help them advance their knowledge of directory traversal and  
 
 # Procedures/Actions
 
-*You can traverse the overworld with the WASD keys and interact with terminals by moving to them and pressing E. From there, you will have access to various bash commands, which can be freely typed into the terminal.*
+*You can traverse the overworld with the WASD keys and interact with terminals by moving to them and pressing Tab. From there, you will have access to various bash commands, which can be freely typed into the terminal. You can also interact with files and elevators by pressing E*
 
 # Rules
+
+*What resources are available to the player that they make use of?  How does this affect gameplay? How are these resources finite?*
 
 - Players move their character with WASD
 - LS command will open the map and show you the layout of the dungeon
@@ -99,7 +104,7 @@ Introduction to directory and file traversal and management
 - CD can be used in elevators to navigate to different floors (directories)
 - RM will allow you to delete files to remove debuffs or to slow down the firewall, this will have limited uses
 - VIM? Will allow you to edit files to change the code to either buff/debuff your character
-- TOUCH will allow you to create new files and update the timestamp on files to slow down the firewall, this will have limited uses
+- TOUCH will allow you to create new files and update the timestamp on files to slow down the firewall; this will have limited uses
 - MV will allow you to change the position of files in the room (maybe even bring them to another room)
 - PWD will show you the current path of the directories you are in
 - The goal of the game is to find the file with the secret data to expose the person you are hacking
@@ -107,7 +112,7 @@ Introduction to directory and file traversal and management
 # Objects/Entities
 
 - There will be a player model that looks like a hacker
-- There will be a firewall progress bar (maybe an npc model)
+- There will be a firewall progress bar
 - There will be dungeon-like rooms acting as the directories
 - There will be rooms acting as files
 - There will be a terminal displayed with a keyboard on screen that you can type into
@@ -115,7 +120,7 @@ Introduction to directory and file traversal and management
 ## Core Gameplay Mechanics (Detailed)
 
 - *Editing Files and Directories*: *The player will be able to perform commands at terminals that allow them to edit and create files, including moving them between directories or eve removing them entirely.*
-- *Hazards*: *At the top of the screen, players can monitor the alert meter—once it fills up, it will expose their location to the FIREwall, forcing them to evade detection. On certain floors, players may encounter trap files that weaken their abilities and accelerate the meter’s increase, raising the stakes even further.*
+- *Hazards*: At the top of the screen, players can monitor the alert meter—once it fills up, its over, you get caught and sent to jail. On certain floors, players may encounter trap files or misleading fake data that waste time or raise suspicion. Staying calm under pressure is key, as the system actively works against you the longer you linger.
 - *Searching for Core Data*: *The player will have to manage their more limited commands to find the core data they are looking for.*
 
     
@@ -133,7 +138,7 @@ Introduction to directory and file traversal and management
 
 ## Presentation of Rules
 
-*The player will learn each of their possible actions at terminals one at a time. The pressure of trap files and firewalls will be added slowly and only ramped up as the player learns better ways to deal with them. We will allow them a few calm levels to figure out the basics before the difficulty increases.*
+The player will learn each of their possible actions at terminals one at a time. The pressure of trap files and firewalls will be added slowly and only ramped up as the player learns better ways to deal with them. We will allow them a few calm levels to figure out the basics before the difficulty increases.
 
 ## Presentation of Content
 
@@ -144,9 +149,6 @@ Introduction to directory and file traversal and management
 *You’ve been trapped in the digital realm and have to find the key pieces of data to code a way out of here before the firewall burns you to a crisp!*
 
 ## Storyboarding
-
-![image1](https://github.com/user-attachments/assets/d3674fe0-7d8e-4085-8d1e-33acfbc06f06)
-![image2](https://github.com/user-attachments/assets/edf6b0d1-e2e0-4270-b997-8690e9040a01)
 
 
 # Assets Needed
@@ -159,8 +161,7 @@ Introduction to directory and file traversal and management
 
 - Characters List
   - Hacker -  This is the player-controlled character. The player will be able to customize their hair
-  - Fire Wall  -  Chases the player/hacker, and tries to catch them. A very mad mini computer head that's on fire.
-
+  - Firewall -  The Anger Meter that fills up slowly 
 - Textures:
   -  1s and 0s - classic binary matrix rain 
 
@@ -172,16 +173,19 @@ Introduction to directory and file traversal and management
 
 ## Audio
 
+
+*Game region/phase/time are ways of designating a particularly important place in the game.*
+
 - Music List (Ambient sound)
   - *Title Screen*: *https://freesound.org/people/RICHERlandTV/sounds/351920/ (OPening the Game/Loading into a Level)*, *https://freesound.org/people/orginaljun/sounds/396960/ (Title Music)*
   - *General Gameplay*: *https://freesound.org/people/Timbre/sounds/406915/ (Background Music)*, *https://freesound.org/people/B_Lamerichs/sounds/262834/ (general)*
+  
+*Game Interactions are things that trigger SFX, like character movement, hitting a spiky enemy, or collecting a coin.*
 
 - Sound List (SFX)
-  - *Opening a terminal*: https://freesound.org/people/Debsound/sounds/256543/ (Opening the terminal),       
-    https://freesound.org/people/unfa/sounds/543968/ (Running a Command), https://freesound.org/people/FoolBoyMedia/sounds/352661/ (extra)
-  - *Entering a Room*: https://freesound.org/people/tim.kahn/sounds/91926/ (Elevator),   
-    https://freesound.org/people/Pixeliota/sounds/678254/ (File Door Opening/Enterning)
-  - *Death*: https://freesound.org/people/AceOfSpadesProduc100/sounds/360871/
+  - *Opening a terminal*:*https://freesound.org/people/Debsound/sounds/256543/ (Opening the terminal)*, *https://freesound.org/people/unfa/sounds/543968/ (Running a Command)*, *https://freesound.org/people/FoolBoyMedia/sounds/352661/ (extra)*
+  - *Entering a Room*: *https://freesound.org/people/tim.kahn/sounds/91926/ (Elevator)*, *https://freesound.org/people/Pixeliota/sounds/678254/ (File Door Opening/Enterning)*
+  - *Death*: * https://freesound.org/people/AceOfSpadesProduc100/sounds/360871/ *
 
 
 # Metadata
