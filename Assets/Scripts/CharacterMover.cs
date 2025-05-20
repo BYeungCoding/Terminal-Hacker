@@ -14,7 +14,7 @@ public class CharacterMover : MonoBehaviour
     public AudioSource DeathSound;
     public AudioSource DoorSound;
     public levelGen levelGen;
-
+    public Animation walkCycles;
     void Start()
     {
         currMoveSpeed = baseMoveSpeed;
@@ -48,6 +48,27 @@ public class CharacterMover : MonoBehaviour
                 moveDirection = moveDirection.normalized;
 
             PlayerBody.linearVelocity = moveDirection * currMoveSpeed;
+            
+            if(PlayerBody.linearVelocity.x < 0 && walkCycles.isPlaying == false)
+            {
+                walkCycles.Stop();
+                walkCycles.Play("LeftCycle");
+            } else if(PlayerBody.linearVelocity.x > 0 && walkCycles.isPlaying == false){
+                walkCycles.Stop();
+                walkCycles.Play("RightCycle");
+            } else if(PlayerBody.linearVelocity.y < 0 && walkCycles.isPlaying == false)
+            {
+                walkCycles.Stop();
+                walkCycles.Play("DownCycle");
+            } else if(PlayerBody.linearVelocity.y > 0 && walkCycles.isPlaying == false)
+            {
+                walkCycles.Stop();
+                walkCycles.Play("UpCycle");
+            } else if (PlayerBody.linearVelocity == Vector2.zero && walkCycles.isPlaying == false)
+            {
+                walkCycles.Stop();
+                walkCycles.Play("Idle");
+            }
         }
         else
         {
