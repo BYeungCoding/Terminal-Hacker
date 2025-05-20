@@ -249,7 +249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 4127580618593139818}
-  baseMoveSpeed: 10
+  baseMoveSpeed: 15
   PlayerBody: {fileID: 4584825985142039187}
   isCorruptionActive: 0
   terminalController: {fileID: 0}
@@ -257,6 +257,7 @@ MonoBehaviour:
   DoorSound: {fileID: 6373095092143767422}
   levelGen: {fileID: 0}
   walkCycles: {fileID: 5154100228932635860}
+  levelGen: {fileID: 0}
 --- !u!50 &4584825985142039187
 Rigidbody2D:
   serializedVersion: 5

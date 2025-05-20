@@ -39,6 +39,7 @@ public class LogicScript : MonoBehaviour
         TitleMusic.Stop();
         LevelStart.Play();
         terminalController.terminalPanel.SetActive(false);
+        terminalController.isTerminalVisible = false;
 
         if (angerMeter != null)
         {
@@ -48,7 +49,8 @@ public class LogicScript : MonoBehaviour
         }
     }
 
-    public void startTutorial(){
+    public void startTutorial()
+    {
         SetRemainingTime(300f);
         levelGEN.generateTutorial(terminalController);
         titleScreen.SetActive(false);
@@ -56,7 +58,8 @@ public class LogicScript : MonoBehaviour
         Canvas.SetActive(true);
         TitleMusic.Stop();
         LevelStart.Play();
-        terminalController.terminalPanel.SetActive(false); 
+        terminalController.terminalPanel.SetActive(false);
+        terminalController.isTerminalVisible = false;
         if (angerMeter != null)
         {
             angerMeter.StopAllCoroutines();         // stop any ongoing shake
@@ -79,6 +82,25 @@ public class LogicScript : MonoBehaviour
         gameOverScreen.SetActive(false);
         titleScreen.SetActive(false);
         terminalController.terminalPanel.SetActive(false);
+        terminalController.isTerminalVisible = false;
+        if (terminalController.inputField != null)
+        {
+            terminalController.inputField.DeactivateInputField();
+            terminalController.inputField.text = ""; // Optional: clear any lingering input
+        }
+        if (levelGEN != null && levelGEN.playerPrefab != null)
+        {
+            var player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                var mover = player.GetComponent<CharacterMover>();
+                if (mover != null)
+                {
+                    mover.enabled = true;
+                    mover.PlayerBody.linearVelocity = Vector2.zero;
+                }
+            }
+        }
         if (angerMeter != null)
         {
             angerMeter.StopAllCoroutines();         // stop any ongoing shake
@@ -99,7 +121,8 @@ public class LogicScript : MonoBehaviour
     {
         Debug.Log("GAME OVER triggered.");
         gameOverScreen.SetActive(true);
-        switch(wins){
+        switch (wins)
+        {
             case 0:
                 //If the score is 0: JAIL 
                 Canvas.SetActive(false);
@@ -122,7 +145,10 @@ public class LogicScript : MonoBehaviour
     public void WinFileSolved()
     {
         wins++;
-        winFileText.text = $"{wins}"; //Replace this with whatever new win text box you want to add
+        if (winFileText != null)
+            winFileText.text = $"{wins}";
+        else
+            Debug.LogWarning("winFileText is not assigned in LogicScript!");
     }
 
     public void SetRemainingTime(float time)

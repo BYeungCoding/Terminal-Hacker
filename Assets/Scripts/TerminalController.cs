@@ -161,8 +161,26 @@ public class TerminalController : MonoBehaviour
         switch (command)
         {
             case "help":
-                LogToTerminal("Available commands: help, clear, exit, debuff, cure");
-                LogToTerminal("Available Bash commands: ls, ls -l, ls -a, cd, vim, mv, pwd, rm, touch");
+                LogToTerminal(" ╔═════════ Terminal commands ═════════╗");
+                LogToTerminal("    help - Show this help message");
+                LogToTerminal("    clear - Clear the terminal output");
+                LogToTerminal("    exit - Close the terminal");
+                LogToTerminal("    ls - Shows the Map of the Current Directory");
+                LogToTerminal("    ls -l - Lists detailed info about visible Files");
+                LogToTerminal("    ls -a - Shows the Map with hidden files");
+                LogToTerminal("    ls -h - Lists detailed info about hidden files");
+                LogToTerminal("    cd - changes to Root Directory");
+                LogToTerminal("    vim <file> - Opens a file in editor mode");
+                LogToTerminal("    mv <file> - Moves a file");
+                LogToTerminal("    pwd - Shows the path to the current room");
+                LogToTerminal("    rm <file> - Deletes a file");
+                LogToTerminal("    touch <file> - Creates or updates a file");
+                LogToTerminal("    cat <file> - Reads the contents of a file");
+                LogToTerminal("    dir /a:h - shows hidden files in the current room");
+                LogToTerminal("    ^n - Gets a new Level");
+                LogToTerminal("    ^c - Exit the game");
+                LogToTerminal("╚═══════════════════════════════╝");
+               
                 break;
             case "clear":
                 outputText.text = ""; // Clear the terminal output
