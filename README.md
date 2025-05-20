@@ -49,14 +49,18 @@ You’re stuck in a dead-end CS job and enroll in an underground hacking course 
 ### Terminal Interface
 ![Ls command](Assets/doc/Ls%20command.png)
 
-### Floor Map Display (`ls`)
-![Map](docs/map.png)
+### Random 
+![7 files](Assets/doc/7%20files.png)
 
-### Elevator Interaction
-![Elevator](docs/elevator.png)
+### Elevator + Files
+![A file](Assets/doc/A%20file.png)
+
+### Corrupted
+![corrupted](Assets/doc/corrupted%20.png)
 
 ### Puzzle File Editor
-![File Editor](docs/file_editor.png)
+![puzzle](Assets/doc/puzzle.png)
+
 ## Gameplay Video
 1. (Coming Soon)
 ## Education Game Design Document
