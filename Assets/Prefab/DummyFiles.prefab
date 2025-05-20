@@ -157,6 +157,9 @@ MonoBehaviour:
   fileID: 0
   terminalController: {fileID: 0}
   fileContents: Default text
-  fileEditor: {fileID: 4850975902218425398, guid: 763f6506ad90843ba863e74121be99cf, type: 3}
-  editorScript: {fileID: 0}
+  question: 
+  fileEditor: {fileID: 4850975902218425398, guid: f9911923cdc249c449a330ccc9caca3d, type: 3}
+  editorScript: {fileID: 6150279327351073680, guid: f9911923cdc249c449a330ccc9caca3d, type: 3}
   logicManager: {fileID: 0}
+  debuffManager: {fileID: 0}
+  isSolved: 0

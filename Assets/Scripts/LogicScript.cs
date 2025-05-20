@@ -112,8 +112,8 @@ public class LogicScript : MonoBehaviour
     {
         gameOverScreen.SetActive(false);
         Canvas.SetActive(false);
-        TitleMusic.Play();
         LevelStart.Stop();
+        TitleMusic.Play();
         titleScreen.SetActive(true);
     }
 
