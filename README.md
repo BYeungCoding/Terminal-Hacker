@@ -71,7 +71,7 @@ You’re stuck in a dead-end CS job and enroll in an underground hacking course 
 - [YouTube](https://www.youtube.com/) - For video tutorials on how to program in Unity.
 - [Unity Documentation](https://docs.unity3d.com/) - Understanding how certain functions and objects behaved.
 - [ChatGPT](https://chatgpt.com/) - Helping with unity programming.
-- ### Sounds:
+### Sounds:
 - LevelMusic: short loops 01 02 2015 2.mp3 by B_Lamerichs -- https://freesound.org/s/262834/ -- License: Attribution 4.0
 - LevelStart: O/S Start-Up by RICHERlandTV -- https://freesound.org/s/351920/ -- License: Attribution 4.0
 - TitleMusic: Chiptune Loop Episode 01.wav by orginaljun -- https://freesound.org/s/396960/ -- License: Attribution 3.0
