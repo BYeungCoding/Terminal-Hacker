@@ -66,11 +66,11 @@ You’re stuck in a dead-end CS job and enroll in an underground hacking course 
 ## Education Game Design Document
 [EGDD](https://github.com/BYeungCoding/Terminal-Hacker/blob/main/docs/egdd.md)
 ## Credits and Acknowledgements
-- [GlassTTY VT220 TrueType font by Viacheslav Slavinsky](https://github.com/svofski/glasstty?tab=readme-ov-file)
-- [Unity Discussion Forums](https://discussions.unity.com/)
-- [YouTube](https://www.youtube.com/) 
-- [Unity Documentation](https://docs.unity3d.com/)
-- [ChatGPT](https://chatgpt.com/)
+- [GlassTTY VT220 TrueType font by Viacheslav Slavinsky](https://github.com/svofski/glasstty?tab=readme-ov-file) - Main font used for the game.
+- [Unity Discussion Forums](https://discussions.unity.com/) - Trying to figure out how to solve certain bugs.
+- [YouTube](https://www.youtube.com/) - For video tutorials on how to program in Unity.
+- [Unity Documentation](https://docs.unity3d.com/) - Understanding how certain functions and objects behaved.
+- [ChatGPT](https://chatgpt.com/) - Helping with unity programming
 ## Links
 - [Final Presentation](https://docs.google.com/presentation/d/19pR3rh5XPmJCTEBRRS_7SYO7ZA9C3zm_sTHSZbCUGOk/edit?usp=sharing)
 - [Final Game](https://byeungcoding.github.io/Terminal-Hacker/)
