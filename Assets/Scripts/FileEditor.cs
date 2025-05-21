@@ -163,9 +163,11 @@ public class FileEditor : MonoBehaviour
         Debug.Log("userCommand: " + userCommand + " userFile: " + userFile1 + " questionCommand: " + questionCommand + " file1: " + file1);
         switch(questionCommand){
             case "edit":
-                if(userCommand == "vim" && (file1 == userFile1) && (linkedFile.isSolved == false)){
+                if (userCommand == "vim" && (file1 == userFile1) && (linkedFile.isSolved == false))
+                {
                     angerMeter.CalmDown();
-                    if(linkedFile.isWin){
+                    if (linkedFile.isWin)
+                    {
                         logicManager.WinFileSolved();
                     }
                     linkedFile.isSolved = true;

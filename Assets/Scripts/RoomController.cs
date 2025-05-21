@@ -88,8 +88,8 @@ public class RoomController : MonoBehaviour
                 df.gameObject.name = df.fileName;
 
                 float rand = Random.value;
-                if (rand < 0.2f) df.isCorrupted = true;
-                else if (rand < 0.4f) df.isHidden = true;
+                if (rand < 0.15f) df.isCorrupted = true;
+                else if (rand < 0.27f) df.isHidden = true;
 
                 allSpawnedFiles.Add(df);
                 spawned++;

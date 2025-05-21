@@ -89,7 +89,7 @@ public class AngerMeter : MonoBehaviour
     private IEnumerator CalmDownCoroutine()
     {
         float timer = 5f;
-        float decreaseRate = 0.06f;
+        float decreaseRate = 0.09f;
 
         while (timer > 0f)
         {
