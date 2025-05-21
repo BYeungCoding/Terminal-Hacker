@@ -154,7 +154,7 @@ public class TerminalController : MonoBehaviour
         //Play feedback sound
         if (CommandSoundClip != null)
         {
-            audioSource.PlayOneShot(CommandSoundClip); // Play the command feedback sound
+            audioSource.PlayOneShot(CommandSoundClip, 0.2f); // Play the command feedback sound
         }
 
         //Processing commands 
