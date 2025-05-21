@@ -62,7 +62,9 @@ You’re stuck in a dead-end CS job and enroll in an underground hacking course 
 ![puzzle](Assets/doc/puzzle.png)
 
 ## Gameplay Video
-1. (Coming Soon)
+
+https://drive.google.com/file/d/1EWvRpklH3bdd83zKD0u2Fa-gC_BZ0NaN/view?usp=sharing
+
 ## Education Game Design Document
 [EGDD](https://github.com/BYeungCoding/Terminal-Hacker/blob/main/docs/egdd.md)
 ## Credits and Acknowledgements
