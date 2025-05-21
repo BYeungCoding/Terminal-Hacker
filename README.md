@@ -43,7 +43,7 @@ You’re stuck in a dead-end CS job and enroll in an underground hacking course 
 
         :w – Save
 
-        :wq! – Save and quit
+        :wq – Save and quit
         
 ## Screenshot
 ### Terminal Interface
