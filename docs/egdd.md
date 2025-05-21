@@ -103,9 +103,7 @@ Introduction to directory and file traversal and management
 - LS -l shows the timestamps of files on the map
 - CD can be used in elevators to navigate to different floors (directories)
 - RM will allow you to delete files to remove debuffs or to slow down the firewall, this will have limited uses
-- VIM? Will allow you to edit files to change the code to either buff/debuff your character
-- TOUCH will allow you to create new files and update the timestamp on files to slow down the firewall; this will have limited uses
-- MV will allow you to change the position of files in the room (maybe even bring them to another room)
+- VIM Will allow you to edit files to change the text to solve puzzles, apply a buff, and hvae a chance at increasing your score
 - PWD will show you the current path of the directories you are in
 - The goal of the game is to find the file with the secret data to expose the person you are hacking
 
@@ -120,15 +118,14 @@ Introduction to directory and file traversal and management
 ## Core Gameplay Mechanics (Detailed)
 
 - *Editing Files and Directories*: *The player will be able to perform commands at terminals that allow them to edit and create files, including moving them between directories or eve removing them entirely.*
-- *Hazards*: At the top of the screen, players can monitor the alert meter—once it fills up, its over, you get caught and sent to jail. On certain floors, players may encounter trap files or misleading fake data that waste time or raise suspicion. Staying calm under pressure is key, as the system actively works against you the longer you linger.
+- *Hazards*: At the left side of the screen, players can monitor the alert meter—once it fills up, its over, you get caught and sent to jail. Randomly players may encounter trap files raise suspicion. Staying calm under pressure is key, as the system actively works against you the longer you linger.
 - *Searching for Core Data*: *The player will have to manage their more limited commands to find the core data they are looking for.*
 
     
 ## Feedback
 
 - There will be a walking noise for when your character is moving around
-- There will be a command line prompt on screen with a keyboard visually, when typing there will be keyboard noises as audio feedback as well as the keyboard typing on screen
-- If you input a wrong command it will increase the firewall’s progress bar and give you a visual feedback and audio feedback like a strike/red
+- There will be a command line prompt on screen that will allow you to type in commands
 - Advancing to a new level will play a noise and visually transition
 - When you win there will be a winning audio and a you won screen
 - If you get caught by the firewall there will be a game over screen and there will be defeat audio 
@@ -163,12 +160,12 @@ The player will learn each of their possible actions at terminals one at a time.
   - Hacker -  This is the player-controlled character. The player will be able to customize their hair
   - Firewall -  The Anger Meter that fills up slowly 
 - Textures:
-  -  1s and 0s - classic binary matrix rain 
+  -  Circuit board, retro computer theme 
 
 - Environment Art/Textures:
   - Background -  The background will be similar to the insides of the computer(lots of wire, sensors, etc)
-  - doors - vault style door, hallway door, and semi-circle elevator 
-  - Mini Terminal - next to the vaulted door there will be a “security terminal”(keyboard, and screen), where the player can interact with
+  - Doors - Double doors that are colored similarly to the background
+  - Elevators - Elevators will look almost like a teleportation pad, and kinda function that way too
 
 
 ## Audio
