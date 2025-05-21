@@ -21,7 +21,6 @@ public class TerminalController : MonoBehaviour
     public bool isTerminalVisible = false; // Track the visibility of the terminal panel
     public DummyFile linkedFile;
     public AudioClip TerminalOpenClip; // Assign the audio file directly in the inspector
-    public AudioClip CommandSoundClip; // Assign the audio file directly in the inspector
     private AudioSource audioSource;
     public MapPrinter mapPrinter; // Reference to the MapPrinter component (optional, if you want to integrate with it)
     public levelGen levelGen; // Reference to the LevelGen component (optional, if you want to integrate with it)
@@ -150,12 +149,6 @@ public class TerminalController : MonoBehaviour
         string[] parts = input.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
         string command = parts[0];
         string[] args = parts.Skip(1).ToArray();
-
-        //Play feedback sound
-        if (CommandSoundClip != null)
-        {
-            audioSource.PlayOneShot(CommandSoundClip, 0.2f); // Play the command feedback sound
-        }
 
         //Processing commands 
         switch (command)
