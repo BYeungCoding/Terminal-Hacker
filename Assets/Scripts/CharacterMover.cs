@@ -5,7 +5,7 @@ using UnityEngine;
 public class CharacterMover : MonoBehaviour
 {
     public GameObject Player;
-    private GameObject mainCamera; 
+    private GameObject mainCamera;
     public float baseMoveSpeed = 18f;
     private float currMoveSpeed;
     public Rigidbody2D PlayerBody;
@@ -48,23 +48,28 @@ public class CharacterMover : MonoBehaviour
                 moveDirection = moveDirection.normalized;
 
             PlayerBody.linearVelocity = moveDirection * currMoveSpeed;
-            
-            if(PlayerBody.linearVelocity.x < 0 && walkCycles.isPlaying == false)
+
+            if (PlayerBody.linearVelocity.x < 0 && walkCycles.isPlaying == false)
             {
                 walkCycles.Stop();
                 walkCycles.Play("LeftCycle");
-            } else if(PlayerBody.linearVelocity.x > 0 && walkCycles.isPlaying == false){
+            }
+            else if (PlayerBody.linearVelocity.x > 0 && walkCycles.isPlaying == false)
+            {
                 walkCycles.Stop();
                 walkCycles.Play("RightCycle");
-            } else if(PlayerBody.linearVelocity.y < 0 && walkCycles.isPlaying == false)
+            }
+            else if (PlayerBody.linearVelocity.y < 0 && walkCycles.isPlaying == false)
             {
                 walkCycles.Stop();
                 walkCycles.Play("DownCycle");
-            } else if(PlayerBody.linearVelocity.y > 0 && walkCycles.isPlaying == false)
+            }
+            else if (PlayerBody.linearVelocity.y > 0 && walkCycles.isPlaying == false)
             {
                 walkCycles.Stop();
                 walkCycles.Play("UpCycle");
-            } else if (PlayerBody.linearVelocity == Vector2.zero && walkCycles.isPlaying == false)
+            }
+            else if (PlayerBody.linearVelocity == Vector2.zero && walkCycles.isPlaying == false)
             {
                 walkCycles.Stop();
                 walkCycles.Play("Idle");
@@ -72,7 +77,7 @@ public class CharacterMover : MonoBehaviour
         }
         else
         {
-            PlayerBody.velocity = Vector2.zero;
+            PlayerBody.linearVelocity = Vector2.zero;
         }
     }
 
@@ -146,7 +151,11 @@ public class CharacterMover : MonoBehaviour
     {
         Debug.LogWarning("[Glitch] Corrupted room! Triggering glitch effect...");
 
+
         enabled = false;
+
+        if (PlayerBody != null)
+            PlayerBody.linearVelocity = Vector2.zero;
 
         if (terminalController != null)
             terminalController.DisableTerminalTemporarily();
