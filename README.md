@@ -71,6 +71,16 @@ You’re stuck in a dead-end CS job and enroll in an underground hacking course 
 - [YouTube](https://www.youtube.com/) - For video tutorials on how to program in Unity.
 - [Unity Documentation](https://docs.unity3d.com/) - Understanding how certain functions and objects behaved.
 - [ChatGPT](https://chatgpt.com/) - Helping with unity programming.
+- ### Sounds:
+- LevelMusic: short loops 01 02 2015 2.mp3 by B_Lamerichs -- https://freesound.org/s/262834/ -- License: Attribution 4.0
+- LevelStart: O/S Start-Up by RICHERlandTV -- https://freesound.org/s/351920/ -- License: Attribution 4.0
+- TitleMusic: Chiptune Loop Episode 01.wav by orginaljun -- https://freesound.org/s/396960/ -- License: Attribution 3.0
+- TerminalOpeningSound: R2D2 Astro Droid.wav by Debsound -- https://freesound.org/s/256543/ -- License: Attribution NonCommercial 4.0
+- CommandSound: Sci-Fi Computer Terminal by unfa -- https://freesound.org/s/543968/ -- License: Creative Commons 0
+- CompletionSound: Complete Chime by FoolBoyMedia -- https://freesound.org/s/352661/ -- License: Attribution 4.0
+- ElevatorDing: ding.wav by tim.kahn -- https://freesound.org/s/91926/ -- License: Attribution 4.0
+- DoorSound: Bank Vault Combination Lock Sound - V6 by Pixeliota -- https://freesound.org/s/678254/ -- License: Creative Commons 0
+- [DeathSound]: timpani1-chiptone.wav by AceOfSpadesProduc100 -- https://freesound.org/s/360871/ -- License: Attribution 4.0
 ## Links
 - [Final Presentation](https://docs.google.com/presentation/d/19pR3rh5XPmJCTEBRRS_7SYO7ZA9C3zm_sTHSZbCUGOk/edit?usp=sharing)
 - [Final Game](https://byeungcoding.github.io/Terminal-Hacker/)
