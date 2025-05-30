@@ -26,6 +26,7 @@ public class levelGen : MonoBehaviour
     public List<ElevatorController> allElevators = new List<ElevatorController>();
     private List<DummyFile> allSpawnedFiles = new List<DummyFile>();
     public GameObject tutorialHintPrefab;
+    public HashSet<int> corruptedFloors = new HashSet<int>();
 
     //Directions used for room conections: up, right, down, left
     private Vector2Int[] directions = new Vector2Int[]
@@ -148,7 +149,7 @@ public class levelGen : MonoBehaviour
             if (right) neighborCount++;
             if (left) neighborCount++;
 
-            if (neighborCount == 1)
+            if (neighborCount == 1 && pos != Vector2Int.zero)
             {
                 Transform floorTransform = FindFloorTransform(kvp.Value);
                 if (floorTransform != null)
@@ -353,6 +354,7 @@ public class levelGen : MonoBehaviour
         elevatorCounter = 1;
         DeadEndFloorSpawnCounter = 0;
         nextFileID = 0;
+        corruptedFloors.Clear();
 
         GenerateLevelAt(Vector2Int.zero, 0, -1);
         SpawnPlayerAtFloorZero();

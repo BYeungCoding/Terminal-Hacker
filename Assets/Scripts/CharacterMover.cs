@@ -131,29 +131,37 @@ public class CharacterMover : MonoBehaviour
         int gridY = Mathf.RoundToInt(playerPosition.y / 50f);
         Vector2Int globalKey = new Vector2Int(gridX * 75, gridY * 50);
 
+        Debug.Log($"[UpdateRoom] Player at global key: {globalKey}");
+
         if (levelGen.generatedRooms.TryGetValue(globalKey, out GameObject room))
         {
-            SetCurrentRoom(globalKey, room);
-            return;
-        }
+            RoomFloorTag tag = room.GetComponent<RoomFloorTag>();
+            levelGen.currentPlayerRoom = globalKey;
+            levelGen.currentPlayerFloorID = tag.floorID;
 
-        // 🔁 Fallback search: check surrounding room keys
-        for (int dx = -1; dx <= 1; dx++)
+            Debug.Log($"[UpdateRoom] Floor: {tag.floorID}, Room: {globalKey}");
+        }
+        else
         {
-            for (int dy = -1; dy <= 1; dy++)
+            // Trigger glitch ONLY if this floor hasn’t already been marked corrupted
+            int currentFloor = levelGen.currentPlayerFloorID;
+            if (!levelGen.corruptedFloors.Contains(currentFloor))
             {
-                Vector2Int fallbackKey = new Vector2Int((gridX + dx) * 75, (gridY + dy) * 50);
-                if (levelGen.generatedRooms.TryGetValue(fallbackKey, out GameObject nearbyRoom))
-                {
-                    Debug.LogWarning($"[Fallback] Used nearby key: {fallbackKey} instead of {globalKey}");
-                    SetCurrentRoom(fallbackKey, nearbyRoom);
-                    return;
-                }
+                levelGen.corruptedFloors.Add(currentFloor);
+                StartCoroutine(TriggerCorruptionGlitch());
+            }
+            else
+            {
+                Debug.LogWarning($"[Glitch Skipped] Floor {currentFloor} already corrupted.");
             }
         }
+    }
 
-        // 🔥 Still not found
-        StartCoroutine(TriggerCorruptionGlitch());
+    public static Vector2Int WorldPosToRoomKey(Vector3 worldPos)
+    {
+        int x = Mathf.RoundToInt(worldPos.x / 75f) * 75;
+        int y = Mathf.RoundToInt(worldPos.y / 50f) * 50;
+        return new Vector2Int(x, y);
     }
 
     private void SetCurrentRoom(Vector2Int key, GameObject room)
