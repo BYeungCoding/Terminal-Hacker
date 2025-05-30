@@ -149,7 +149,7 @@ public class TerminalController : MonoBehaviour
         string[] parts = input.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
         string command = parts[0];
         string[] args = parts.Skip(1).ToArray();
-
+        
         //Processing commands 
         switch (command)
         {

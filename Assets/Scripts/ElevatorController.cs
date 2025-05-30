@@ -118,7 +118,7 @@ public class ElevatorController : MonoBehaviour
         Camera.main.transform.position = new Vector3(destination.x, destination.y, Camera.main.transform.position.z);
 
         levelGen.currentPlayerFloorID = isReturnElevator ? returnToFloorID : floorID;
-        Vector2Int globalKey = globalOffset + new Vector2Int(returnGridPosition.x * 75, returnGridPosition.y * 50);
+        Vector2Int globalKey = levelGen.WorldPosToRoomKey(destination);
         levelGen.currentPlayerRoom = globalKey;
 
         Debug.Log($"[Teleport] Set current floor to {levelGen.currentPlayerFloorID}, room {levelGen.currentPlayerRoom}");

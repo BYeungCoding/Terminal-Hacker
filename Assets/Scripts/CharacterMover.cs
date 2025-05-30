@@ -138,13 +138,38 @@ public class CharacterMover : MonoBehaviour
             RoomFloorTag tag = room.GetComponent<RoomFloorTag>();
             levelGen.currentPlayerRoom = globalKey;
             levelGen.currentPlayerFloorID = tag.floorID;
+
             Debug.Log($"[UpdateRoom] Floor: {tag.floorID}, Room: {globalKey}");
         }
         else
         {
-            StartCoroutine(TriggerCorruptionGlitch());
-            return;
+            // Trigger glitch ONLY if this floor hasn’t already been marked corrupted
+            int currentFloor = levelGen.currentPlayerFloorID;
+            if (!levelGen.corruptedFloors.Contains(currentFloor))
+            {
+                levelGen.corruptedFloors.Add(currentFloor);
+                StartCoroutine(TriggerCorruptionGlitch());
+            }
+            else
+            {
+                Debug.LogWarning($"[Glitch Skipped] Floor {currentFloor} already corrupted.");
+            }
         }
+    }
+
+    public static Vector2Int WorldPosToRoomKey(Vector3 worldPos)
+    {
+        int x = Mathf.RoundToInt(worldPos.x / 75f) * 75;
+        int y = Mathf.RoundToInt(worldPos.y / 50f) * 50;
+        return new Vector2Int(x, y);
+    }
+
+    private void SetCurrentRoom(Vector2Int key, GameObject room)
+    {
+        RoomFloorTag tag = room.GetComponent<RoomFloorTag>();
+        levelGen.currentPlayerRoom = key;
+        levelGen.currentPlayerFloorID = tag.floorID;
+        Debug.Log($"[UpdateRoom] Floor: {tag.floorID}, Room: {key}");
     }
 
     public IEnumerator TriggerCorruptionGlitch()
