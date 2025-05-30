@@ -247,13 +247,13 @@ public class levelGen : MonoBehaviour
                 }
 
 
-                    RoomController rc = room.GetComponent<RoomController>();
-                    rc.gridPosition = gridPos;
+                RoomController rc = room.GetComponent<RoomController>();
+                rc.gridPosition = gridPos;
 
-                    localRooms[gridPos] = room;
-                    var tag = room.AddComponent<RoomFloorTag>();
-                    tag.floorID = thisFloorID;
-                    Debug.Log($"[DeadEndGen] Room {gridPos} assigned to floor {tag.floorID}");
+                localRooms[gridPos] = room;
+                var tag = room.AddComponent<RoomFloorTag>();
+                tag.floorID = thisFloorID;
+                Debug.Log($"[DeadEndGen] Room {gridPos} assigned to floor {tag.floorID}");
 
                 generatedRooms[offset + new Vector2Int(gridPos.x * 75, gridPos.y * 50)] = room;
             }
@@ -290,27 +290,27 @@ public class levelGen : MonoBehaviour
                     returnElevator.transform.SetParent(centerRoom.transform);
                 }
 
-                    ElevatorController ec = returnElevator.GetComponent<ElevatorController>();
-                    if (ec != null)
-                    {
-                        ec.floorID = thisFloorID;
-                        ec.returnToFloorID = returnToFloorID;
-                        ec.returnGridPosition = Vector2Int.zero;
-                        ec.globalOffset = offset;
-                        ec.levelGen = this;
-                        ec.returnGridPosition = Vector2Int.zero;
-                        ec.isReturnElevator = true;
-                        allElevators.Add(ec);
-                    }
+                ElevatorController ec = returnElevator.GetComponent<ElevatorController>();
+                if (ec != null)
+                {
+                    ec.floorID = thisFloorID;
+                    ec.returnToFloorID = returnToFloorID;
+                    ec.returnGridPosition = Vector2Int.zero;
+                    ec.globalOffset = offset;
+                    ec.levelGen = this;
+                    ec.returnGridPosition = Vector2Int.zero;
+                    ec.isReturnElevator = true;
+                    allElevators.Add(ec);
                 }
             }
         }
+    }
 
     public static Vector2Int GetRoomKey(Vector2Int offset, Vector2Int gridPos)
     {
         return offset + new Vector2Int(gridPos.x * 75, gridPos.y * 50);
     }
-    
+
     // Finds the floor transform within a room
     Transform FindFloorTransform(GameObject room)
     {
@@ -455,6 +455,12 @@ public class levelGen : MonoBehaviour
             }
         }
     }
+    public static Vector2Int WorldPosToRoomKey(Vector3 worldPos)
+    {
+        int x = Mathf.RoundToInt(worldPos.x / 75f) * 75;
+        int y = Mathf.RoundToInt(worldPos.y / 50f) * 50;
+        return new Vector2Int(x, y);
+    }
 
     public void generateTutorial(TerminalController terminalController)
     {
@@ -570,16 +576,16 @@ public class levelGen : MonoBehaviour
             hint.transform.SetParent(file.transform, worldPositionStays: false); // <<< KEY
             hint.transform.localPosition = new Vector3(0f, 0f, 0f); // Offset relative to file
             hint.transform.localRotation = Quaternion.identity;
-            hint.transform.localScale = Vector3.one * 0.05f; 
+            hint.transform.localScale = Vector3.one * 0.05f;
             TutorialHint hintScript = hint.GetComponent<TutorialHint>();
             if (hintScript != null)
             {
                 hintScript.message = wall switch
                 {
                     "Bottom" => "This is a hidden file. Walking close to it will reveal them. Solve the puzzle and slow the Firewall!",
-                    "Right"  => "This file is corrupted. You can't open it. And it will apply a Debuff if you interact with it.",
-                    "Left"   => "This is a win file! Press 'E' to interact and 'vim <filename>' to solve a puzzle and increase your score!",
-                    _        => "This is a file."
+                    "Right" => "This file is corrupted. You can't open it. And it will apply a Debuff if you interact with it.",
+                    "Left" => "This is a win file! Press 'E' to interact and 'vim <filename>' to solve a puzzle and increase your score!",
+                    _ => "This is a file."
                 };
             }
         }

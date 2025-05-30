@@ -131,20 +131,37 @@ public class CharacterMover : MonoBehaviour
         int gridY = Mathf.RoundToInt(playerPosition.y / 50f);
         Vector2Int globalKey = new Vector2Int(gridX * 75, gridY * 50);
 
-        Debug.Log($"[UpdateRoom] Player at global key: {globalKey}");
-
         if (levelGen.generatedRooms.TryGetValue(globalKey, out GameObject room))
         {
-            RoomFloorTag tag = room.GetComponent<RoomFloorTag>();
-            levelGen.currentPlayerRoom = globalKey;
-            levelGen.currentPlayerFloorID = tag.floorID;
-            Debug.Log($"[UpdateRoom] Floor: {tag.floorID}, Room: {globalKey}");
-        }
-        else
-        {
-            StartCoroutine(TriggerCorruptionGlitch());
+            SetCurrentRoom(globalKey, room);
             return;
         }
+
+        // 🔁 Fallback search: check surrounding room keys
+        for (int dx = -1; dx <= 1; dx++)
+        {
+            for (int dy = -1; dy <= 1; dy++)
+            {
+                Vector2Int fallbackKey = new Vector2Int((gridX + dx) * 75, (gridY + dy) * 50);
+                if (levelGen.generatedRooms.TryGetValue(fallbackKey, out GameObject nearbyRoom))
+                {
+                    Debug.LogWarning($"[Fallback] Used nearby key: {fallbackKey} instead of {globalKey}");
+                    SetCurrentRoom(fallbackKey, nearbyRoom);
+                    return;
+                }
+            }
+        }
+
+        // 🔥 Still not found
+        StartCoroutine(TriggerCorruptionGlitch());
+    }
+
+    private void SetCurrentRoom(Vector2Int key, GameObject room)
+    {
+        RoomFloorTag tag = room.GetComponent<RoomFloorTag>();
+        levelGen.currentPlayerRoom = key;
+        levelGen.currentPlayerFloorID = tag.floorID;
+        Debug.Log($"[UpdateRoom] Floor: {tag.floorID}, Room: {key}");
     }
 
     public IEnumerator TriggerCorruptionGlitch()
