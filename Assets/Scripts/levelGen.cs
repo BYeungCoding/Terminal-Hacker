@@ -117,6 +117,7 @@ public class levelGen : MonoBehaviour
                     ec.floorID = floorID;
                     ec.returnToFloorID = returnToFloorID;
                     ec.levelGen = this;
+                    ec.returnGridPosition = Vector2Int.zero;
                     ec.isReturnElevator = true;
                     allElevators.Add(ec);
                 }
@@ -147,7 +148,7 @@ public class levelGen : MonoBehaviour
             if (right) neighborCount++;
             if (left) neighborCount++;
 
-            if (neighborCount == 1 && totalFloorsSpawned < maxFloors)
+            if (neighborCount == 1)
             {
                 Transform floorTransform = FindFloorTransform(kvp.Value);
                 if (floorTransform != null)
@@ -188,6 +189,7 @@ public class levelGen : MonoBehaviour
                 ec.floorID = data.floorID;
                 ec.returnToFloorID = floorID;
                 ec.levelGen = this;
+                ec.returnGridPosition = Vector2Int.zero;
                 allElevators.Add(ec);
             }
 
@@ -296,12 +298,18 @@ public class levelGen : MonoBehaviour
                         ec.returnGridPosition = Vector2Int.zero;
                         ec.globalOffset = offset;
                         ec.levelGen = this;
+                        ec.returnGridPosition = Vector2Int.zero;
                         ec.isReturnElevator = true;
                         allElevators.Add(ec);
                     }
                 }
             }
         }
+
+    public static Vector2Int GetRoomKey(Vector2Int offset, Vector2Int gridPos)
+    {
+        return offset + new Vector2Int(gridPos.x * 75, gridPos.y * 50);
+    }
     
     // Finds the floor transform within a room
     Transform FindFloorTransform(GameObject room)
@@ -587,6 +595,7 @@ public class levelGen : MonoBehaviour
             ec.returnToFloorID = tutorialFloorID;
             ec.returnGridPosition = Vector2Int.zero;
             ec.levelGen = this;
+            ec.returnGridPosition = Vector2Int.zero;
             allElevators.Add(ec);
         }
 
@@ -622,6 +631,7 @@ public class levelGen : MonoBehaviour
             returnEC.returnToFloorID = tutorialFloorID;
             returnEC.returnGridPosition = Vector2Int.zero;
             returnEC.levelGen = this;
+            ec.returnGridPosition = Vector2Int.zero;
             returnEC.isReturnElevator = true;
             allElevators.Add(returnEC);
 
